@@ -1,0 +1,15 @@
+a {
+  text-decoration: none;
+  color: white;
+}
+
+ul li {
+  list-style: none;
+  padding: 0;
+  margin: 2rem;
+  display: inline;
+}
+/* https://www.w3schools.com/cssref/css3_pr_flex.asp */
+/* .spacer{
+  flex: auto;
+} */
