@@ -7,6 +7,7 @@ import { HeaderComponent } from './header/header.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { LoginComponent } from './login/login.component';
 import { NotesComponent } from './notes/notes.component';
+import { ToDosComponent } from './to-dos/to-dos.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { NotesComponent } from './notes/notes.component';
     AppComponent,
     HeaderComponent,
     LoginComponent,
-    NotesComponent
+    NotesComponent,
+    ToDosComponent
   ],
   imports: [
     BrowserModule,
