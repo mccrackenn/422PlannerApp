@@ -1,1 +1,36 @@
-<p>to-dos works!</p>
+<mat-card class="card">
+    <mat-card-title>ToDos</mat-card-title>
+    <mat-form-field>
+        <input matInput [matDatepicker]="todoDatePicker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="todoDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #todoDatePicker></mat-datepicker>
+    </mat-form-field>
+</mat-card>
+<mat-card class="card">
+    <div id="todoItem">
+        <mat-accordion>
+            <mat-expansion-panel showToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                Take dog to vet
+                </mat-panel-title>
+                <mat-panel-description>
+                Sammy apt to get feet looked at with Dr.Spark
+                </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>This is the primary content of the panel.</p>
+            </mat-expansion-panel>
+            <mat-expansion-panel showToggle>
+                <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Hw Due
+                </mat-panel-title>
+                <mat-panel-description>
+                    Math Hw due
+                </mat-panel-description>
+                </mat-expansion-panel-header>
+                <p>This is the primary content of the panel.</p>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</mat-card>
