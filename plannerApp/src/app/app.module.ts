@@ -47,7 +47,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     BrowserAnimationsModule,
     MatTabsModule,
     MatButtonModule,
-    MatExpansionModule
+    MatExpansionModule,
     MatCheckboxModule
   ],
   providers: [],
