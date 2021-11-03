@@ -1,0 +1,20 @@
+<mat-card>
+  <mat-accordion>
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title> {{ note?.title }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>{{ note?.description }}</p>
+      <p>{{ note?.createdDate | date }}</p>
+      <mat-action-row>
+        <a
+          mat-button
+          color="primary"
+          [routerLink]="['../create-note', note?.id]"
+          >EDIT</a
+        >
+        <button mat-button color="warn">DELETE</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>
