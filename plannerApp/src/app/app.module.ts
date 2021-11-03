@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {MatTabsModule} from '@angular/material/tabs';
 import { NoteItemComponent } from './notes/note-item/note-item.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { CreateNoteComponent } from './create-note/create-note.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     HeaderComponent,
     LoginComponent,
     NotesComponent,
-    NoteItemComponent
+    NoteItemComponent,
+    CreateNoteComponent,
   ],
   imports: [
     BrowserModule,

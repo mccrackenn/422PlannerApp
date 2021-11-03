@@ -1,5 +1,5 @@
 <mat-tab-group>
-  <mat-tab (click)="getNotes()" label="View my Notes">
+  <mat-tab label="View my Notes">
     <app-note-item
       *ngFor="let noteEl of notes; let i = index"
       [note]="noteEl"

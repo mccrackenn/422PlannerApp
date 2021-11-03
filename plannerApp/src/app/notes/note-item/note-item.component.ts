@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Note } from 'src/app/models/note';
 
 @Component({
@@ -14,6 +15,7 @@ export class NoteItemComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
 }
