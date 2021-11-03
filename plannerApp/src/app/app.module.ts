@@ -2,22 +2,26 @@ import { NgModule } from '@angular/core';
 import {  ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatCardModule} from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import { LoginComponent } from './login/login.component';
 import { NotesComponent } from './notes/notes.component';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import {MatTabsModule} from '@angular/material/tabs';
 import { NoteItemComponent } from './notes/note-item/note-item.component';
-import {MatExpansionModule} from '@angular/material/expansion';
 import { CreateNoteComponent } from './create-note/create-note.component';
+import { ToDosComponent } from './to-dos/to-dos.component';
+
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatCardModule} from '@angular/material/card';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 
 @NgModule({
@@ -28,12 +32,14 @@ import { CreateNoteComponent } from './create-note/create-note.component';
     NotesComponent,
     NoteItemComponent,
     CreateNoteComponent,
+    ToDosComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatToolbarModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     MatCardModule,
     MatInputModule,
     MatDatepickerModule,
@@ -42,10 +48,7 @@ import { CreateNoteComponent } from './create-note/create-note.component';
     MatTabsModule,
     MatButtonModule,
     MatExpansionModule
-
-
-
-
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

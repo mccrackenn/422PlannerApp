@@ -1,5 +1,8 @@
 export interface ToDoItem {
-    todoId: number;
-    itemName: string;
-    isComplete: boolean;
+    id: number;
+    title: string;
+    createdDate: Date;
+    startDate: Date;
+    endDate: Date;
+    listOfItems: ToDoItem[];
 }
