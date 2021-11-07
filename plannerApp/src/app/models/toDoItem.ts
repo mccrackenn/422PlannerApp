@@ -4,5 +4,4 @@ export interface ToDoItem {
     createdDate: Date;
     startDate: Date;
     endDate: Date;
-    listOfItems: ToDoItem[];
 }

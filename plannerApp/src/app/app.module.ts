@@ -1,6 +1,13 @@
 import { NgModule } from '@angular/core';
-import {  ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';  // plugin
+import interactionPlugin from '@fullcalendar/interaction';  // plugin
+import listPlugin from '@fullcalendar/list';
+import timeGridPlugin from '@fullcalendar/timeGrid';
+
+import {  ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,8 +28,15 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { CalendarComponent } from './calendar/calendar.component';
 
-
+// Register FullCalendar plugins
+FullCalendarModule.registerPlugins ([
+  dayGridPlugin,
+  interactionPlugin,
+  timeGridPlugin,
+  listPlugin
+]);
 
 @NgModule({
   declarations: [
@@ -32,7 +46,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     NotesComponent,
     NoteItemComponent,
     CreateNoteComponent,
-    ToDosComponent
+    ToDosComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +63,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatTabsModule,
     MatButtonModule,
     MatExpansionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    FullCalendarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

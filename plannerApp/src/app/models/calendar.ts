@@ -1,5 +1,9 @@
 import { CalendarItem } from './calendarItem';
 
-export interface Calendar {
-    calendarItems: CalendarItem[];
+export class Calendar {
+    calendarItems: Array<CalendarItem>;
+
+    constructor() {
+        this.calendarItems = new Array<CalendarItem>();
+    }
 }
