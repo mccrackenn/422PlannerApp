@@ -16,11 +16,18 @@ export class CalendarItem {
         this.listOfToDos = new Array<ToDo>();
     }
 
-    createCalendarItem(id: number, dt: Date, listNotes: Array<Note>): CalendarItem {
+    createCalendarItem(id: number, dt: Date): CalendarItem {  // , listNotes: Array<Note>, listTodos: Array<ToDo>): CalendarItem {
         const item = new CalendarItem();
         item.id = id;
         item.date = dt;
-        item.listOfNotes = listNotes;
         return item;
+    }
+
+    addNote(note: Note): void {
+        this.listOfNotes.push(note);
+    }
+
+    addToDo(todo: ToDo): void {
+        this.listOfToDos.push(todo);
     }
 }

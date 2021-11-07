@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, EventContentArg, MountArg } from '@fullcalendar/angular';
 
 import { CalendarService } from '../services/calendar.service';
+import { Subscription, observable } from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
@@ -14,6 +15,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   private currentEvents: EventApi[] = [];
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
+  private subscription?: Subscription;
 
   // Calendar Options
   calendarOptions: CalendarOptions = {
@@ -23,7 +25,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
     },
     initialView: 'dayGridMonth',
-    weekends: true, 
+    weekends: true,
     editable: true,
     selectable: true,
     selectMirror: true,
@@ -54,6 +56,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
         events: this.getEvents(),
         color: 'gray',
         textColor: 'white',
+      },
+      {
+        events: this.calService.getToDosOfMonthAsEvents(11),
+        color: 'green',
+        borderColor: 'red'
       }
     ],
     select: this.handleDateSelect.bind(this),
@@ -64,6 +71,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     eventDisplay: 'block',
     eventInteractive: true,
   };
+
 
   // Date Select
   handleDateSelect(selectInfo: DateSelectArg): void {
@@ -139,6 +147,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   getEvents(): EventInput[] {
