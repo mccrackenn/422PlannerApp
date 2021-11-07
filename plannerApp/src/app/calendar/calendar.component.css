@@ -1,0 +1,27 @@
+
+.cal-page {
+    display: flex;
+    font-size: 16px;
+}
+
+.cal-app-main {
+    flex-grow: 1;
+    padding: 3em;
+}
+  
+.fc { /* the calendar root */
+    max-width: 90%; /* 1100px;  */
+    margin: 0 auto;
+}
+
+.cal-page-sidebar {
+    width: 300px;
+    line-height: 1.5;
+    background: #eaf9ff;
+    border-right: 1px solid #d3e2e8;
+  }
+  
+.cal-page-sidebar-section {
+    padding: 2em;
+}
+

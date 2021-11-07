@@ -1,0 +1,40 @@
+<div class="cal-page">
+
+    <div class='cal-app-main'>     
+        <full-calendar *ngIf='calendarVisible'
+            [options]='calendarOptions' >
+        </full-calendar>   
+    </div>
+    
+    <div class='cal-page-sidebar'>
+        <div class='cal-page-sidebar-section'>
+            <h2>Instructions</h2>
+            <ul>
+              <li>Select dates and you will be prompted to create a new event</li>
+            </ul>
+        </div>
+
+        <div class='cal-page-sidebar-section'>
+            <label>
+              <input
+                type='checkbox' 
+                [checked]='this.calendarOptions.weekends'
+                (change)='handleWeekendsToggle()'
+              />
+              Show Weekends
+            </label>
+        </div>
+
+        <div class='cal-page-sidebar-section'>
+            <h2>All Events of Today ({{selectedDayEvents.length}})</h2>
+            <ul>
+              <li *ngFor='let event of selectedDayEvents'>
+                <b>{{event.start | date}}</b> 
+                <i style="margin-left: 5px;">{{event.title}}</i>
+              </li>
+            </ul>
+        </div>
+
+    </div> 
+
+</div>
