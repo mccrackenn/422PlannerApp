@@ -7,7 +7,8 @@ import interactionPlugin from '@fullcalendar/interaction';  // plugin
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timeGrid';
 
-import {  ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,20 +19,20 @@ import { NoteItemComponent } from './notes/note-item/note-item.component';
 import { CreateNoteComponent } from './create-note/create-note.component';
 import { ToDosComponent } from './to-dos/to-dos.component';
 
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatCardModule} from '@angular/material/card';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CalendarComponent } from './calendar/calendar.component';
 
 // Register FullCalendar plugins
-FullCalendarModule.registerPlugins ([
+FullCalendarModule.registerPlugins([
   dayGridPlugin,
   interactionPlugin,
   timeGridPlugin,
@@ -64,7 +65,9 @@ FullCalendarModule.registerPlugins ([
     MatButtonModule,
     MatExpansionModule,
     MatCheckboxModule,
-    FullCalendarModule
+    FullCalendarModule,
+    HttpClientModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
