@@ -19,17 +19,20 @@ import { NoteItemComponent } from './notes/note-item/note-item.component';
 import { CreateNoteComponent } from './create-note/create-note.component';
 import { ToDosComponent } from './to-dos/to-dos.component';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatCardModule} from '@angular/material/card';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+
 import { CalendarComponent } from './calendar/calendar.component';
+import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
 
 // Register FullCalendar plugins
 FullCalendarModule.registerPlugins([
@@ -48,7 +51,8 @@ FullCalendarModule.registerPlugins([
     NoteItemComponent,
     CreateNoteComponent,
     ToDosComponent,
-    CalendarComponent
+    CalendarComponent,
+    ViewNoteComponent
   ],
   imports: [
     BrowserModule,
@@ -65,11 +69,12 @@ FullCalendarModule.registerPlugins([
     MatButtonModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatDialogModule,
     FullCalendarModule,
     HttpClientModule
-
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ViewNoteComponent]
 })
 export class AppModule { }

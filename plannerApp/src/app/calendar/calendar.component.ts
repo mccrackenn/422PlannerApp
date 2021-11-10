@@ -1,8 +1,11 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, EventContentArg, MountArg } from '@fullcalendar/angular';
+import { Subscription, observable } from 'rxjs';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { CalendarService } from '../services/calendar.service';
-import { Subscription, observable } from 'rxjs';
+import { ViewNoteComponent } from '../dialogs/view-note/view-note.component';
+import { Note } from '../models/note';
 
 @Component({
   selector: 'app-calendar',
@@ -91,7 +94,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
   // Event Click
   handleEventClick(clickInfo: EventClickArg): void {
     const event = clickInfo.event;
-    alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
+    // alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
+    const n: Note = new Note()
+    n.id = 10;
+    n.title = 'Note Created';
+    n.description = 'A Note specially created to test the ViewNoteComponent dialog.';
+    this.openDialog(n);
   }
 
   handleDidMountEvent(info: MountArg<EventContentArg>): void {
@@ -140,8 +148,26 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
+  openDialog(n: Note): void {
+    const dlgConfig = new MatDialogConfig();
+    dlgConfig.disableClose = true;
+    dlgConfig.autoFocus = false;
+    dlgConfig.role = 'dialog';
+    dlgConfig.data = {
+      note: n
+    };
+
+    // Want to open from Top Left - Close Slide down
+    // https://material.angularjs.org/1.1.2/demo/dialog
+
+    const dlgRef = this.dialog.open(ViewNoteComponent, dlgConfig);
+    dlgRef.afterClosed().subscribe(data => console.log('Dialog output: ', data));
+
+  }
+
   constructor(private calService: CalendarService,
-              private cd: ChangeDetectorRef) { }
+              private cd: ChangeDetectorRef,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
