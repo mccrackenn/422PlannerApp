@@ -28,17 +28,17 @@ export class CalendarService
 
     const notes: Note[] = [
       {
-        id: 1, title: '422 Notes', description: 'Notes for 422',
+        id: "1", title: '422 Notes', description: 'Notes for 422',
         createdDate: new Date(2021, 10, 5),
         startDate: new Date(2021, 11, 10), endDate: new Date(2021, 11, 15)
       },
       {
-        id: 2, title: '10 Day Note', description: 'Note for 10 days',
+        id: "2", title: '10 Day Note', description: 'Note for 10 days',
         createdDate: new Date(2021, 9, 18),
         startDate: new Date(2021, 10, 15), endDate: new Date(2021, 10, 25)
       },
       {
-        id: 3, title: 'Date Issue Note', description: 'Dates Issue',
+        id: "3", title: 'Date Issue Note', description: 'Dates Issue',
         createdDate: new Date(2021, 9, 18),
         startDate: new Date('11-1-2021'), endDate: new Date('11-10-2021')
       }

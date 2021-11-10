@@ -1,6 +1,7 @@
 
+
 export class Note {
-    id: number;
+    id: string;
     title: string;
     description: string;
     createdDate: Date;
@@ -8,11 +9,12 @@ export class Note {
     endDate: Date;
 
     constructor() {
-        this.id = -1;
+        this.id = "";
         this.title = '';
         this.description = '';
         this.createdDate = new Date();
         this.startDate = new Date();
         this.endDate = new Date();
     }
+
 }
