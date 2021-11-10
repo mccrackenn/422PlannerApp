@@ -7,7 +7,8 @@ import interactionPlugin from '@fullcalendar/interaction';  // plugin
 import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timeGrid';
 
-import {  ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,11 +30,12 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+
 import { CalendarComponent } from './calendar/calendar.component';
 import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
 
 // Register FullCalendar plugins
-FullCalendarModule.registerPlugins ([
+FullCalendarModule.registerPlugins([
   dayGridPlugin,
   interactionPlugin,
   timeGridPlugin,
@@ -68,7 +70,8 @@ FullCalendarModule.registerPlugins ([
     MatExpansionModule,
     MatCheckboxModule,
     MatDialogModule,
-    FullCalendarModule
+    FullCalendarModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
