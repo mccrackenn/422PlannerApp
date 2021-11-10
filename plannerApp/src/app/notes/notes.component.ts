@@ -1,59 +1,81 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { NotesServices } from 'src/services/notes.services';
-import {Note} from '../models/note'
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { NotesServices } from '../services/notes.services'
+import { Note } from '../models/note'
 
 @Component({
   selector: 'app-notes',
   templateUrl: './notes.component.html',
   styleUrls: ['./notes.component.css']
 })
-export class NotesComponent implements OnInit {
+export class NotesComponent implements OnInit
+{
 
-  form!:FormGroup;
-  createNoteForm!:FormGroup;
-  private notesSub:Subscription = new Subscription;
-  notes:Note []=[
-    // {id:1,title:"My First Note",description:"My First Test Note",createdDate:new Date(2021,10,5),startDate:new Date(),endDate:new Date()},
-    // {id:2,title:"My Second Note",description:"My Second Test Note",createdDate:new Date(2021,9,18),startDate:new Date(),endDate:new Date()}
-  ];
+  form!: FormGroup;
+  createNoteForm!: FormGroup;
+  private notesSub: Subscription = new Subscription;
+  filteredOptions?: Observable<Note[]>;
+
+  notes: Note[] = [];
 
   constructor(
-    private notesService:NotesServices,
+    private notesService: NotesServices,
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
 
-    this.notes= this.notesService.getNotes()
+    this.notesService.getNotes()
+    this.notesSub = this.notesService.getHeroesUpdateListener().subscribe(
+      notes =>
+      {
+        this.notes = notes
+      }
+    )
 
 
 
-    this.form=new FormGroup({
-      dob: new FormControl(null, {validators:[Validators.minLength(3),Validators.required] }),
-      note:new FormControl(null,{validators:[Validators.required]})
+    this.form = new FormGroup({
+      dob: new FormControl(null, { validators: [Validators.minLength(3), Validators.required] }),
+      note: new FormControl(null, { validators: [Validators.required] })
     })
-    this.createNoteForm=new FormGroup({
-      newNote:new FormControl(null,{validators:[Validators.required]}),
-      start:new FormControl(null,{validators:[Validators.required]}),
-      end:new FormControl(null,{validators:[Validators.required]}),
+    this.createNoteForm = new FormGroup({
+      title: new FormControl(null, { validators: [Validators.required] }),
+      description: new FormControl(null, { validators: [Validators.required] }),
+      startDate: new FormControl(null, { validators: [Validators.required] }),
+      endDate: new FormControl(null, { validators: [Validators.required] }),
     })
   }
-  onSaveDate(){
+  onSaveDate()
+  {
 
   }
-  submitNewNote(){
-    console.log('hello')
-   console.log( this.createNoteForm.get('newNote')?.value)
+  submitNewNote()
+  {
+    const newNote: Note = {
+      id: "temp",
+      title: this.createNoteForm.value.title,
+      description: this.createNoteForm.value.description,
+      startDate: this.createNoteForm.value.startDate,
+      endDate: this.createNoteForm.value.endDate,
+      createdDate: new Date(Date.now())
+    }
+    this.notesService.addNote(newNote);
+    // console.log(this.createNoteForm.get('newNote')?.value)
+    // console.log(this.createNoteForm.value.start)
+    // console.log(this.createNoteForm.value.end)
   }
-  getNotes(){
+  getNotes()
+  {
 
   }
 
-  date(e:any){
-    const convertDate=new Date(e.target.value).toISOString().substring(0,10)
+  date(e: any)
+  {
+    const convertDate = new Date(e.target.value).toISOString().substring(0, 10)
     this.form.get('dob')?.setValue(convertDate, {
-      onlyself:true
+      onlyself: true
 
     })
     console.log(convertDate)

@@ -9,34 +9,52 @@
   <mat-tab label="Create a New Note">
     <h2>Create Note</h2>
     <form [formGroup]="createNoteForm" (submit)="submitNewNote()">
-      <div class="row">
-        <mat-form-field>
-          <mat-date-range-input [rangePicker]="pickerA">
+      <div>
+        <div>
+          <mat-form-field>
             <input
-              matStartDate
-              placeholder="Start date"
-              formControlName="start"
+              matInput
+              placeholder="Enter Note Title"
+              formControlName="title"
             />
-            <input matEndDate placeholder="End date" formControlName="end" />
-          </mat-date-range-input>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerA"
-          ></mat-datepicker-toggle>
-          <mat-date-range-picker #pickerA></mat-date-range-picker>
-        </mat-form-field>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <mat-form-field>
+            <mat-date-range-input [rangePicker]="pickerA">
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="startDate"
+              />
+              <input
+                matEndDate
+                placeholder="End date"
+                formControlName="endDate"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerA"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #pickerA></mat-date-range-picker>
+          </mat-form-field>
+        </div>
       </div>
+
       <div class="row">
         <mat-form-field>
           <textarea
             matInput
             cols="200"
             rows="10"
-            formControlName="newNote"
+            formControlName="description"
+            placeholder="Enter Note Content"
           ></textarea>
         </mat-form-field>
       </div>
-      <button mat-raised-button color="primary" type="submit">Primary</button>
+      <button mat-raised-button color="primary" type="submit">Create</button>
     </form>
   </mat-tab>
 

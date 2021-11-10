@@ -1,6 +1,14 @@
 import { NgModule } from '@angular/core';
-import {  ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';  // plugin
+import interactionPlugin from '@fullcalendar/interaction';  // plugin
+import listPlugin from '@fullcalendar/list';
+import timeGridPlugin from '@fullcalendar/timeGrid';
+
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,8 +29,18 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 
+import { CalendarComponent } from './calendar/calendar.component';
+import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
 
+// Register FullCalendar plugins
+FullCalendarModule.registerPlugins([
+  dayGridPlugin,
+  interactionPlugin,
+  timeGridPlugin,
+  listPlugin
+]);
 
 @NgModule({
   declarations: [
@@ -32,7 +50,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     NotesComponent,
     NoteItemComponent,
     CreateNoteComponent,
-    ToDosComponent
+    ToDosComponent,
+    CalendarComponent,
+    ViewNoteComponent
   ],
   imports: [
     BrowserModule,
@@ -48,9 +68,13 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatTabsModule,
     MatButtonModule,
     MatExpansionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDialogModule,
+    FullCalendarModule,
+    HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ViewNoteComponent]
 })
 export class AppModule { }
