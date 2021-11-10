@@ -13,7 +13,8 @@ import { Note } from '../models/note';
   styleUrls: ['./calendar.component.css']
 })
 
-export class CalendarComponent implements OnInit, OnDestroy {
+export class CalendarComponent implements OnInit, OnDestroy
+{
 
   private currentEvents: EventApi[] = [];
   selectedDayEvents: EventApi[] = [];
@@ -44,10 +45,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
       },
       {
         events: [
-          { title: '422 Meeting', start: '2021-11-06T21:26:48.703Z',
-            end: '2021-11-06T08:00:00.000Z', id: '2', interactive: true },
-          { title: 'ASC', start: '2021-11-05T21:26:48.703Z',
-            end: '2021-11-06T21:26:48.703Z', editable: true }
+          {
+            title: '422 Meeting', start: '2021-11-06T21:26:48.703Z',
+            end: '2021-11-06T08:00:00.000Z', id: '2', interactive: true
+          },
+          {
+            title: 'ASC', start: '2021-11-05T21:26:48.703Z',
+            end: '2021-11-06T21:26:48.703Z', editable: true
+          }
         ],
         // backgroundColor: 'gray',
         color: 'lavendar',
@@ -77,7 +82,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
 
   // Date Select
-  handleDateSelect(selectInfo: DateSelectArg): void {
+  handleDateSelect(selectInfo: DateSelectArg): void
+  {
     const calendarApi = selectInfo.view.calendar;
     console.log('Selected Date: All Day: ' + selectInfo.allDay +
       ' Start: ' + selectInfo.startStr + ' End: ' + selectInfo.endStr +
@@ -87,22 +93,25 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   // Date Click
-  handleDateClick(arg: any): void {
+  handleDateClick(arg: any): void
+  {
     alert('Date clicked: ' + arg.dateStr);
   }
 
   // Event Click
-  handleEventClick(clickInfo: EventClickArg): void {
+  handleEventClick(clickInfo: EventClickArg): void
+  {
     const event = clickInfo.event;
     // alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
     const n: Note = new Note()
-    n.id = 10;
+    n.id = "10";
     n.title = 'Note Created';
     n.description = 'A Note specially created to test the ViewNoteComponent dialog.';
     this.openDialog(n);
   }
 
-  handleDidMountEvent(info: MountArg<EventContentArg>): void {
+  handleDidMountEvent(info: MountArg<EventContentArg>): void
+  {
     console.log('DisMount got FIRED...');
     /*var tooltip = new Tooltip(info.el, {
       title: info.event.extendedProps.description,
@@ -112,14 +121,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });*/
   }
 
-  handleWeekendsToggle(): void {
+  handleWeekendsToggle(): void
+  {
     this.calendarOptions.weekends = !this.calendarOptions.weekends;
 
     return;
   }
 
   // EVENTS - handleEvents
-  handleEvents(events: EventApi[]): void {
+  handleEvents(events: EventApi[]): void
+  {
     console.log('Handle EVENT Called');
     this.currentEvents = events;
     // console.log(this.currentEvents);
@@ -131,24 +142,30 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   // Gets/Sets events of specified date
-  private getSelectedDaysEvents(date: Date): void {
+  private getSelectedDaysEvents(date: Date): void
+  {
     const dt = date.getDate();
 
     this.selectedDayEvents = [];
 
-    this.currentEvents.forEach(event => {
-      if (event._instance) {
-        if (event._instance?.range.start.getDate() === dt) {
+    this.currentEvents.forEach(event =>
+    {
+      if (event._instance)
+      {
+        if (event._instance?.range.start.getDate() === dt)
+        {
           this.selectedDayEvents.push(event);
         }
-        else if ( (event._instance.range.end.getDate() <= dt) && (event._instance?.range.start.getDate() < dt) ) {
-            this.selectedDayEvents.push(event);
+        else if ((event._instance.range.end.getDate() <= dt) && (event._instance?.range.start.getDate() < dt))
+        {
+          this.selectedDayEvents.push(event);
         }
       }
     });
   }
 
-  openDialog(n: Note): void {
+  openDialog(n: Note): void
+  {
     const dlgConfig = new MatDialogConfig();
     dlgConfig.disableClose = true;
     dlgConfig.autoFocus = false;
@@ -166,22 +183,26 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   constructor(private calService: CalendarService,
-              private cd: ChangeDetectorRef,
-              private dialog: MatDialog) { }
+    private cd: ChangeDetectorRef,
+    private dialog: MatDialog) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void
+  {
   }
 
-  ngOnDestroy(): void {
-    if (this.subscription) {
+  ngOnDestroy(): void
+  {
+    if (this.subscription)
+    {
       this.subscription.unsubscribe();
     }
   }
 
-  getEvents(): EventInput[] {
+  getEvents(): EventInput[]
+  {
     const event: EventInput[] = [];
     event.push(
-      { title: 'Sp. Note 1', start: '2021-11-05T21:26:48.703Z', end: '2021-11-06T21:26:48.703Z'});
+      { title: 'Sp. Note 1', start: '2021-11-05T21:26:48.703Z', end: '2021-11-06T21:26:48.703Z' });
     event.push(
       { title: 'Sp. Note 2', start: '2021-11-02T21:26:48.703Z', end: '2021-11-04T21:26:48.703Z', interactive: true });
     event.push(
