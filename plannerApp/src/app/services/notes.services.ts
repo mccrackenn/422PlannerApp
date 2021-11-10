@@ -1,8 +1,8 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, Subscriber, Subscription } from "rxjs";
-import { Note } from "src/app/models/note";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, Subscriber, Subscription, Observable } from 'rxjs';
+import { Note } from 'src/app/models/note';
 
 
 @Injectable({
@@ -20,19 +20,19 @@ export class NotesServices
     public router: Router,
     public route: ActivatedRoute,
     public httpClient: HttpClient
-  ) { };
+  ) { }
 
   getNotes()
   {
-    //Using the spread opertor to return a copy of the array, not the original array
+    // Using the spread opertor to return a copy of the array, not the original array
     this.httpClient.get<Note[]>('http://localhost:3000/api/notes')
       .subscribe(
         responseData =>
         {
-          console.log(responseData)
-          this.notes = responseData
-          this.notesUpdated.next([...this.notes])
-        })
+          console.log(responseData);
+          this.notes = responseData;
+          this.notesUpdated.next([...this.notes]);
+        });
   }
 
   addNote(note: Note)
@@ -47,13 +47,13 @@ export class NotesServices
           startDate: note.startDate,
           endDate: note.endDate,
           createdDate: note.createdDate
-        }
-        console.log(newNote)
+        };
+        console.log(newNote);
         this.notes.push(newNote);
-        this.notesUpdated.next([...this.notes])
-        //this.router.navigate(['/notes']).then(() => window.location.reload())
+        this.notesUpdated.next([...this.notes]);
+        // this.router.navigate(['/notes']).then(() => window.location.reload())
 
-      })
+      });
   }
 
   deleteNote(noteId: string)
@@ -64,21 +64,21 @@ export class NotesServices
         const updatedNotes = this.notes.filter(note => note.id !== noteId);
         console.log(updatedNotes);
         this.notes = updatedNotes;
-        this.notesUpdated.next([...this.notes])
-        //this.router.navigate(['/notes']).then(() => window.location.reload())
-      })
+        this.notesUpdated.next([...this.notes]);
+        // this.router.navigate(['/notes']).then(() => window.location.reload())
+      });
   }
 
   getHeroesUpdateListener()
   {
-    return this.notesUpdated.asObservable()
+    return this.notesUpdated.asObservable();
   }
 
   getNote(id: string)
   {
-    console.log(`Note is ${id}`)
-    const returnNote = this.notes.find(note => note.id === id)
-    console.log(`getNote return an id of-${id}`)
+    console.log(`Note is ${id}`);
+    const returnNote = this.notes.find(note => note.id === id);
+    console.log(`getNote return an id of-${id}`);
   }
 
 }

@@ -20,6 +20,7 @@ export class CalendarComponent implements OnInit, OnDestroy
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
+  showWeekends  = true;
 
   // Calendar Options
   calendarOptions: CalendarOptions = {
@@ -103,8 +104,8 @@ export class CalendarComponent implements OnInit, OnDestroy
   {
     const event = clickInfo.event;
     // alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
-    const n: Note = new Note()
-    n.id = "10";
+    const n: Note = new Note();
+    n.id = '10';
     n.title = 'Note Created';
     n.description = 'A Note specially created to test the ViewNoteComponent dialog.';
     this.openDialog(n);
@@ -183,8 +184,8 @@ export class CalendarComponent implements OnInit, OnDestroy
   }
 
   constructor(private calService: CalendarService,
-    private cd: ChangeDetectorRef,
-    private dialog: MatDialog) { }
+              private cd: ChangeDetectorRef,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void
   {
