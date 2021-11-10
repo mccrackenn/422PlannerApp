@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, Subscriber, Subscription } from "rxjs";
 import { Note } from "src/app/models/note";
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,12 +25,47 @@ export class NotesServices
   getNotes()
   {
     //Using the spread opertor to return a copy of the array, not the original array
-    this.httpClient.get<Note[]>('http://localhost:3000/api/notes').subscribe(
-      responseData =>
+    this.httpClient.get<Note[]>('http://localhost:3000/api/notes')
+      .subscribe(
+        responseData =>
+        {
+          console.log(responseData)
+          this.notes = responseData
+          this.notesUpdated.next([...this.notes])
+        })
+  }
+
+  addNote(note: Note)
+  {
+    this.httpClient.post<{ message: string, noteId: string }>('http://localhost:3000/api/notes', note)
+      .subscribe((responseData) =>
       {
-        console.log(responseData)
-        this.notes = responseData
+        const newNote: Note = {
+          id: responseData.noteId,
+          title: note.title,
+          description: note.description,
+          startDate: note.startDate,
+          endDate: note.endDate,
+          createdDate: note.createdDate
+        }
+        console.log(newNote)
+        this.notes.push(newNote);
         this.notesUpdated.next([...this.notes])
+        //this.router.navigate(['/notes']).then(() => window.location.reload())
+
+      })
+  }
+
+  deleteNote(noteId: string)
+  {
+    this.httpClient.delete('http://localhost:3000/api/notes/' + noteId)
+      .subscribe(() =>
+      {
+        const updatedNotes = this.notes.filter(note => note.id !== noteId);
+        console.log(updatedNotes);
+        this.notes = updatedNotes;
+        this.notesUpdated.next([...this.notes])
+        //this.router.navigate(['/notes']).then(() => window.location.reload())
       })
   }
 
@@ -38,7 +74,7 @@ export class NotesServices
     return this.notesUpdated.asObservable()
   }
 
-  getNote(id: number)
+  getNote(id: string)
   {
     console.log(`Note is ${id}`)
     const returnNote = this.notes.find(note => note.id === id)

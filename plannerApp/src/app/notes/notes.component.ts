@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { NotesServices } from '../services/notes.services'
 import { Note } from '../models/note'
 
@@ -15,9 +15,9 @@ export class NotesComponent implements OnInit
   form!: FormGroup;
   createNoteForm!: FormGroup;
   private notesSub: Subscription = new Subscription;
-  notes: Note[] = [
+  filteredOptions?: Observable<Note[]>;
 
-  ];
+  notes: Note[] = [];
 
   constructor(
     private notesService: NotesServices,
@@ -41,9 +41,10 @@ export class NotesComponent implements OnInit
       note: new FormControl(null, { validators: [Validators.required] })
     })
     this.createNoteForm = new FormGroup({
-      newNote: new FormControl(null, { validators: [Validators.required] }),
-      start: new FormControl(null, { validators: [Validators.required] }),
-      end: new FormControl(null, { validators: [Validators.required] }),
+      title: new FormControl(null, { validators: [Validators.required] }),
+      description: new FormControl(null, { validators: [Validators.required] }),
+      startDate: new FormControl(null, { validators: [Validators.required] }),
+      endDate: new FormControl(null, { validators: [Validators.required] }),
     })
   }
   onSaveDate()
@@ -52,8 +53,18 @@ export class NotesComponent implements OnInit
   }
   submitNewNote()
   {
-    console.log('hello')
-    console.log(this.createNoteForm.get('newNote')?.value)
+    const newNote: Note = {
+      id: "temp",
+      title: this.createNoteForm.value.title,
+      description: this.createNoteForm.value.description,
+      startDate: this.createNoteForm.value.startDate,
+      endDate: this.createNoteForm.value.endDate,
+      createdDate: new Date(Date.now())
+    }
+    this.notesService.addNote(newNote);
+    // console.log(this.createNoteForm.get('newNote')?.value)
+    // console.log(this.createNoteForm.value.start)
+    // console.log(this.createNoteForm.value.end)
   }
   getNotes()
   {
