@@ -1,0 +1,57 @@
+
+<h2 mat-dialog-title style="text-align: center;">Details of Note</h2>
+
+<!-- <Title>Details of Note</Title>
+<h2 mat-dialog-title></h2> -->
+
+<mat-dialog-content>
+
+    <!--
+    <table>
+        <tbody>
+            <tr>
+                <td>Title of Note</td>
+                <td>{{note.title}}</td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td>{{note.description}}</td>
+            </tr>
+        </tbody>
+    </table>
+    -->
+
+    <div class="row">
+        <label class="md-col-5">Title of Note</label>
+        <textarea value="{{note.title}}" matInput cols="50" rows="1" 
+            style="margin-left: 10px;" readonly ></textarea>
+    </div>
+    <div class="row">
+        <label class="md-col-5" >Description</label>
+        <textarea placeholder="Desctiprion" value="{{note.description}}"
+            matInput  cols="50" rows="4" style="margin-left: 15px;" readonly ></textarea>
+    </div>
+    <!-- , ,  -->
+    <div class="row">
+        <label class="md-col-5" >Created Date</label>
+        <textarea value="{{note.createdDate}}"
+            matInput cols="45" rows="1" style="margin-left: 8px;" readonly ></textarea>
+    </div>
+    <div class="row">
+        <label class="md-col-5" >Start Date</label>
+        <textarea value="{{note.startDate}}"
+            matInput cols="45" rows="1" style="margin-left: 27px;" readonly ></textarea>
+    </div>
+    <div class="row">
+        <label class="md-col-5" >End Date</label>
+        <textarea value="{{note.endDate}}"
+            matInput cols="45" rows="1" style="margin-left: 30px;" readonly ></textarea>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()" style="margin-right: 30px;">Close</button>
+    <button class="mat-raised-button mat-primary" (click)="edit()">Edit</button>
+</mat-dialog-actions>
+

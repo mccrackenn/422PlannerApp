@@ -28,7 +28,9 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
 
 // Register FullCalendar plugins
 FullCalendarModule.registerPlugins ([
@@ -47,7 +49,8 @@ FullCalendarModule.registerPlugins ([
     NoteItemComponent,
     CreateNoteComponent,
     ToDosComponent,
-    CalendarComponent
+    CalendarComponent,
+    ViewNoteComponent
   ],
   imports: [
     BrowserModule,
@@ -64,9 +67,11 @@ FullCalendarModule.registerPlugins ([
     MatButtonModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatDialogModule,
     FullCalendarModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ViewNoteComponent]
 })
 export class AppModule { }
