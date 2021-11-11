@@ -30,7 +30,7 @@ export class CalendarComponent implements OnInit, OnDestroy
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
     },
     initialView: 'dayGridMonth',
-    weekends: true,
+    weekends: this.showWeekends,
     editable: true,
     selectable: true,
     selectMirror: true,
@@ -103,17 +103,26 @@ export class CalendarComponent implements OnInit, OnDestroy
   handleEventClick(clickInfo: EventClickArg): void
   {
     const event = clickInfo.event;
+    const extended = event.extendedProps.ofType;
+    // console.log('Event clicked ID: ' + event.id + ' ofType: ' + extended);
     // alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
-    const n: Note = new Note();
-    n.id = '10';
-    n.title = 'Note Created';
-    n.description = 'A Note specially created to test the ViewNoteComponent dialog.';
-    this.openDialog(n);
+
+    if (extended === this.calService.EVENT_TYPE_NOTE) {
+      const fn = this.calService.getNote(event.id);
+      if (fn.found && fn.note) {
+        this.openDialog(fn.note);
+      }
+    } else if (extended === this.calService.EVENT_TYPE_TODO) {
+      const ft = this.calService.getTodo(event.id);
+      if (ft.found && ft.todo) {
+        console.log('Todo to Display: ', ft.todo);
+      }
+    }
   }
 
   handleDidMountEvent(info: MountArg<EventContentArg>): void
   {
-    console.log('DisMount got FIRED...');
+    // console.log('DisMount got FIRED...');
     /*var tooltip = new Tooltip(info.el, {
       title: info.event.extendedProps.description,
       placement: 'top',
@@ -124,7 +133,8 @@ export class CalendarComponent implements OnInit, OnDestroy
 
   handleWeekendsToggle(): void
   {
-    this.calendarOptions.weekends = !this.calendarOptions.weekends;
+    this.showWeekends = !this.showWeekends;
+    this.calendarOptions.weekends = this.showWeekends; // !this.calendarOptions.weekends;
 
     return;
   }
@@ -132,13 +142,13 @@ export class CalendarComponent implements OnInit, OnDestroy
   // EVENTS - handleEvents
   handleEvents(events: EventApi[]): void
   {
-    console.log('Handle EVENT Called');
+    // console.log('Handle EVENT Called');
     this.currentEvents = events;
     // console.log(this.currentEvents);
 
     this.getSelectedDaysEvents(new Date());
 
-    console.log(this.selectedDayEvents);
+    // console.log(this.selectedDayEvents);
     this.cd.detectChanges();
   }
 

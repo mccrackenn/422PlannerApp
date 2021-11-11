@@ -9,7 +9,7 @@ export class Note {
     endDate: Date;
 
     constructor() {
-        this.id = "";
+        this.id = '';
         this.title = '';
         this.description = '';
         this.createdDate = new Date();

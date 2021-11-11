@@ -1,7 +1,7 @@
 import { ToDoItem } from './toDoItem';
 
 export class ToDo {
-    id: number;
+    id: string;
     todoTitle: string;
     createdDate: Date;
     startDate: Date;    // Date with earliest ToDoItem - by default it will be today's date
@@ -9,7 +9,7 @@ export class ToDo {
     listOfItems: ToDoItem[];
 
     constructor(title?: string) {
-        this.id = -1;
+        this.id = '-1';
         if (title) {
             this.todoTitle = title;
         } else {

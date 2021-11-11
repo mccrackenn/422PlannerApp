@@ -6,6 +6,8 @@ import { Note } from '../models/note';
 import { EventInput } from '@fullcalendar/core';
 import { ToDo } from '../models/toDo';
 import { ToDoItem } from '../models/toDoItem';
+import { FoundNote } from '../models/foundNote';
+import { FoundTodo } from '../models/foundTodo';
 
 // import { HttpHeaders, HttpClient } from '@angular/common/http';
 
@@ -17,6 +19,8 @@ export class CalendarService
 {
 
   private calItems: Array<CalendarItem> = [];
+  EVENT_TYPE_NOTE = 'N';
+  EVENT_TYPE_TODO = 'T';
 
   constructor(private noteService: NotesServices) { }
 
@@ -28,17 +32,17 @@ export class CalendarService
 
     const notes: Note[] = [
       {
-        id: '1', title: '422 Notes', description: 'Notes for 422',
+        id: '11', title: '422 Notes', description: 'Notes for 422',
         createdDate: new Date(2021, 10, 5),
         startDate: new Date(2021, 11, 10), endDate: new Date(2021, 11, 15)
       },
       {
-        id: '2', title: '10 Day Note', description: 'Note for 10 days',
+        id: '12', title: '10 Day Note', description: 'Note for 10 days',
         createdDate: new Date(2021, 9, 18),
         startDate: new Date(2021, 10, 15), endDate: new Date(2021, 10, 25)
       },
       {
-        id: '3', title: 'Date Issue Note', description: 'Dates Issue',
+        id: '13', title: 'Date Issue Note', description: 'Dates Issue',
         createdDate: new Date(2021, 9, 18),
         startDate: new Date('11-1-2021'), endDate: new Date('11-10-2021')
       }
@@ -51,6 +55,26 @@ export class CalendarService
 
     this.calItems.push(c1);
     this.calItems.push(c2);
+  }
+
+  // Try to retrieve the clicked Note from calendarItems by passing the note id
+  getNote(id: string): FoundNote {
+    let ret: FoundNote = new FoundNote();
+    this.calItems.forEach(item => {
+      ret = item.getNote(id);
+    });
+
+    return ret;
+  }
+
+  // Try to retrieve the clicked ToDo from calendarItems by passing the todo id
+  getTodo(id: string): FoundTodo {
+    let ret: FoundTodo = new FoundTodo();
+    this.calItems.forEach(item => {
+      ret = item.getTodo(id);
+    });
+
+    return ret;
   }
 
   // Get CalendarItems for specified month as an Array
@@ -72,12 +96,12 @@ export class CalendarService
 
     let notes: Note[] = [];
     this.getNotesOfMonth(monthNumber).subscribe(n => notes = n); // Array<Note>
-    console.log('In getNotesOfMonthAsEvents - month' + monthNumber + ' Notes = ' );
-    console.log(notes);
+    // console.log('In getNotesOfMonthAsEvents - month ' + monthNumber + ' Notes = ' );
+    // console.log(notes);
     notes.forEach(note =>
     {
       const n = this.createNoteAsEventObject(note);
-      console.log('Converted to Event ' + n.stringObj);
+      // console.log('Converted to Event ' + n.stringObj);
       event.push(n);
     });
 
@@ -144,7 +168,7 @@ export class CalendarService
   {
     const todos: ToDo[] = [
       {
-        id: 1, todoTitle: 'ToDo 1', createdDate: new Date('11-6-2021'),
+        id: '1', todoTitle: 'ToDo 1', createdDate: new Date('11-6-2021'),
         startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021'),
         listOfItems: [{
           id: 101, title: 'Task 1', createdDate: new Date('11-6-2021'),
@@ -157,7 +181,7 @@ export class CalendarService
         ]
       },
       {
-        id: 2, todoTitle: 'ToDo 2', createdDate: new Date('11-6-2021'),
+        id: '2', todoTitle: 'ToDo 2', createdDate: new Date('11-6-2021'),
         startDate: new Date('11-7-2021'), endDate: new Date('11-9-2021'),
         listOfItems: [{
           id: 105, title: 'Task 11', createdDate: new Date('11-6-2021'),
@@ -181,7 +205,7 @@ export class CalendarService
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
     return {
       id: note.id.toString(), title: note.title, start: startStr,
-      end: note.endDate.toISOString()
+      end: note.endDate.toISOString(), ofType: this.EVENT_TYPE_NOTE
     };
   }
 
@@ -192,7 +216,7 @@ export class CalendarService
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
     return {
       id: todo.id.toString(), title: todo.todoTitle, start: startStr,
-      end: todo.endDate.toISOString()
+      end: todo.endDate.toISOString(), ofType: this.EVENT_TYPE_TODO
     };
   }
 
