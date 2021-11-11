@@ -15,6 +15,17 @@ router.get("", (req, res, next) => {
   });
 });
 
+router.get("/:id", (req, res, next) => {
+  console.log(req.params.id);
+  Note.findById(req.params.id).then((note) => {
+    if (note) {
+      res.status(200).json(note);
+    } else {
+      res.status(404).json({ message: "Note not found" });
+    }
+  });
+});
+
 router.post("", (req, res, next) => {
   const newNote = new Note({
     title: req.body.title,

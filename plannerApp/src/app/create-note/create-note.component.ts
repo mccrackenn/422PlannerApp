@@ -1,25 +1,65 @@
+import { not } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { NotesServices } from '../services/notes.services';
+import { Note } from '../models/note';
 
 @Component({
   selector: 'app-create-note',
   templateUrl: './create-note.component.html',
-  styleUrls: ['./create-note.component.css']
+  styleUrls: ['./create-note.component.css'],
 })
 export class CreateNoteComponent implements OnInit {
+  private postId: string | null | undefined;
+  private mode: string = '';
+  note?: Note;
+  form!: FormGroup;
 
-  private postId:string | null=null;
+  constructor(
+    public route: ActivatedRoute,
+    public notesService: NotesServices
+  ) {}
 
-  constructor(public route:ActivatedRoute) { }
+  ngOnInit() {
+    this.form = new FormGroup({
+      title: new FormControl(null, { validators: [Validators.required] }),
+      description: new FormControl(null, { validators: [Validators.required] }),
+      startDate: new FormControl(null, { validators: [Validators.required] }),
+      endDate: new FormControl(null, { validators: [Validators.required] }),
+      createdDate: new FormControl(null, { validators: [Validators.required] }),
+    });
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((paramMap:ParamMap)=>{
-      if(paramMap.has('noteId')){
-        console.log('hello');
-        this.postId=paramMap.get('noteId')
-        console.log(this.postId)
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      if (paramMap.has('noteId')) {
+        this.mode = 'edit';
+        this.postId = paramMap.get('noteId');
+        console.log(this.postId);
+        this.notesService.getNote(this.postId!).subscribe((responseData) => {
+          console.log(typeof responseData.createdDate);
+          this.note = {
+            id: responseData.id,
+            title: responseData.title,
+            description: responseData.description,
+            startDate: responseData.startDate,
+            endDate: responseData.endDate,
+            createdDate: responseData.createdDate,
+          };
+          this.form.setValue({
+            title: this.note.title,
+            description: this.note.description,
+            startDate: this.note.startDate,
+            endDate: this.note.endDate,
+            createdDate: this.note.createdDate,
+          });
+          console.log(typeof this.note?.createdDate);
+        });
+        // console.log(this.note);
+        // this.form.setValue({
+        //   title: this.note?.title,
+        //   description: this.note?.description,
+        //   startDate: this.note?.createdDate.toDateString()
       }
-    })
+    });
   }
-
 }
