@@ -12,20 +12,16 @@ import { FoundTodo } from '../models/foundTodo';
 // import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
-export class CalendarService
-{
-
+export class CalendarService {
   private calItems: Array<CalendarItem> = [];
   EVENT_TYPE_NOTE = 'N';
   EVENT_TYPE_TODO = 'T';
 
-  constructor(private noteService: NotesServices) { }
+  constructor(private noteService: NotesServices) {}
 
-  private populateCalItems(): void
-  {
+  private populateCalItems(): void {
     let c1 = new CalendarItem();
     c1 = c1.createCalendarItem(1, new Date(2021, 11, 4));
     // c1.listOfNotes = this.noteService.getNotes();
@@ -34,18 +30,21 @@ export class CalendarService
       {
         id: '11', title: '422 Notes', description: 'Notes for 422',
         createdDate: new Date(2021, 10, 5),
-        startDate: new Date(2021, 11, 10), endDate: new Date(2021, 11, 15)
+        startDate: new Date(2021, 11, 10),
+        endDate: new Date(2021, 11, 15),
       },
       {
         id: '12', title: '10 Day Note', description: 'Note for 10 days',
         createdDate: new Date(2021, 9, 18),
-        startDate: new Date(2021, 10, 15), endDate: new Date(2021, 10, 25)
+        startDate: new Date(2021, 10, 15),
+        endDate: new Date(2021, 10, 25),
       },
       {
         id: '13', title: 'Date Issue Note', description: 'Dates Issue',
         createdDate: new Date(2021, 9, 18),
-        startDate: new Date('11-1-2021'), endDate: new Date('11-10-2021')
-      }
+        startDate: new Date('11-1-2021'),
+        endDate: new Date('11-10-2021'),
+      },
     ];
 
     let c2 = new CalendarItem();
@@ -78,20 +77,19 @@ export class CalendarService
   }
 
   // Get CalendarItems for specified month as an Array
-  getCalendarItemsOfMonth(monthNumber: number): Observable<CalendarItem[]>
-  {
-    if (this.calItems.length === 0)
-    {
+  getCalendarItemsOfMonth(monthNumber: number): Observable<CalendarItem[]> {
+    if (this.calItems.length === 0) {
       this.populateCalItems();
     }
 
-    const itemForMonth = this.calItems.filter(item => item.date.getMonth() === monthNumber);
+    const itemForMonth = this.calItems.filter(
+      (item) => item.date.getMonth() === monthNumber
+    );
 
     return of(itemForMonth);
   }
 
-  getNotesOfMonthAsEvents(monthNumber: number): EventInput[]
-  {
+  getNotesOfMonthAsEvents(monthNumber: number): EventInput[] {
     const event: EventInput[] = [];
 
     let notes: Note[] = [];
@@ -109,19 +107,15 @@ export class CalendarService
   }
 
   // Get Notes for specified month as Array<Note>
-  getNotesOfMonth(monthNumber: number): Observable<Note[]>
-  {
-    if (this.calItems.length === 0)
-    {
+  getNotesOfMonth(monthNumber: number): Observable<Note[]> {
+    if (this.calItems.length === 0) {
       this.populateCalItems();
     }
 
     const notes = new Array<Note>();
 
-    this.calItems.forEach(element =>
-    {
-      if (element.listOfNotes.length > 0)
-      {
+    this.calItems.forEach((element) => {
+      if (element.listOfNotes.length > 0) {
         notes.push(...element.listOfNotes);
       }
     });
@@ -129,14 +123,12 @@ export class CalendarService
     return of(notes);
   }
 
-  getToDosOfMonthAsEvents(monthNumber: number): EventInput[]
-  {
+  getToDosOfMonthAsEvents(monthNumber: number): EventInput[] {
     const event: EventInput[] = [];
 
     const todos: ToDo[] = this.getToDosOfMonth(monthNumber);
 
-    todos.forEach(todo =>
-    {
+    todos.forEach((todo) => {
       event.push(this.createToDoAsEventObject(todo));
     });
 
@@ -144,19 +136,15 @@ export class CalendarService
   }
 
   // Get ToDos for specified month as Array<ToDo>
-  getToDosOfMonth(monthNumber: number): ToDo[]
-  {
-    if (this.calItems.length === 0)
-    {
+  getToDosOfMonth(monthNumber: number): ToDo[] {
+    if (this.calItems.length === 0) {
       this.populateCalItems();
     }
 
     const todos = new Array<ToDo>();
 
-    this.calItems.forEach(element =>
-    {
-      if (element.listOfToDos.length > 0)
-      {
+    this.calItems.forEach((element) => {
+      if (element.listOfToDos.length > 0) {
         todos.push(...element.listOfToDos);
       }
     });
@@ -164,8 +152,7 @@ export class CalendarService
     return todos;
   }
 
-  getInitialToDos(): Array<ToDo>
-  {
+  getInitialToDos(): Array<ToDo> {
     const todos: ToDo[] = [
       {
         id: '1', todoTitle: 'ToDo 1', createdDate: new Date('11-6-2021'),
@@ -198,21 +185,22 @@ export class CalendarService
     return todos;
   }
 
-  private createNoteAsEventObject(note: Note): any
-  {
+  private createNoteAsEventObject(note: Note): any {
     const offsetInMins = 2 * 60;
     const startStr = new Date(note.startDate.getTime() + offsetInMins * 60000).toISOString();
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
+
     return {
       id: note.id.toString(), title: note.title, start: startStr,
       end: note.endDate.toISOString(), ofType: this.EVENT_TYPE_NOTE
     };
   }
 
-  private createToDoAsEventObject(todo: ToDo): any
-  {
+  private createToDoAsEventObject(todo: ToDo): any {
     const offsetInMins = 2 * 60;
-    const startStr = new Date(todo.startDate.getTime() + offsetInMins * 60000).toISOString();
+    const startStr = new Date(
+      todo.startDate.getTime() + offsetInMins * 60000
+    ).toISOString();
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
     return {
       id: todo.id.toString(), title: todo.todoTitle, start: startStr,
@@ -222,19 +210,15 @@ export class CalendarService
 
   // Not Used currently
   // Get Notes for specified month as JSON Object of arrays
-  getNotesOfMonthAsJSON(monthNumber: number): any
-  {
-    if (this.calItems.length === 0)
-    {
+  getNotesOfMonthAsJSON(monthNumber: number): any {
+    if (this.calItems.length === 0) {
       this.populateCalItems();
     }
 
     const notes = new Array<Note>();
 
-    this.calItems.forEach(element =>
-    {
-      if (element.listOfNotes.length > 0)
-      {
+    this.calItems.forEach((element) => {
+      if (element.listOfNotes.length > 0) {
         notes.push(...element.listOfNotes);
       }
     });
@@ -246,6 +230,4 @@ export class CalendarService
 
     return stringObj;
   }
-
-
 }

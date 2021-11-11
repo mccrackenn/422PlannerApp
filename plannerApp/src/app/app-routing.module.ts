@@ -8,17 +8,17 @@ import { ToDosComponent } from './to-dos/to-dos.component';
 import { CalendarComponent } from './calendar/calendar.component';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent},
-  { path: 'notes', component: NotesComponent},
-  { path: 'create-note/:noteId', component: CreateNoteComponent},
-  { path: 'to-dos', component: ToDosComponent},
-  { path: 'home', component: CalendarComponent }
+  { path: '', component: LoginComponent },
+  { path: 'notes', component: NotesComponent },
+  { path: 'edit/:noteId', component: CreateNoteComponent },
+  { path: 'to-dos', component: ToDosComponent },
+  { path: 'home', component: CalendarComponent },
 
   // Add More Routes
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
