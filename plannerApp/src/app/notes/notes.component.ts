@@ -20,9 +20,10 @@ export class NotesComponent implements OnInit {
   constructor(private notesService: NotesServices) {}
 
   ngOnInit(): void {
-    this.notesService.getNotes();
+    this.notesService.getNotes()
+      .subscribe(notes => this.notes = notes);
     this.notesSub = this.notesService
-      .getHeroesUpdateListener()
+      .getNotesUpdateListener()
       .subscribe((notes: Note[]) => {
         this.notes = notes;
       });
