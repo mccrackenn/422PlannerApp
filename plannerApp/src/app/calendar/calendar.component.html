@@ -16,8 +16,9 @@
 
         <div class='cal-page-sidebar-section'>
             <label>
-              <mat-checkbox value="this.calendarOptions.weekends" 
-                (change)='handleWeekendsToggle()' color='primary' >
+              <mat-checkbox [checked]="showWeekends" 
+                (change)='handleWeekendsToggle()'  
+                color='primary' >
               </mat-checkbox>
               <!-- <input
                 type='checkbox' 

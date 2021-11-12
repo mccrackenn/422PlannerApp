@@ -20,6 +20,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CalendarService } from '../services/calendar.service';
 import { ViewNoteComponent } from '../dialogs/view-note/view-note.component';
 import { Note } from '../models/note';
+import { ToDo } from '../models/toDo';
+import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
 
 @Component({
   selector: 'app-calendar',
@@ -31,6 +33,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
+  showWeekends  = true;
 
   // Calendar Options
   calendarOptions: CalendarOptions = {
@@ -40,7 +43,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
     },
     initialView: 'dayGridMonth',
-    weekends: true,
+    weekends: this.showWeekends,
     editable: true,
     selectable: true,
     selectMirror: true,
@@ -99,7 +102,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   // Date Select
   handleDateSelect(selectInfo: DateSelectArg): void {
     const calendarApi = selectInfo.view.calendar;
-    console.log(
+    /* console.log(
       'Selected Date: All Day: ' +
         selectInfo.allDay +
         ' Start: ' +
@@ -110,29 +113,37 @@ export class CalendarComponent implements OnInit, OnDestroy {
         selectInfo.view.title +
         ', ' +
         selectInfo.view.type
-    );
+    ); */
     calendarApi.unselect();
   }
 
   // Date Click
   handleDateClick(arg: any): void {
-    alert('Date clicked: ' + arg.dateStr);
+    // alert('Date clicked: ' + arg.dateStr);
   }
 
   // Event Click
   handleEventClick(clickInfo: EventClickArg): void {
     const event = clickInfo.event;
-    // alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
-    const n: Note = new Note();
-    n.id = '10';
-    n.title = 'Note Created';
-    n.description =
-      'A Note specially created to test the ViewNoteComponent dialog.';
-    this.openDialog(n);
+    const extended = event.extendedProps.ofType;
+
+    if (extended === this.calService.EVENT_TYPE_NOTE) {
+      const fn = this.calService.getNote(event.id);
+      if (fn.found && fn.note) {
+        this.openNoteDialog(fn.note);
+      }
+    }
+    else if (extended === this.calService.EVENT_TYPE_TODO) {
+      const ft = this.calService.getTodo(event.id);
+      if (ft.found && ft.todo) {
+        this.openTodoDialog(ft.todo);
+      }
+    }
   }
 
-  handleDidMountEvent(info: MountArg<EventContentArg>): void {
-    console.log('DisMount got FIRED...');
+  handleDidMountEvent(info: MountArg<EventContentArg>): void
+  {
+    // console.log('DisMount got FIRED...');
     /*var tooltip = new Tooltip(info.el, {
       title: info.event.extendedProps.description,
       placement: 'top',
@@ -141,21 +152,23 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });*/
   }
 
-  handleWeekendsToggle(): void {
-    this.calendarOptions.weekends = !this.calendarOptions.weekends;
+  handleWeekendsToggle(): void
+  {
+    this.showWeekends = !this.showWeekends;
+    this.calendarOptions.weekends = this.showWeekends;
 
     return;
   }
 
   // EVENTS - handleEvents
-  handleEvents(events: EventApi[]): void {
-    console.log('Handle EVENT Called');
+  handleEvents(events: EventApi[]): void
+  {
     this.currentEvents = events;
     // console.log(this.currentEvents);
 
     this.getSelectedDaysEvents(new Date());
 
-    console.log(this.selectedDayEvents);
+    // console.log(this.selectedDayEvents);
     this.cd.detectChanges();
   }
 
@@ -179,11 +192,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDialog(n: Note): void {
-    const dlgConfig = new MatDialogConfig();
-    dlgConfig.disableClose = true;
-    dlgConfig.autoFocus = false;
-    dlgConfig.role = 'dialog';
+  openNoteDialog(n: Note): void {
+    const dlgConfig = this.getDialogConfig();
     dlgConfig.data = {
       note: n,
     };
@@ -194,14 +204,46 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const dlgRef = this.dialog.open(ViewNoteComponent, dlgConfig);
     dlgRef
       .afterClosed()
-      .subscribe((data) => console.log('Dialog output: ', data));
+      .subscribe((data) => {
+        if (data === 'edit') {
+          // Navigate to Note-Edit passing note.id
+          alert('Navigate to Note-Edit passing note.id');
+        }
+      });
+
+    return;
   }
 
-  constructor(
-    private calService: CalendarService,
-    private cd: ChangeDetectorRef,
-    private dialog: MatDialog
-  ) {}
+  openTodoDialog(t: ToDo): void {
+    const dlgConfig = this.getDialogConfig();
+    dlgConfig.data = {
+      todo: t,
+    };
+
+    const dlgRef = this.dialog.open(ViewTodoComponent, dlgConfig);
+    dlgRef.afterClosed()
+    .subscribe((data) => {
+      if (data === 'edit') {
+        // Navigate to Todo-Edit passing todo.id
+        alert('Navigate to Todo-Edit passing todo.id');
+      }
+    });
+
+    return;
+  }
+
+  private getDialogConfig(): MatDialogConfig {
+    const dlgConfig = new MatDialogConfig();
+    dlgConfig.disableClose = true;
+    dlgConfig.autoFocus = false;
+    dlgConfig.role = 'dialog';
+
+    return dlgConfig;
+  }
+
+  constructor(private calService: CalendarService,
+              private cd: ChangeDetectorRef,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {}
 

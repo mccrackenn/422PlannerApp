@@ -33,6 +33,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 import { CalendarComponent } from './calendar/calendar.component';
 import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
+import { ViewTodoComponent } from './dialogs/view-todo/view-todo.component';
 
 import { SignInComponent}  from './login/login.component'; 
 import { GoogleSigninComponent }  from './google.signin';
@@ -57,6 +58,7 @@ FullCalendarModule.registerPlugins([
     ToDosComponent,
     CalendarComponent,
     ViewNoteComponent,
+    ViewTodoComponent,
     GoogleSigninComponent,
     SignInComponent,
     LoginComponent,
