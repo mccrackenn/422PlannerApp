@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscriber, Subscription, Observable } from 'rxjs';
 import { Note } from 'src/app/models/note';
-
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -17,19 +17,13 @@ export class NotesServices {
     public router: Router,
     public route: ActivatedRoute,
     public httpClient: HttpClient
-  ) { }
+  ) {}
 
-  getNotes()
-  {
-    // Using the spread opertor to return a copy of the array, not the original array
-    this.httpClient.get<Note[]>('http://localhost:3000/api/notes')
-      .subscribe(
-        responseData =>
-        {
-          console.log(responseData);
-          this.notes = responseData;
-          this.notesUpdated.next([...this.notes]);
-        });
+  getNotes(): Observable<Note[]> {
+    return this.httpClient
+      .get<Note[]>('http://localhost:3000/api/notes')
+      //Using pipe & map so I can have a local copy of the note array,without it Delete and Add elements don't show up initially without refresh
+      .pipe(map((notes) => (this.notes = notes)));
   }
 
   addNote(note: Note) {
@@ -49,8 +43,9 @@ export class NotesServices {
         };
         console.log(newNote);
         this.notes.push(newNote);
+        console.log(this.notes);
         this.notesUpdated.next([...this.notes]);
-        // this.router.navigate(['/notes']).then(() => window.location.reload())
+        this.router.navigate(['/notes']).then(() => window.location.reload());
       });
   }
 
@@ -58,6 +53,7 @@ export class NotesServices {
     this.httpClient
       .delete('http://localhost:3000/api/notes/' + noteId)
       .subscribe(() => {
+        console.log(this.notes);
         const updatedNotes = this.notes.filter((note) => note.id !== noteId);
         console.log(updatedNotes);
         this.notes = updatedNotes;
@@ -66,12 +62,10 @@ export class NotesServices {
       });
   }
 
-  getHeroesUpdateListener()
-  {
+  getNotesUpdateListener() {
     return this.notesUpdated.asObservable();
   }
 
-  
   getNote(id: string) {
     return this.httpClient.get<Note>('http://localhost:3000/api/notes/' + id);
     // console.log(`Note is ${id}`)

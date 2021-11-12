@@ -26,6 +26,11 @@ export class CalendarService {
     c1 = c1.createCalendarItem(1, new Date(2021, 11, 4));
     // c1.listOfNotes = this.noteService.getNotes();
 
+    //Code we experimented with during 11/11 meeting
+    //this.noteService.getNotes().subscribe((notes) => (c1.listOfNotes = notes));
+    //console.log(c1.listOfNotes);
+    //c1.listOfNotes = notesA
+
     const notes: Note[] = [
       {
         id: '11', title: '422 Notes', description: 'Notes for 422',
