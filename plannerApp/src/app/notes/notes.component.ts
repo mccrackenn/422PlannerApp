@@ -20,8 +20,7 @@ export class NotesComponent implements OnInit {
   constructor(private notesService: NotesServices) {}
 
   ngOnInit(): void {
-    this.notesService.getNotes()
-      .subscribe(notes => this.notes = notes);
+    this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
     this.notesSub = this.notesService
       .getNotesUpdateListener()
       .subscribe((notes: Note[]) => {
@@ -56,7 +55,6 @@ export class NotesComponent implements OnInit {
     // console.log(this.createNoteForm.value.start)
     // console.log(this.createNoteForm.value.end)
   }
-
 
   date(e: any) {
     const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
