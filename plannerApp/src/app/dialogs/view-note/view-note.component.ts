@@ -14,7 +14,6 @@ export class ViewNoteComponent implements OnInit {
   constructor(private dlgRef: MatDialogRef<ViewNoteComponent>,
               @Inject(MAT_DIALOG_DATA) data: any) {
                 this.note = data.note;
-                console.log('Received Note: ' + this.note);
               }
 
   ngOnInit(): void {

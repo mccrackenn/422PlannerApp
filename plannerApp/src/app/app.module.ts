@@ -33,6 +33,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 import { CalendarComponent } from './calendar/calendar.component';
 import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
+import { ViewTodoComponent } from './dialogs/view-todo/view-todo.component';
 
 // Register FullCalendar plugins
 FullCalendarModule.registerPlugins([
@@ -52,7 +53,8 @@ FullCalendarModule.registerPlugins([
     CreateNoteComponent,
     ToDosComponent,
     CalendarComponent,
-    ViewNoteComponent
+    ViewNoteComponent,
+    ViewTodoComponent
   ],
   imports: [
     BrowserModule,
