@@ -12,8 +12,7 @@ export class LoginComponent {
 
 @Component({
   selector: 'signin',
-  template: `<h1>{{title}} </h1>
-   <google-signin></google-signin>`
+  template: `<google-signin></google-signin>`
 })
 export class SignInComponent {
   title     = "signin page";

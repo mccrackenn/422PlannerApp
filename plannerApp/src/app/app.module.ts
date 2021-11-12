@@ -34,6 +34,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
 
+import { SignInComponent}  from './login/login.component'; 
+import { GoogleSigninComponent }  from './google.signin';
+import { LogoutComponent } from './logout/logout.component';
+
 // Register FullCalendar plugins
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -52,7 +56,11 @@ FullCalendarModule.registerPlugins([
     CreateNoteComponent,
     ToDosComponent,
     CalendarComponent,
-    ViewNoteComponent
+    ViewNoteComponent,
+    GoogleSigninComponent,
+    SignInComponent,
+    LoginComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +79,8 @@ FullCalendarModule.registerPlugins([
     MatCheckboxModule,
     MatDialogModule,
     FullCalendarModule,
-    HttpClientModule
+    HttpClientModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent],
