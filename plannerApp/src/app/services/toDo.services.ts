@@ -66,7 +66,12 @@ export class ToDoServices
                 //this.router.navigate(['/toDos']).then(() => window.location.reload())
           });
     }
-
+    getToDo(id: string) {
+        return this.httpClient.get<ToDo>('http://localhost:3000/api/todos/' + id);
+        //console.log(`ToDo is ${id}`)
+        //const returnToDo = this.toDos.find(toDo => toDo.id === id)
+        //console.log(`getToDo return an id of-${id}`)
+    }
     getToDosUpdateListener()
     {
         return this.toDosUpdated.asObservable()

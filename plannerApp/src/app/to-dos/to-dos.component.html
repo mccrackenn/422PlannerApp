@@ -1,15 +1,65 @@
 <mat-card class="card">
-    <mat-card-title>ToDos</mat-card-title>
+    <mat-card-title>Search ToDos</mat-card-title>
+    <!--implement search by date here-->
     <mat-form-field>
-        <input matInput [matDatepicker]="todoDatePicker" placeholder="Choose a date">
+        <input matInput [matDatepicker]="todoDatePicker" placeholder="This does nothing">
         <mat-datepicker-toggle matSuffix [for]="todoDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #todoDatePicker></mat-datepicker>
     </mat-form-field>
 </mat-card>
 <mat-card class="card">
     <app-todo-item
-      *ngFor="let toDoEl of toDos; let i = index"
-      [toDo]="toDoEl"
-      [index]="i"
+        *ngFor="let toDoEl of toDos; let i = index"
+        [toDo]="toDoEl"
+        [index]="i"
     ></app-todo-item>
+</mat-card>
+<mat-card class="card">
+    <h2>New ToDo</h2>
+    <form [formGroup]="createToDoForm" (submit)="submitNewToDo()">
+        <div>
+            <div>
+                <mat-form-field>
+                    <input
+                        matInput
+                        placeholder="Name"
+                        formControlName="title"
+                    />
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field>
+                    <mat-date-range-input [rangePicker]="pickerA">
+                        <input
+                            matStartDate
+                            placeholder="Start date"
+                            formControlName="startDate"
+                        />
+                        <input
+                            matEndDate
+                            placeholder="End date"
+                            formControlName="endDate"
+                        />
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle
+                        matSuffix
+                        [for]="pickerA"
+                    ></mat-datepicker-toggle>
+                    <mat-date-range-picker #pickerA></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <mat-form-field>
+                <textarea
+                    matInput
+                    cols="200"
+                    rows="10"
+                    formControlName="description"
+                    placeholder="description"
+                ></textarea>
+            </mat-form-field>
+        </div>
+        <button mat-raised-button color="primary" type="submit">Create</button>
+    </form>
 </mat-card>
