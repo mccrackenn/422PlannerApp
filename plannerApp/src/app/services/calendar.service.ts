@@ -160,27 +160,27 @@ export class CalendarService {
   getInitialToDos(): Array<ToDo> {
     const todos: ToDo[] = [
       {
-        id: '1', todoTitle: 'ToDo 1', createdDate: new Date('11-6-2021'),
+        id: '1', title: 'ToDo 1', description: 'td1 desc', createdDate: new Date('11-6-2021'),
         startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021'),
         listOfItems: [{
-          id: 101, title: 'Task 1', createdDate: new Date('11-6-2021'),
+          id: 101, description: 'id101 td1 desc', title: 'Task 1', createdDate: new Date('11-6-2021'),
           startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021')
         },
         {
-          id: 102, title: 'Task 2', createdDate: new Date('11-6-2021'),
+          id: 102, description: 'id102 td1 desc', title: 'Task 2', createdDate: new Date('11-6-2021'),
           startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021')
         }
         ]
       },
       {
-        id: '2', todoTitle: 'ToDo 2', createdDate: new Date('11-6-2021'),
+        id: '2', title: 'ToDo 2', description: 'td2 desc', createdDate: new Date('11-6-2021'),
         startDate: new Date('11-7-2021'), endDate: new Date('11-9-2021'),
         listOfItems: [{
-          id: 105, title: 'Task 11', createdDate: new Date('11-6-2021'),
+          id: 105, title: 'Task 11', description: 'id105 td2 desc', createdDate: new Date('11-6-2021'),
           startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021')
         },
         {
-          id: 106, title: 'Task 12', createdDate: new Date('11-6-2021'),
+          id: 106, title: 'Task 12', description: 'id106 td2 desc', createdDate: new Date('11-6-2021'),
           startDate: new Date('11-7-2021'), endDate: new Date('11-9-2021')
         }
         ]
@@ -208,7 +208,7 @@ export class CalendarService {
     ).toISOString();
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
     return {
-      id: todo.id.toString(), title: todo.todoTitle, start: startStr,
+      id: todo.id.toString(), title: todo.title, start: startStr,
       end: todo.endDate.toISOString(), ofType: this.EVENT_TYPE_TODO
     };
   }

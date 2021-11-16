@@ -18,6 +18,7 @@ import { NotesComponent } from './notes/notes.component';
 import { NoteItemComponent } from './notes/note-item/note-item.component';
 import { CreateNoteComponent } from './create-note/create-note.component';
 import { ToDosComponent } from './to-dos/to-dos.component';
+import { ToDoItemComponent } from './to-dos/todo-item/todo-item.component';
 
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -56,6 +57,7 @@ FullCalendarModule.registerPlugins([
     NoteItemComponent,
     CreateNoteComponent,
     ToDosComponent,
+    ToDoItemComponent,
     CalendarComponent,
     ViewNoteComponent,
     ViewTodoComponent,

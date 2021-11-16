@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const notesRoute = require("./routes/notes");
+const toDosRoute = require("./routes/toDos");
 
 app.use(express.json());
 
@@ -34,5 +35,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/notes", notesRoute);
+app.use("/api/todos", toDosRoute);
 
 module.exports = app;

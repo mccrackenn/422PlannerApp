@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, Subscriber, Subscription } from "rxjs";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, Subscriber, Subscription, Observable } from "rxjs";
 import { ToDo } from '../models/toDo';
-import { ToDoItem } from '../models/toDoItem';
+import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -12,9 +11,7 @@ import { ToDoItem } from '../models/toDoItem';
 
 export class ToDoServices
 {
-    private toDos: ToDo[] = [
-
-    ];
+    private toDos: ToDo[] = [];
 
     toDosUpdated = new Subject<ToDo[]>();
 
@@ -22,18 +19,52 @@ export class ToDoServices
         public router: Router,
         public route: ActivatedRoute,
         public httpClient: HttpClient
-    ) { };
+    ) {}
 
-    getToDos()
-    {
-    //Use the spread operator to return a copy of the array
-        this.httpClient.get<ToDo[]>('http://localhost:3000/api/todos').subscribe(
-        responseData =>
-        {
-            console.log(responseData)
-            this.toDos = responseData
-            this.toDosUpdated.next([...this.toDos])
-        })
+    getToDos(): Observable<ToDo[]> {
+        return this.httpClient
+          .get<ToDo[]>('http://localhost:3000/api/todos')
+          //Using pipe & map to keep a local copy of the todo array
+          //without it Delete and Add elements don't show up initially without refresh
+          .pipe(map((toDos) => (this.toDos = toDos)));
+      }
+
+    addToDo(toDo: ToDo) {
+        this.httpClient
+            .post<{ message: string; toDoId: string }>(
+            'http://localhost:3000/api/todos',
+            toDo
+            )
+        .subscribe((responseData) => {
+            const newToDo: ToDo = {
+                id: responseData.toDoId,
+                title: toDo.title,
+                description: toDo.description,
+                startDate: toDo.startDate,
+                endDate: toDo.endDate,
+                createdDate: toDo.createdDate,
+                //change??
+                listOfItems: toDo.listOfItems
+            };
+            console.log(newToDo);
+            this.toDos.push(newToDo);
+            console.log(this.toDos);
+            this.toDosUpdated.next([...this.toDos]);
+            this.router.navigate(['/todos']).then(() => window.location.reload());
+        });
+    }
+
+    deleteToDo(toDoId: string) {
+        this.httpClient
+            .delete('http://localhost:3000/api/todos/' + toDoId)
+            .subscribe(() => {
+                console.log(this.toDos);
+                const updatedToDos = this.toDos.filter((toDo) => toDo.id !== toDoId);
+                console.log(updatedToDos);
+                this.toDos = updatedToDos;
+                this.toDosUpdated.next([...this.toDos]);
+                //this.router.navigate(['/toDos']).then(() => window.location.reload())
+          });
     }
 
     getToDosUpdateListener()
