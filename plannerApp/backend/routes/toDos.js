@@ -3,7 +3,7 @@ const router = express.Router();
 const ToDo = require("../models/toDo");
 
 router.get("", (req, res, next) => {
-  Note.find().then((documents) => {
+  ToDo.find().then((documents) => {
     let returnedDocuments = [];
     //Don't want the returned Array to have a _id key, want id, this loops through
     //and replaces the it. Method is in the Mongoose Model
