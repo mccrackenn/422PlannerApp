@@ -10,7 +10,7 @@ import { CalendarComponent } from './calendar/calendar.component';
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'notes', component: NotesComponent },
-  { path: 'edit/:noteId', component: CreateNoteComponent },
+  { path: 'editNote/:noteId', component: CreateNoteComponent },
   { path: 'to-dos', component: ToDosComponent },
   { path: 'home', component: CalendarComponent },
 

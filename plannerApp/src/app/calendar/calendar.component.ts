@@ -22,6 +22,7 @@ import { ViewNoteComponent } from '../dialogs/view-note/view-note.component';
 import { Note } from '../models/note';
 import { ToDo } from '../models/toDo';
 import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar',
@@ -149,7 +150,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         if (data === 'edit') {
           // Navigate to Note-Edit passing note.id
-          alert('Navigate to Note-Edit passing note.id');
+          const url = '/editNote/' + n.id;
+          this.router.navigate([url ] );
         }
       });
 
@@ -185,7 +187,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   constructor(private calService: CalendarService,
               private cd: ChangeDetectorRef,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              private router: Router) { }
 
   ngOnInit(): void {
     /*this.calService.getNoteEvents1().subscribe((r) => {

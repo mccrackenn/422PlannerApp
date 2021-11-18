@@ -132,7 +132,7 @@ export class CalendarService {
     });
     return result;
   }
-  
+
 /*
   // Once TodoService provides the method to retrieve all ToDos, this is ready
   getToDoEvents(): Observable<Array<EventInput>> {
