@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { CalendarItem } from '../models/calendarItem';
 import { NotesServices } from './notes.services';
 import { Note } from '../models/note';
@@ -8,6 +8,7 @@ import { ToDo } from '../models/toDo';
 import { ToDoItem } from '../models/toDoItem';
 import { FoundNote } from '../models/foundNote';
 import { FoundTodo } from '../models/foundTodo';
+import { map } from 'rxjs/operators';
 
 // import { HttpHeaders, HttpClient } from '@angular/common/http';
 
@@ -16,6 +17,8 @@ import { FoundTodo } from '../models/foundTodo';
 })
 export class CalendarService {
   private calItems: Array<CalendarItem> = [];
+  private notes: Note[] = [];
+  private noteEvents: EventInput[] = [];
   EVENT_TYPE_NOTE = 'N';
   EVENT_TYPE_TODO = 'T';
 
@@ -26,10 +29,10 @@ export class CalendarService {
     c1 = c1.createCalendarItem(1, new Date(2021, 11, 4));
     // c1.listOfNotes = this.noteService.getNotes();
 
-    //Code we experimented with during 11/11 meeting
-    //this.noteService.getNotes().subscribe((notes) => (c1.listOfNotes = notes));
-    //console.log(c1.listOfNotes);
-    //c1.listOfNotes = notesA
+    // Code we experimented with during 11/11 meeting
+    // this.noteService.getNotes().subscribe((notes) => (c1.listOfNotes = notes));
+    // console.log(c1.listOfNotes);
+    // c1.listOfNotes = notesA
 
     const notes: Note[] = [
       {
@@ -64,11 +67,15 @@ export class CalendarService {
   // Try to retrieve the clicked Note from calendarItems by passing the note id
   getNote(id: string): FoundNote {
     let ret: FoundNote = new FoundNote();
-    this.calItems.forEach(item => {
-      ret = item.getNote(id);
-    });
-
-    return ret;
+    const a = this.notes.find(n => n.id === id);
+    if (a !== undefined) {
+      ret = { found: true, note: a };
+      return ret;
+    }
+    else {
+      ret = { found: false };
+      return ret;
+    }
   }
 
   // Try to retrieve the clicked ToDo from calendarItems by passing the todo id
@@ -92,6 +99,34 @@ export class CalendarService {
     );
 
     return of(itemForMonth);
+  }
+
+  getNoteEvents(): Observable<Array<EventInput>> {
+    const events: EventInput[] = [];
+    return this.noteService.getNotes().pipe(map((data: any) => {
+      data.forEach((note: Note) => {
+        const n = this.createNoteAsEventObject(note);
+        this.noteEvents.push(n);
+        this.notes.push(note);
+      });
+      return this.noteEvents;
+    }));
+  }
+
+  // Works equivalent to GetNotes() - this implementation uses Subjec<>
+  getNoteEvents1(): Observable<Array<EventInput>> {
+    const events: EventInput[] = [];
+    const result: Subject<Array<EventInput>> = new Subject<Array<EventInput>>();
+    this.noteService.getNotes().subscribe((data: any) => {
+      this.notes = data;
+      this.notes.forEach(note => {
+        const n = this.createNoteAsEventObject(note);
+        events.push(n);
+      });
+      result.next(events);
+      result.complete();
+    });
+    return result;
   }
 
   getNotesOfMonthAsEvents(monthNumber: number): EventInput[] {
@@ -192,12 +227,12 @@ export class CalendarService {
 
   private createNoteAsEventObject(note: Note): any {
     const offsetInMins = 2 * 60;
-    const startStr = new Date(note.startDate.getTime() + offsetInMins * 60000).toISOString();
+    const startStr = note.startDate; // new Date(note.startDate.getTime() + offsetInMins * 60000).toISOString();
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
 
     return {
       id: note.id.toString(), title: note.title, start: startStr,
-      end: note.endDate.toISOString(), ofType: this.EVENT_TYPE_NOTE
+      end: note.endDate, ofType: this.EVENT_TYPE_NOTE
     };
   }
 
