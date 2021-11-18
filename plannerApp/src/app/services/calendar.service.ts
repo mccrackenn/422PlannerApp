@@ -9,6 +9,7 @@ import { ToDoItem } from '../models/toDoItem';
 import { FoundNote } from '../models/foundNote';
 import { FoundTodo } from '../models/foundTodo';
 import { map } from 'rxjs/operators';
+import { ToDoServices } from './toDo.services';
 
 // import { HttpHeaders, HttpClient } from '@angular/common/http';
 
@@ -19,10 +20,13 @@ export class CalendarService {
   private calItems: Array<CalendarItem> = [];
   private notes: Note[] = [];
   private noteEvents: EventInput[] = [];
+  private todos: ToDo[] = [];
+  private todoEvents: EventInput[] = [];
   EVENT_TYPE_NOTE = 'N';
   EVENT_TYPE_TODO = 'T';
 
-  constructor(private noteService: NotesServices) {}
+  constructor(private noteService: NotesServices,
+              private todoService: ToDoServices) {}
 
   private populateCalItems(): void {
     let c1 = new CalendarItem();
@@ -128,6 +132,19 @@ export class CalendarService {
     });
     return result;
   }
+  
+/*
+  // Once TodoService provides the method to retrieve all ToDos, this is ready
+  getToDoEvents(): Observable<Array<EventInput>> {
+    return this.todoService.getToDos().pipe(map((data: any) => {
+      data.forEach((todo: ToDo) => {
+        const n = this.createToDoAsEventObject(todo);
+        this.todoEvents.push(n);
+        this.todos.push(todo);
+      });
+      return this.noteEvents;
+    }));
+  } */
 
   getNotesOfMonthAsEvents(monthNumber: number): EventInput[] {
     const event: EventInput[] = [];

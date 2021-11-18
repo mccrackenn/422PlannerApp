@@ -14,7 +14,7 @@ import {
   EventContentArg,
   MountArg,
 } from '@fullcalendar/angular';
-import { Subscription, observable } from 'rxjs';
+import { Subscription, observable, Observable } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { CalendarService } from '../services/calendar.service';
@@ -32,6 +32,7 @@ import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
 export class CalendarComponent implements OnInit, OnDestroy {
   private currentEvents: EventApi[] = [];
   private noteEvents: EventInput[] = [];
+  private todoEvents: EventInput[] = [];
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
@@ -187,12 +188,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
               private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.calService.getNoteEvents1().subscribe((r) => {
+    /*this.calService.getNoteEvents1().subscribe((r) => {
       this.noteEvents = r;
 
       this.initCalendarOptions();
       // this.cd.detectChanges();
-    });
+    });*/
+    this.getDataAsEvents();
+
   }
 
   private initCalendarOptions(): void {
@@ -244,7 +247,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           textColor: 'white',
         },
         {
-          events: this.calService.getToDosOfMonthAsEvents(11),
+          events: this.todoEvents, // calService.getToDosOfMonthAsEvents(11),
           color: 'green',
           borderColor: 'red',
         },
@@ -259,6 +262,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
     };
 
     return;
+  }
+
+  async getDataAsEvents(): Promise<void> {
+    this.noteEvents = await this.calService.getNoteEvents().toPromise();
+    this.todoEvents = await this.calService.getToDosOfMonthAsEvents(11);
+    console.log('Received ToDo ' + this.todoEvents.length);
+    this.initCalendarOptions();
   }
 
   ngOnDestroy(): void {
