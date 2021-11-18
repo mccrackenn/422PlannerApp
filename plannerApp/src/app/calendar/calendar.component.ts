@@ -28,76 +28,17 @@ import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
+
 export class CalendarComponent implements OnInit, OnDestroy {
   private currentEvents: EventApi[] = [];
+  private noteEvents: EventInput[] = [];
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
   showWeekends  = true;
 
   // Calendar Options
-  calendarOptions: CalendarOptions = {
-    headerToolbar: {
-      left: 'prev,next,today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-    },
-    initialView: 'dayGridMonth',
-    weekends: this.showWeekends,
-    editable: true,
-    selectable: true,
-    selectMirror: true,
-    dayMaxEvents: true,
-    timeZone: 'local',
-    eventSources: [
-      {
-        events: this.calService.getNotesOfMonthAsEvents(11),
-        color: 'yellow',
-        textColor: 'black',
-        borderColor: 'blue',
-        // backgroundColor: 'yellow'
-      },
-      {
-        events: [
-          {
-            title: '422 Meeting',
-            start: '2021-11-06T21:26:48.703Z',
-            end: '2021-11-06T08:00:00.000Z',
-            id: '2',
-            interactive: true,
-          },
-          {
-            title: 'ASC',
-            start: '2021-11-05T21:26:48.703Z',
-            end: '2021-11-06T21:26:48.703Z',
-            editable: true,
-          },
-        ],
-        // backgroundColor: 'gray',
-        color: 'lavendar',
-        textColor: 'black',
-        borderColor: 'green',
-        editable: true,
-      },
-      {
-        events: this.getEvents(),
-        color: 'gray',
-        textColor: 'white',
-      },
-      {
-        events: this.calService.getToDosOfMonthAsEvents(11),
-        color: 'green',
-        borderColor: 'red',
-      },
-    ],
-    select: this.handleDateSelect.bind(this),
-    dateClick: this.handleDateClick.bind(this),
-    eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this),
-    eventDidMount: this.handleDidMountEvent.bind(this),
-    eventDisplay: 'block',
-    eventInteractive: true,
-  };
+  calendarOptions: CalendarOptions = {};
 
   // Date Select
   handleDateSelect(selectInfo: DateSelectArg): void {
@@ -245,7 +186,80 @@ export class CalendarComponent implements OnInit, OnDestroy {
               private cd: ChangeDetectorRef,
               private dialog: MatDialog) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.calService.getNoteEvents1().subscribe((r) => {
+      this.noteEvents = r;
+
+      this.initCalendarOptions();
+      // this.cd.detectChanges();
+    });
+  }
+
+  private initCalendarOptions(): void {
+    this.calendarOptions = {
+      headerToolbar: {
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+      },
+      initialView: 'dayGridMonth',
+      weekends: this.showWeekends,
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      dayMaxEvents: true,
+      timeZone: 'local',
+      eventSources: [
+        {
+          events: this.noteEvents,
+          color: 'yellow',
+          textColor: 'black',
+          borderColor: 'blue',
+        },
+        {
+          events: [
+            {
+              title: '422 Meeting',
+              start: '2021-11-06T21:26:48.703Z',
+              end: '2021-11-06T08:00:00.000Z',
+              id: '2',
+              interactive: true,
+            },
+            {
+              title: 'ASC',
+              start: '2021-11-05T21:26:48.703Z',
+              end: '2021-11-06T21:26:48.703Z',
+              editable: true,
+            },
+          ],
+          // backgroundColor: 'gray',
+          color: 'lavendar',
+          textColor: 'black',
+          borderColor: 'green',
+          editable: true,
+        },
+        {
+          events: this.getEvents(),
+          color: 'gray',
+          textColor: 'white',
+        },
+        {
+          events: this.calService.getToDosOfMonthAsEvents(11),
+          color: 'green',
+          borderColor: 'red',
+        },
+      ],
+      select: this.handleDateSelect.bind(this),
+      dateClick: this.handleDateClick.bind(this),
+      eventClick: this.handleEventClick.bind(this),
+      eventsSet: this.handleEvents.bind(this),
+      eventDidMount: this.handleDidMountEvent.bind(this),
+      eventDisplay: 'block',
+      eventInteractive: true,
+    };
+
+    return;
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {
