@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, OnInit } from '@angular/core';
+import { Observable, of, observable } from 'rxjs';
 import { CalendarItem } from '../models/calendarItem';
 import { NotesServices } from './notes.services';
 import { Note } from '../models/note';
@@ -8,14 +8,14 @@ import { ToDo } from '../models/toDo';
 import { ToDoItem } from '../models/toDoItem';
 import { FoundNote } from '../models/foundNote';
 import { FoundTodo } from '../models/foundTodo';
-
-// import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CalendarService {
   private calItems: Array<CalendarItem> = [];
+  private calNotes: Note[] = [];
   EVENT_TYPE_NOTE = 'N';
   EVENT_TYPE_TODO = 'T';
 
@@ -24,12 +24,22 @@ export class CalendarService {
   private populateCalItems(): void {
     let c1 = new CalendarItem();
     c1 = c1.createCalendarItem(1, new Date(2021, 11, 4));
-    // c1.listOfNotes = this.noteService.getNotes();
 
-    //Code we experimented with during 11/11 meeting
-    //this.noteService.getNotes().subscribe((notes) => (c1.listOfNotes = notes));
-    //console.log(c1.listOfNotes);
-    //c1.listOfNotes = notesA
+/*
+    observable$.toPromise().then(pn => {
+      console.log('PN: ' + pn);
+      serverNotes = pn;
+      c1.listOfNotes = pn;
+
+      console.log('Items in cal notes: ' + c1.listOfNotes.length);
+      c1.listOfNotes.forEach(n => console.log(n));
+
+    });*/
+
+    // Code we experimented with during 11/11 meeting
+    // this.noteService.getNotes().subscribe((notes) => (c1.listOfNotes = notes));
+    // console.log(c1.listOfNotes);
+    // c1.listOfNotes = notesA
 
     const notes: Note[] = [
       {
@@ -57,7 +67,8 @@ export class CalendarService {
     c2.listOfNotes = notes;
     c2.listOfToDos = this.getInitialToDos();
 
-    this.calItems.push(c1);
+    // this.calItems.push(c1);
+    console.log('Pushing c2');
     this.calItems.push(c2);
   }
 
@@ -94,21 +105,54 @@ export class CalendarService {
     return of(itemForMonth);
   }
 
-  getNotesOfMonthAsEvents(monthNumber: number): EventInput[] {
+  getCalendarNote(): Observable<Note[]> {
+    return this.noteService.getNotes().pipe(map((notes) => (this.calNotes = notes)));
+    /* .subscribe(n => {
+      this.calNotes = n;
+
+      console.log('Items in cal notes: ' + this.calNotes.length);
+      this.calNotes.forEach(n1 => console.log(n1));
+    });*/
+  }
+
+  getNotesOfMonthAsEvents(monthNumber: number): Observable<EventInput[]> {
     const event: EventInput[] = [];
 
     let notes: Note[] = [];
-    this.getNotesOfMonth(monthNumber).subscribe(n => notes = n); // Array<Note>
+    // this.getNotesOfMonth(monthNumber).subscribe(n => notes = n); // Array<Note>
     // console.log('In getNotesOfMonthAsEvents - month ' + monthNumber + ' Notes = ' );
     // console.log(notes);
-    notes.forEach(note =>
-    {
-      const n = this.createNoteAsEventObject(note);
-      // console.log('Converted to Event ' + n.stringObj);
-      event.push(n);
+
+    const observable$: Observable<Note[]> = this.getCalendarNote();
+    observable$.toPromise<Note[]>().then(nt => {
+
+      nt.forEach(note =>
+        {
+          const n = this.createNoteAsEventObject(note);
+          // console.log('Converted to Event ' + n.stringObj);
+          event.push(n);
+        });
+      // return of(event);
     });
 
-    return event;
+    /*
+    this.noteService.getNotes().subscribe(n => {
+      notes = n;
+
+      console.log('Items in cal notes: ' + notes.length);
+      notes.forEach(n1 => console.log(n1));
+      console.log('Pushed notes to Calendar events');
+      notes.forEach(note =>
+        {
+          const n = this.createNoteAsEventObject(note);
+          // console.log('Converted to Event ' + n.stringObj);
+          event.push(n);
+        });
+      console.log('Returning Events');
+
+    }); // .add(() => return event );
+    */
+    return of(event);
   }
 
   // Get Notes for specified month as Array<Note>
@@ -190,14 +234,16 @@ export class CalendarService {
     return todos;
   }
 
-  private createNoteAsEventObject(note: Note): any {
+  createNoteAsEventObject(note: Note): any {
     const offsetInMins = 2 * 60;
-    const startStr = new Date(note.startDate.getTime() + offsetInMins * 60000).toISOString();
+    // const startStr = (Date)note.startDate.toISOString();
+    // Gives error with retrieving notes from server
+    // new Date(note.startDate.getTime() + offsetInMins * 60000).toISOString();
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
 
     return {
-      id: note.id.toString(), title: note.title, start: startStr,
-      end: note.endDate.toISOString(), ofType: this.EVENT_TYPE_NOTE
+      id: note.id.toString(), title: note.title, start: note.startDate,
+      end: note.endDate, ofType: this.EVENT_TYPE_NOTE
     };
   }
 

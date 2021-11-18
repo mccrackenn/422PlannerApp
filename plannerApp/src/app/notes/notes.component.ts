@@ -26,6 +26,10 @@ export class NotesComponent implements OnInit {
       .subscribe((notes: Note[]) => {
         this.notes = notes;
       });
+    console.log('Notes - from server: ');
+    this.notes.forEach(n => {
+      console.log('Title: ' + n.title);
+    });
 
     this.form = new FormGroup({
       dob: new FormControl(null, {
@@ -52,8 +56,8 @@ export class NotesComponent implements OnInit {
     };
     this.notesService.addNote(newNote);
     // console.log(this.createNoteForm.get('newNote')?.value)
-    // console.log(this.createNoteForm.value.start)
-    // console.log(this.createNoteForm.value.end)
+    // console.log(this.createNoteForm.value.start);
+    // console.log(this.createNoteForm.value.end);
   }
 
   date(e: any) {

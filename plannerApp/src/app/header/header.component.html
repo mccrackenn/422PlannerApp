@@ -12,5 +12,8 @@
     <li>
       <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
     </li>
+    <li *ngIf='haveSessionID'>
+      <a mat-button routerLink="/" routerLinkActive="mat-accent">Logout</a>
+    </li>
   </ul>
 </mat-toolbar>

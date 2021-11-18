@@ -33,6 +33,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
+  private noteEvents: EventInput[] = [];
   showWeekends  = true;
 
   // Calendar Options
@@ -50,13 +51,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
     dayMaxEvents: true,
     timeZone: 'local',
     eventSources: [
-      {
-        events: this.calService.getNotesOfMonthAsEvents(11),
+      /*{
+        events: this.noteEvents,
         color: 'yellow',
         textColor: 'black',
         borderColor: 'blue',
         // backgroundColor: 'yellow'
-      },
+      },*/
       {
         events: [
           {
@@ -245,7 +246,31 @@ export class CalendarComponent implements OnInit, OnDestroy {
               private cd: ChangeDetectorRef,
               private dialog: MatDialog) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('Retrieving Notes from CalService');
+
+    this.calService.getCalendarNote().subscribe(notes => {
+      notes.forEach(note => {
+        this.noteEvents.push(this.calService.createNoteAsEventObject(note));
+      });
+      this.calendarOptions.eventSources?.push({
+        events: this.noteEvents,
+        color: 'yellow',
+        textColor: 'black',
+        borderColor: 'blue'
+      });
+    });
+
+    /*
+    this.calService.getNotesOfMonthAsEvents(11).subscribe(ne => {
+      console.log('Received notes from calServ - length = ' + ne.length);
+      this.noteEvents = ne;
+      this.noteEvents.forEach(e => {
+      console.log('Note Title: ' + e.title + ' Start: ' + e.startStr + ' End: ' + e.endStr);
+      });
+    });*/
+
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {
