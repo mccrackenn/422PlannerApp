@@ -49,6 +49,15 @@ export class NotesServices {
       });
   }
 
+  updateNote(note: Note): void {
+    this.httpClient.put<{ message: string; noteId: string }>(
+      'http://localhost:3000/api/notes',
+      note
+    ).subscribe((responseData) => {
+      console.log(responseData);
+    });
+  }
+
   deleteNote(noteId: string) {
     this.httpClient
       .delete('http://localhost:3000/api/notes/' + noteId)

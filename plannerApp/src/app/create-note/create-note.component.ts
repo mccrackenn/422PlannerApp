@@ -62,4 +62,16 @@ export class CreateNoteComponent implements OnInit {
       }
     });
   }
+
+  updateNote(): void {
+    if (this.note) {
+      this.note.title = this.form.value.title;
+      this.note.description = this.form.value.description;
+      this.note.startDate = this.form.value.startDate;
+      this.note.endDate = this.form.value.endDate;
+
+      console.log('Going to service....');
+      this.notesService.updateNote(this.note);
+    }
+  }
 }

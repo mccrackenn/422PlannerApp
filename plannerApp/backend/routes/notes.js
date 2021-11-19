@@ -42,6 +42,25 @@ router.post("", (req, res, next) => {
   });
 });
 
+router.put("", (req, res, next) => {
+  console.log("into Put..." + req);
+  /*
+  const newNote = new Note({
+    title: req.body.title,
+    description: req.body.description,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    createdDate: req.body.createdDate,
+  });
+
+  newNote.save().then((createdNote) => {
+    res.status(201).json({
+      message: "successfully added new Note to DB",
+      noteId: createdNote._id,
+    });
+  });*/
+});
+
 router.delete("/:id", (req, res, next) => {
   //console.log(req.params);
   Note.deleteOne({ _id: req.params.id }).then((result) => {

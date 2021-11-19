@@ -108,6 +108,8 @@ export class CalendarService {
   getNoteEvents(): Observable<Array<EventInput>> {
     const events: EventInput[] = [];
     return this.noteService.getNotes().pipe(map((data: any) => {
+      this.noteEvents = [];
+      this.notes = [];
       data.forEach((note: Note) => {
         const n = this.createNoteAsEventObject(note);
         this.noteEvents.push(n);

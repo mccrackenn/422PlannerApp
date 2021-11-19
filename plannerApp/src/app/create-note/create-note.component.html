@@ -1,6 +1,6 @@
 <p>{{ note?.title }}</p>
 <mat-card>
-  <form [formGroup]="form">
+  <form [formGroup]="form" (submit)="updateNote()" >
     <div>
       <mat-form-field>
         <input matInput type="text" formControlName="title" />
@@ -27,5 +27,7 @@
         <input matInput formControlName="createdDate" />
       </mat-form-field>
     </div>
+
+    <button mat-raised-button color="primary" type="submit">Save</button>
   </form>
 </mat-card>

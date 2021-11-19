@@ -270,7 +270,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   async getDataAsEvents(): Promise<void> {
     this.noteEvents = await this.calService.getNoteEvents().toPromise();
     this.todoEvents = await this.calService.getToDosOfMonthAsEvents(11);
-    console.log('Received ToDo ' + this.todoEvents.length);
+    console.log('Received ToDo ' + this.todoEvents.length + ' Received Notes: ' + this.noteEvents.length);
+
     this.initCalendarOptions();
   }
 
