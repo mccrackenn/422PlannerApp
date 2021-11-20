@@ -1,4 +1,3 @@
-import { not } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
@@ -11,7 +10,7 @@ import { Note } from '../models/note';
   styleUrls: ['./create-note.component.css'],
 })
 export class CreateNoteComponent implements OnInit {
-  private postId: string | null | undefined;
+  private noteId: string | null | undefined;
   private mode: string = '';
   note?: Note;
   form!: FormGroup;
@@ -33,10 +32,10 @@ export class CreateNoteComponent implements OnInit {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('noteId')) {
         this.mode = 'edit';
-        this.postId = paramMap.get('noteId');
-        console.log(this.postId);
-        this.notesService.getNote(this.postId!).subscribe((responseData) => {
-          console.log(typeof responseData.createdDate);
+        this.noteId = paramMap.get('noteId');
+        console.log(this.noteId);
+        this.notesService.getNote(this.noteId!).subscribe((responseData) => {
+          console.log(responseData);
           this.note = {
             id: responseData.id,
             title: responseData.title,
@@ -45,20 +44,15 @@ export class CreateNoteComponent implements OnInit {
             endDate: responseData.endDate,
             createdDate: responseData.createdDate,
           };
+          console.log(this.note);
           this.form.setValue({
             title: this.note.title,
             description: this.note.description,
-            startDate: this.note.startDate,
-            endDate: this.note.endDate,
-            createdDate: this.note.createdDate,
+            startDate: this.note.startDate.toDateString(),
+            endDate: this.note.endDate.toDateString(),
+            createdDate: this.note.createdDate.toDateString(),
           });
-          console.log(typeof this.note?.createdDate);
         });
-        // console.log(this.note);
-        // this.form.setValue({
-        //   title: this.note?.title,
-        //   description: this.note?.description,
-        //   startDate: this.note?.createdDate.toDateString()
       }
     });
   }
@@ -69,7 +63,7 @@ export class CreateNoteComponent implements OnInit {
       this.note.description = this.form.value.description;
       this.note.startDate = this.form.value.startDate;
       this.note.endDate = this.form.value.endDate;
-
+      this.note.createdDate = this.form.value.createdDate;
       console.log('Going to service....');
       this.notesService.updateNote(this.note);
     }

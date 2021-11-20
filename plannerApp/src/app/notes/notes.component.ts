@@ -50,6 +50,9 @@ export class NotesComponent implements OnInit {
       endDate: this.createNoteForm.value.endDate,
       createdDate: new Date(Date.now()),
     };
+
+    console.log(newNote.startDate);
+    console.log(typeof newNote.startDate);
     this.notesService.addNote(newNote);
     // console.log(this.createNoteForm.get('newNote')?.value)
     // console.log(this.createNoteForm.value.start)

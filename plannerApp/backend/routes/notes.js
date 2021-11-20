@@ -8,6 +8,8 @@ router.get("", (req, res, next) => {
     //Don't want the returned Array to have a _id key, want id, this loops through
     //and replaces the it. Method is in the Mongoose Model
     for (let i = 0; i < documents.length; i++) {
+      // const dateCheck= documents[i].createdDate;
+      //console.log(typeof dateCheck)
       returnedDocuments.push(documents[i].transform());
       //console.log(returnedDocuments);
     }
@@ -19,7 +21,9 @@ router.get("/:id", (req, res, next) => {
   console.log(req.params.id);
   Note.findById(req.params.id).then((note) => {
     if (note) {
-      res.status(200).json(note);
+      let changedNote = note.transform();
+      console.log(changedNote);
+      res.status(200).json(changedNote);
     } else {
       res.status(404).json({ message: "Note not found" });
     }
@@ -42,9 +46,34 @@ router.post("", (req, res, next) => {
   });
 });
 
-router.put("", (req, res, next) => {
-  console.log("into Put..." + req);
+router.put("/:id", (req, res, next) => {
+  console.log(req.body);
+  const note = new Note({
+    _id: req.body.id,
+    title: req.body.title,
+    description: req.body.description,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    createdDate: req.body.createdDate,
+  });
+  Note.updateOne({ _id: req.params.id }, note).then((result) =>
+    console.log(result)
+  );
   /*
+
+router.put("/:id", (req, res, next) => {
+  console.log(req.params.id);
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content,
+  });
+  Post.updateOne({ _id: req.params.id }, post).then((result) => {
+    console.log(result);
+    res.status(200).json({ message: "Update Successfull" });
+  });
+});
+
   const newNote = new Note({
     title: req.body.title,
     description: req.body.description,
