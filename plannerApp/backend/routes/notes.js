@@ -47,16 +47,18 @@ router.post("", (req, res, next) => {
 });
 
 router.put("/:id", (req, res, next) => {
-  console.log(req.body)
-  const note=new Note({
-    _id:req.body.id,
-    title:req.body.title,
-    description:req.body.description,
-    startDate:req.body.startDate,
-    endDate:req.body.endDate,
-    createdDate:req.body.createdDate
+  console.log(req.body);
+  const note = new Note({
+    _id: req.body.id,
+    title: req.body.title,
+    description: req.body.description,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    createdDate: req.body.createdDate,
   });
-  Note.updateOne({_id:req.params.id},note).then(result => console.log(result))
+  Note.updateOne({ _id: req.params.id }, note).then((result) =>
+    console.log(result)
+  );
   /*
 
 router.put("/:id", (req, res, next) => {

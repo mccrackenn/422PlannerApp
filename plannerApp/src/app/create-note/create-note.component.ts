@@ -44,7 +44,7 @@ export class CreateNoteComponent implements OnInit {
             endDate: responseData.endDate,
             createdDate: responseData.createdDate,
           };
-          console.log(this.note)
+          console.log(this.note);
           this.form.setValue({
             title: this.note.title,
             description: this.note.description,
@@ -52,21 +52,18 @@ export class CreateNoteComponent implements OnInit {
             endDate: this.note.endDate.toDateString(),
             createdDate: this.note.createdDate.toDateString(),
           });
-
         });
-
       }
     });
   }
 
   updateNote(): void {
-
     if (this.note) {
       this.note.title = this.form.value.title;
       this.note.description = this.form.value.description;
       this.note.startDate = this.form.value.startDate;
       this.note.endDate = this.form.value.endDate;
-      this.note.createdDate=this.form.value.createdDate;
+      this.note.createdDate = this.form.value.createdDate;
       console.log('Going to service....');
       this.notesService.updateNote(this.note);
     }

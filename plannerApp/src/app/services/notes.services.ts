@@ -68,11 +68,11 @@ export class NotesServices {
 
   updateNote(note: Note): void {
     const id = note.id;
-    console.log(note)
+    console.log(note);
     console.log(id);
     this.httpClient
       .put<{ message: string; noteId: string }>(
-        'http://localhost:3000/api/notes/'+id,
+        'http://localhost:3000/api/notes/' + id,
         note
       )
       .subscribe((responseData) => {
