@@ -267,26 +267,4 @@ export class CalendarService {
     };
   }
 
-  // Not Used currently
-  // Get Notes for specified month as JSON Object of arrays
-  getNotesOfMonthAsJSON(monthNumber: number): any {
-    if (this.calItems.length === 0) {
-      this.populateCalItems();
-    }
-
-    const notes = new Array<Note>();
-
-    this.calItems.forEach((element) => {
-      if (element.listOfNotes.length > 0) {
-        notes.push(...element.listOfNotes);
-      }
-    });
-
-    const stringJSON = JSON.stringify(notes);
-    console.log('As Str: ' + stringJSON);
-    const stringObj = JSON.parse(stringJSON);
-    console.log('As Obj: ' + stringObj);
-
-    return stringObj;
-  }
 }
