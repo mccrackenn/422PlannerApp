@@ -14,7 +14,7 @@ import {
   EventContentArg,
   MountArg,
 } from '@fullcalendar/angular';
-import { Subscription, observable } from 'rxjs';
+import { Subscription, observable, Observable } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { CalendarService } from '../services/calendar.service';
@@ -22,82 +22,25 @@ import { ViewNoteComponent } from '../dialogs/view-note/view-note.component';
 import { Note } from '../models/note';
 import { ToDo } from '../models/toDo';
 import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
+
 export class CalendarComponent implements OnInit, OnDestroy {
   private currentEvents: EventApi[] = [];
+  private noteEvents: EventInput[] = [];
+  private todoEvents: EventInput[] = [];
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
   showWeekends  = true;
 
   // Calendar Options
-  calendarOptions: CalendarOptions = {
-    headerToolbar: {
-      left: 'prev,next,today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-    },
-    initialView: 'dayGridMonth',
-    weekends: this.showWeekends,
-    editable: true,
-    selectable: true,
-    selectMirror: true,
-    dayMaxEvents: true,
-    timeZone: 'local',
-    eventSources: [
-      {
-        events: this.calService.getNotesOfMonthAsEvents(11),
-        color: 'yellow',
-        textColor: 'black',
-        borderColor: 'blue',
-        // backgroundColor: 'yellow'
-      },
-      {
-        events: [
-          {
-            title: '422 Meeting',
-            start: '2021-11-06T21:26:48.703Z',
-            end: '2021-11-06T08:00:00.000Z',
-            id: '2',
-            interactive: true,
-          },
-          {
-            title: 'ASC',
-            start: '2021-11-05T21:26:48.703Z',
-            end: '2021-11-06T21:26:48.703Z',
-            editable: true,
-          },
-        ],
-        // backgroundColor: 'gray',
-        color: 'lavendar',
-        textColor: 'black',
-        borderColor: 'green',
-        editable: true,
-      },
-      {
-        events: this.getEvents(),
-        color: 'gray',
-        textColor: 'white',
-      },
-      {
-        events: this.calService.getToDosOfMonthAsEvents(11),
-        color: 'green',
-        borderColor: 'red',
-      },
-    ],
-    select: this.handleDateSelect.bind(this),
-    dateClick: this.handleDateClick.bind(this),
-    eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this),
-    eventDidMount: this.handleDidMountEvent.bind(this),
-    eventDisplay: 'block',
-    eventInteractive: true,
-  };
+  calendarOptions: CalendarOptions = {};
 
   // Date Select
   handleDateSelect(selectInfo: DateSelectArg): void {
@@ -207,7 +150,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         if (data === 'edit') {
           // Navigate to Note-Edit passing note.id
-          alert('Navigate to Note-Edit passing note.id');
+          const url = '/editNote/' + n.id;
+          this.router.navigate([url ] );
         }
       });
 
@@ -243,9 +187,92 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   constructor(private calService: CalendarService,
               private cd: ChangeDetectorRef,
-              private dialog: MatDialog) { }
+              private dialog: MatDialog,
+              private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    /*this.calService.getNoteEvents1().subscribe((r) => {
+      this.noteEvents = r;
+
+      this.initCalendarOptions();
+      // this.cd.detectChanges();
+    });*/
+    this.getDataAsEvents();
+
+  }
+
+  private initCalendarOptions(): void {
+    this.calendarOptions = {
+      headerToolbar: {
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+      },
+      initialView: 'dayGridMonth',
+      weekends: this.showWeekends,
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      dayMaxEvents: true,
+      timeZone: 'local',
+      eventSources: [
+        {
+          events: this.noteEvents,
+          color: 'yellow',
+          textColor: 'black',
+          borderColor: 'blue',
+        },
+        {
+          events: [
+            {
+              title: '422 Meeting',
+              start: '2021-11-06T21:26:48.703Z',
+              end: '2021-11-06T08:00:00.000Z',
+              id: '2',
+              interactive: true,
+            },
+            {
+              title: 'ASC',
+              start: '2021-11-05T21:26:48.703Z',
+              end: '2021-11-06T21:26:48.703Z',
+              editable: true,
+            },
+          ],
+          // backgroundColor: 'gray',
+          color: 'lavendar',
+          textColor: 'black',
+          borderColor: 'green',
+          editable: true,
+        },
+        {
+          events: this.getEvents(),
+          color: 'gray',
+          textColor: 'white',
+        },
+        {
+          events: this.todoEvents, // calService.getToDosOfMonthAsEvents(11),
+          color: 'green',
+          borderColor: 'red',
+        },
+      ],
+      select: this.handleDateSelect.bind(this),
+      dateClick: this.handleDateClick.bind(this),
+      eventClick: this.handleEventClick.bind(this),
+      eventsSet: this.handleEvents.bind(this),
+      eventDidMount: this.handleDidMountEvent.bind(this),
+      eventDisplay: 'block',
+      eventInteractive: true,
+    };
+
+    return;
+  }
+
+  async getDataAsEvents(): Promise<void> {
+    this.noteEvents = await this.calService.getNoteEvents().toPromise();
+    this.todoEvents = await this.calService.getToDosOfMonthAsEvents(11);
+    console.log('Received ToDo ' + this.todoEvents.length);
+    this.initCalendarOptions();
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {
