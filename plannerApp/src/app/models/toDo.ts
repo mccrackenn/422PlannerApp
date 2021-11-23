@@ -2,19 +2,21 @@ import { ToDoItem } from './toDoItem';
 
 export class ToDo {
     id: string;
-    todoTitle: string;
+    title: string;
+    description: string;
     createdDate: Date;
     startDate: Date;    // Date with earliest ToDoItem - by default it will be today's date
     endDate: Date;      // Date with last ToDoItem - by default it will be today's date
     listOfItems: ToDoItem[];
 
-    constructor(title?: string) {
+    constructor(todoTitle?: string) {
         this.id = '-1';
-        if (title) {
-            this.todoTitle = title;
+        if (todoTitle) {
+            this.title = todoTitle;
         } else {
-            this.todoTitle = 'Untitled ToDo';
+            this.title = 'Untitled ToDo';
         }
+        this.description = '';
         this.createdDate = new Date();
         this.startDate = new Date();
         this.endDate = new Date();

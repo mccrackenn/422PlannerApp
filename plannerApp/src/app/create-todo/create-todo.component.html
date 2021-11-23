@@ -1,0 +1,30 @@
+<p>{{ toDo?.title }}</p>
+<mat-card>
+    <form [formGroup]="form">
+        <div>
+            <mat-form-field>
+                <input matInput type="text" formControlName="title" />
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput type="text" formControlName="description" />
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput formControlName="startDate" />
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput formControlName="endDate" />
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput formControlName="createdDate" />
+            </mat-form-field>
+        </div>
+    </form>
+</mat-card>
