@@ -117,18 +117,22 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   // Gets/Sets events of specified date
   private getSelectedDaysEvents(date: Date): void {
-    const dt = date.getDate();
+    const dt = date;
 
     this.selectedDayEvents = [];
 
-    this.currentEvents.forEach((event) => {
+    let e =  this.currentEvents.filter(c => c.start?.getFullYear === dt.getFullYear);
+    e = e.filter(c => c.start?.getMonth() === dt.getMonth() );
+
+    e.forEach((event) => {
       if (event._instance) {
-        if (event._instance?.range.start.getDate() === dt) {
+        if (event._instance?.range.start.getDate()+1 === dt.getDate()) {
           this.selectedDayEvents.push(event);
-        } else if (
-          event._instance.range.end.getDate() <= dt &&
-          event._instance?.range.start.getDate() < dt
-        ) {
+        }
+        else if (
+          event._instance.range.end.getDate() >= dt.getDate() &&
+          event._instance?.range.start.getDate()+1 < dt.getDate() )
+        {
           this.selectedDayEvents.push(event);
         }
       }
@@ -191,12 +195,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
               private router: Router) { }
 
   ngOnInit(): void {
-    /*this.calService.getNoteEvents1().subscribe((r) => {
-      this.noteEvents = r;
-
-      this.initCalendarOptions();
-      // this.cd.detectChanges();
-    });*/
+    // Fetch all data & populate in the Calendar
     this.getDataAsEvents();
 
   }
@@ -270,7 +269,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   async getDataAsEvents(): Promise<void> {
     this.noteEvents = await this.calService.getNoteEvents().toPromise();
     this.todoEvents = await this.calService.getToDosOfMonthAsEvents(11);
-    console.log('Received ToDo ' + this.todoEvents.length);
+    // console.log('Received ToDo ' + this.todoEvents.length + ' Received Notes: ' + this.noteEvents.length);
+
     this.initCalendarOptions();
   }
 

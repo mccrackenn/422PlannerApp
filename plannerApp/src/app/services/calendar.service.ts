@@ -108,6 +108,8 @@ export class CalendarService {
   getNoteEvents(): Observable<Array<EventInput>> {
     const events: EventInput[] = [];
     return this.noteService.getNotes().pipe(map((data: any) => {
+      this.noteEvents = [];
+      this.notes = [];
       data.forEach((note: Note) => {
         const n = this.createNoteAsEventObject(note);
         this.noteEvents.push(n);
@@ -265,26 +267,4 @@ export class CalendarService {
     };
   }
 
-  // Not Used currently
-  // Get Notes for specified month as JSON Object of arrays
-  getNotesOfMonthAsJSON(monthNumber: number): any {
-    if (this.calItems.length === 0) {
-      this.populateCalItems();
-    }
-
-    const notes = new Array<Note>();
-
-    this.calItems.forEach((element) => {
-      if (element.listOfNotes.length > 0) {
-        notes.push(...element.listOfNotes);
-      }
-    });
-
-    const stringJSON = JSON.stringify(notes);
-    console.log('As Str: ' + stringJSON);
-    const stringObj = JSON.parse(stringJSON);
-    console.log('As Obj: ' + stringObj);
-
-    return stringObj;
-  }
 }
