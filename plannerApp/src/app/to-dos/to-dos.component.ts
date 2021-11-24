@@ -3,7 +3,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { ToDoServices } from '../services/toDo.services'
 import { ToDo } from '../models/toDo'
-import { ToDoItem } from '../models/toDoItem';
 
 @Component({
     selector: 'app-to-dos',
@@ -16,10 +15,12 @@ export class ToDosComponent implements OnInit {
     createToDoForm!: FormGroup;
     private toDosSub: Subscription = new Subscription();
     filteredOptions?: Observable<ToDo[]>;
+
+    //isCompleted!: boolean;
   
     toDos: ToDo[] = [];
   
-    constructor(private toDoService: ToDoServices) {}
+    constructor(private toDoService: ToDoServices, ) {}
 
     ngOnInit(): void {
         this.toDoService.getToDos().subscribe((toDos) => (this.toDos = toDos));
@@ -37,29 +38,33 @@ export class ToDosComponent implements OnInit {
                 validators: [Validators.required] 
             }),
         });
+        //todomodel
         this.createToDoForm = new FormGroup({
             title: new FormControl(null, { validators: [Validators.required] }),
             description: new FormControl(null, { validators: [Validators.required] }),
-            startDate: new FormControl(null, { validators: [Validators.required] }),
-            endDate: new FormControl(null, { validators: [Validators.required] }),
-            //change? add list of items?
+            completed: new FormControl(false, { validators: [Validators.required] }),
+            //notification? (thinking no on this one)
+            startDateTime: new FormControl(null, { validators: [Validators.required] }),
+            endDateTime: new FormControl(null, { validators: [Validators.required] }),
         });
     }
 
     onSaveDate() {}
 
     submitNewToDo() {
+        //todomodel
         const newToDo: ToDo = {
           id: 'temp',
           title: this.createToDoForm.value.title,
           description: this.createToDoForm.value.description,
-          startDate: this.createToDoForm.value.startDate,
-          endDate: this.createToDoForm.value.endDate,
+          completed: this.createToDoForm.value.completed,
+          notification: false,
+          startDateTime: this.createToDoForm.value.startDateTime,
+          endDateTime: this.createToDoForm.value.endDateTime,
           createdDate: new Date(Date.now()),
-          //change? remove list of items?
-          listOfItems: new Array<ToDoItem>()
         };
         this.toDoService.addToDo(newToDo);
+        console.log(this.createToDoForm.value.completed);
         // console.log(this.createToDoForm.get('newToDo')?.value)
         // console.log(this.createToDoForm.value.start)
         // console.log(this.createToDoForm.value.end)

@@ -4,7 +4,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ToDoServices } from '../services/toDo.services'
 import { ToDo } from '../models/toDo'
-import { ToDoItem } from '../models/toDoItem';
 
 @Component({
   selector: 'app-create-todo',
@@ -23,13 +22,15 @@ export class CreateToDoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    //todomodel
     this.form = new FormGroup({
         title: new FormControl(null, { validators: [Validators.required] }),
         description: new FormControl(null, { validators: [Validators.required] }),
-        startDate: new FormControl(null, { validators: [Validators.required] }),
-        endDate: new FormControl(null, { validators: [Validators.required] }),
+        completed: new FormControl(null, { validators: [Validators.required] }),
+        notification: new FormControl(null, { validators: [Validators.required] }), //q? keep?
         createdDate: new FormControl(null, { validators: [Validators.required] }),
-        //change? add listOfItems?
+        startDateTime: new FormControl(null, { validators: [Validators.required] }),
+        endDateTime: new FormControl(null, { validators: [Validators.required] }),
     });
 
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -38,31 +39,30 @@ export class CreateToDoComponent implements OnInit {
             this.postId = paramMap.get('toDoId');
             console.log(this.postId);
             this.toDoService.getToDo(this.postId!).subscribe((responseData) => {
-                console.log(typeof responseData.createdDate);
+                //console.log(typeof responseData.createdDate);
+                //todomodel
                 this.toDo = {
                     id: responseData.id,
                     title: responseData.title,
                     description: responseData.description,
-                    startDate: responseData.startDate,
-                    endDate: responseData.endDate,
+                    completed: responseData.completed,
+                    notification: responseData.notification, //q? keep?
                     createdDate: responseData.createdDate,
-                    //change?
-                    listOfItems: responseData.listOfItems,
+                    startDateTime: responseData.startDateTime,
+                    endDateTime: responseData.endDateTime,
                 };
+                //todomodel
                 this.form.setValue({
                     title: this.toDo.title,
                     description: this.toDo.description,
-                    startDate: this.toDo.startDate,
-                    endDate: this.toDo.endDate,
+                    completed: this.toDo.completed,
+                    notification: this.toDo.notification, //q? keep?
                     createdDate: this.toDo.createdDate,
+                    startDateTime: this.toDo.startDateTime,
+                    endDateTime: this.toDo.endDateTime,
                 });
-                console.log(typeof this.toDo?.createdDate);
+                //console.log(typeof this.toDo?.createdDate);
             });
-            //console.log(this.toDo);
-            //this.form.setValue({
-            //    title: this.toDo?.title,
-            //    description: this.toDo?.description,
-            //    startDate: this.toDo?.createdDate.toDateString()
         }
       });
   }

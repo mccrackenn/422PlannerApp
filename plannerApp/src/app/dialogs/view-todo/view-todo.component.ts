@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { ToDo } from 'src/app/models/toDo';
-import { ToDoItem } from 'src/app/models/toDoItem';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({

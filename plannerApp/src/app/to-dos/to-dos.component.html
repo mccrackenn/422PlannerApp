@@ -2,7 +2,7 @@
     <mat-card-title>Search ToDos</mat-card-title>
     <!--implement search by date here-->
     <mat-form-field>
-        <input matInput [matDatepicker]="todoDatePicker" placeholder="This does nothing">
+        <input matInput [matDatepicker]="todoDatePicker" placeholder="This does nothing for now">
         <mat-datepicker-toggle matSuffix [for]="todoDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #todoDatePicker></mat-datepicker>
     </mat-form-field>
@@ -32,13 +32,13 @@
                     <mat-date-range-input [rangePicker]="pickerA">
                         <input
                             matStartDate
-                            placeholder="Start date"
-                            formControlName="startDate"
+                            placeholder="Start date & Time"
+                            formControlName="startDateTime"
                         />
                         <input
                             matEndDate
-                            placeholder="End date"
-                            formControlName="endDate"
+                            placeholder="End date & Time"
+                            formControlName="endDateTime"
                         />
                     </mat-date-range-input>
                     <mat-datepicker-toggle
@@ -49,6 +49,10 @@
                 </mat-form-field>
             </div>
         </div>
+        <div>
+            <mat-checkbox formControlName="completed">Completed?</mat-checkbox>
+        </div>
+        <p></p>
         <div class="row">
             <mat-form-field>
                 <textarea

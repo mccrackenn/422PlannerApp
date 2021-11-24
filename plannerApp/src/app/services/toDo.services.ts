@@ -36,21 +36,22 @@ export class ToDoServices
             toDo
             )
         .subscribe((responseData) => {
+            //todomodel
             const newToDo: ToDo = {
                 id: responseData.toDoId,
                 title: toDo.title,
                 description: toDo.description,
-                startDate: toDo.startDate,
-                endDate: toDo.endDate,
+                completed: toDo.completed,
+                notification: toDo.notification,
                 createdDate: toDo.createdDate,
-                //change??
-                listOfItems: toDo.listOfItems
+                startDateTime: toDo.startDateTime,
+                endDateTime: toDo.endDateTime,
             };
             console.log(newToDo);
             this.toDos.push(newToDo);
             console.log(this.toDos);
             this.toDosUpdated.next([...this.toDos]);
-            this.router.navigate(['/todos']).then(() => window.location.reload());
+            this.router.navigate(['/to-dos']).then(() => window.location.reload());
         });
     }
 
@@ -63,7 +64,7 @@ export class ToDoServices
                 console.log(updatedToDos);
                 this.toDos = updatedToDos;
                 this.toDosUpdated.next([...this.toDos]);
-                //this.router.navigate(['/toDos']).then(() => window.location.reload())
+                this.router.navigate(['/toDos']).then(() => window.location.reload())
           });
     }
     getToDo(id: string) {

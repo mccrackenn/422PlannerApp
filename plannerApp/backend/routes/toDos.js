@@ -30,10 +30,11 @@ router.post("", (req, res, next) => {
   const newToDo = new ToDo({
     title: req.body.title,
     description: req.body.description,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
+    completed: req.body.completed,
+    notification: req.body.notification,
     createdDate: req.body.createdDate,
-    listOfItems: req.body.listOfItems,
+    startDateTime: req.body.startDateTime,
+    endDateTime: req.body.endDateTime,
   });
   newToDo.save().then((createdToDo) => {
     res.status(201).json({

@@ -1,37 +1,31 @@
 <h2 mat-dialog-title style="text-align: center;">Details of ToDo</h2>
 
+<!--updated to work with new model, still need to add completed field-->
 <mat-dialog-content>
     <div class="row">
-        <label class="md-col-5">Title of Note</label>
+        <label class="md-col-5">Title of ToDo</label>
         <textarea value="{{todo.title}}" matInput cols="50" rows="1" 
             style="margin-left: 10px;" readonly ></textarea>
     </div>
-
     <div class="row">
         <label class="md-col-5" >Created Date</label>
         <textarea value="{{todo.createdDate}}"
             matInput cols="45" rows="1" style="margin-left: 8px;" readonly ></textarea>
     </div>
     <div class="row">
-        <label class="md-col-5" >Start Date</label>
-        <textarea value="{{todo.startDate}}"
-            matInput cols="45" rows="1" style="margin-left: 27px;" readonly ></textarea>
-    </div>
-    <div class="row">
-        <label class="md-col-5" >End Date</label>
-        <textarea value="{{todo.endDate}}"
+        <label class="md-col-5" >Start Date & Time</label>
+        <textarea value="{{todo.startDateTime}}"
             matInput cols="45" rows="1" style="margin-left: 30px;" readonly ></textarea>
     </div>
-
     <div class="row">
-        <label class="md-col-5" >List of ToDo's: </label>
-        <ul>
-            <li *ngFor="let item of todo.listOfItems">
-                <span>{{item.title}}</span>
-            </li>
-        </ul>
-        <!-- <textarea value="{{todo.createdDate}}"
-            matInput cols="45" rows="1" style="margin-left: 8px;" readonly ></textarea> -->
+        <label class="md-col-5" >End Date & Time</label>
+        <textarea value="{{todo.endDateTime}}"
+            matInput cols="45" rows="1" style="margin-left: 30px;" readonly ></textarea>
+    </div>
+    <div class="row">
+        <label class="md-col-5" >Description: </label>
+        <textarea value="{{todo.description}}"
+            matInput cols="45" rows="3" style="margin-left: 30px;" readonly ></textarea>
     </div>
 
 </mat-dialog-content>

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//todomodel
 const toDoSchema = mongoose.Schema({
   title: {
     type: String,
@@ -7,23 +8,29 @@ const toDoSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
+    required: true, //q? make this false in case they only want a simple title?
   },
-  startDate: {
-    type: Date,
-    required: true,
+  completed: {
+    type: Boolean,
+    required: false, //q? does this mean it will be set by the model constructor?
   },
-  endDate: {
-    type: Date,
-    required: true,
+  notification: {
+    type: Boolean,
+    required: false,
   },
   createdDate: {
     type: Date,
     required: false,
   },
-  //change? What mongoose type to define object array?
-  //https://stackoverflow.com/questions/19695058/how-to-define-object-in-array-in-mongoose-schema-correctly-with-2d-geo-index
-  listOfItems: { type : Array , "default" : [] }
+  startDateTime: {
+    type: Date,
+    required: true,
+  },
+  endDateTime: {
+    type: Date,
+    required: true,
+  },
+  
 });
 
 toDoSchema.method("transform", function () {

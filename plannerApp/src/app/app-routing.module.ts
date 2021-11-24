@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'notes', component: NotesComponent },
   { path: 'editNote/:noteId', component: CreateNoteComponent },
   { path: 'to-dos', component: ToDosComponent },
-  { path: 'editNote/:toDoId', component: CreateToDoComponent },
+  { path: 'editToDo/:toDoId', component: CreateToDoComponent },
   { path: 'home', component: CalendarComponent },
 
   // Add More Routes
