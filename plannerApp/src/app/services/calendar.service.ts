@@ -5,7 +5,6 @@ import { NotesServices } from './notes.services';
 import { Note } from '../models/note';
 import { EventInput } from '@fullcalendar/core';
 import { ToDo } from '../models/toDo';
-import { ToDoItem } from '../models/toDoItem';
 import { FoundNote } from '../models/foundNote';
 import { FoundTodo } from '../models/foundTodo';
 import { map } from 'rxjs/operators';
@@ -214,30 +213,14 @@ export class CalendarService {
   getInitialToDos(): Array<ToDo> {
     const todos: ToDo[] = [
       {
-        id: '1', todoTitle: 'ToDo 1', createdDate: new Date('11-6-2021'),
-        startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021'),
-        listOfItems: [{
-          id: 101, title: 'Task 1', createdDate: new Date('11-6-2021'),
-          startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021')
-        },
-        {
-          id: 102, title: 'Task 2', createdDate: new Date('11-6-2021'),
-          startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021')
-        }
-        ]
+        id: '1', title: 'ToDo 1', description: 'td1 desc', createdDate: new Date('11-6-2021'),
+        startDateTime: new Date('11-7-2021'), endDateTime: new Date('11-7-2021'),
+        completed: true, notification: false,
       },
       {
-        id: '2', todoTitle: 'ToDo 2', createdDate: new Date('11-6-2021'),
-        startDate: new Date('11-7-2021'), endDate: new Date('11-9-2021'),
-        listOfItems: [{
-          id: 105, title: 'Task 11', createdDate: new Date('11-6-2021'),
-          startDate: new Date('11-7-2021'), endDate: new Date('11-7-2021')
-        },
-        {
-          id: 106, title: 'Task 12', createdDate: new Date('11-6-2021'),
-          startDate: new Date('11-7-2021'), endDate: new Date('11-9-2021')
-        }
-        ]
+        id: '2', title: 'ToDo 2', description: 'td2 desc', createdDate: new Date('11-6-2021'),
+        startDateTime: new Date('11-7-2021'), endDateTime: new Date('11-9-2021'),
+        completed: false, notification: false,
       }
     ];
 
@@ -258,12 +241,12 @@ export class CalendarService {
   private createToDoAsEventObject(todo: ToDo): any {
     const offsetInMins = 2 * 60;
     const startStr = new Date(
-      todo.startDate.getTime() + offsetInMins * 60000
+      todo.startDateTime.getTime() + offsetInMins * 60000
     ).toISOString();
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
     return {
-      id: todo.id.toString(), title: todo.todoTitle, start: startStr,
-      end: todo.endDate.toISOString(), ofType: this.EVENT_TYPE_TODO
+      id: todo.id.toString(), title: todo.title, start: startStr,
+      end: todo.endDateTime.toISOString(), ofType: this.EVENT_TYPE_TODO
     };
   }
 
