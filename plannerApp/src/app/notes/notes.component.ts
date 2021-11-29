@@ -1,23 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { NotesServices } from '../services/notes.services';
 import { Note } from '../models/note';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-notes',
   templateUrl: './notes.component.html',
   styleUrls: ['./notes.component.css'],
 })
-export class NotesComponent implements OnInit {
+export class NotesComponent implements OnInit, OnChanges {
   form!: FormGroup;
   createNoteForm!: FormGroup;
   private notesSub: Subscription = new Subscription();
   filteredOptions?: Observable<Note[]>;
+  minDate: Date = new Date();
+  maxDate: Date = new Date();
+  noteAddedNotification: Subscription = new Subscription();
 
   notes: Note[] = [];
 
-  constructor(private notesService: NotesServices) {}
+  constructor(
+    private notesService: NotesServices,
+    public snackBar: SnackbarService,
+    private router:Router
+  ) {
+    const currentYear = new Date().getFullYear();
+    //this.minDate = new Date(currentYear - 5, 12, 99);
+    this.minDate.setDate(this.minDate.getDate());
+    this.maxDate.setDate(this.minDate.getDate() + 20);
+    //this.maxDate = new Date(currentYear - 1, 12, 99);
+  }
 
   ngOnInit(): void {
     this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
@@ -39,7 +55,17 @@ export class NotesComponent implements OnInit {
       startDate: new FormControl(null, { validators: [Validators.required] }),
       endDate: new FormControl(null, { validators: [Validators.required] }),
     });
+    this.noteAddedNotification = this.notesService.noteAdded.subscribe(
+     note => setTimeout(()=>{
+      console.log(note)
+      },2500)
+    );
   }
+
+  ngOnChanges(){
+    this.notesService.getNotesUpdateListener();
+  }
+
   onSaveDate() {}
   submitNewNote() {
     const newNote: Note = {
@@ -52,12 +78,19 @@ export class NotesComponent implements OnInit {
     };
 
     console.log(newNote.startDate);
-    console.log(typeof newNote.startDate);
     this.notesService.addNote(newNote);
     // console.log(this.createNoteForm.get('newNote')?.value)
     // console.log(this.createNoteForm.value.start)
     // console.log(this.createNoteForm.value.end)
   }
+
+  changeTabs($e: MatTabChangeEvent){
+    if($e.index === 0){
+      console.log($e)
+      //this.notesService.getNotesUpdateListener()
+    }
+    //this.fetchAccounts(this.banks[$event.index].id)
+}
 
   date(e: any) {
     const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
