@@ -23,6 +23,7 @@ import { Note } from '../models/note';
 import { ToDo } from '../models/toDo';
 import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
 import { Router } from '@angular/router';
+import { Preferences } from '../models/preferences';
 
 @Component({
   selector: 'app-calendar',
@@ -38,6 +39,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   calendarVisible = true;
   private subscription?: Subscription;
   showWeekends  = true;
+  preference: Preferences = new Preferences();
 
   // Calendar Options
   calendarOptions: CalendarOptions = {};
@@ -45,7 +47,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   // Date Select
   handleDateSelect(selectInfo: DateSelectArg): void {
     const calendarApi = selectInfo.view.calendar;
-    /* console.log(
+    /*console.log(
       'Selected Date: All Day: ' +
         selectInfo.allDay +
         ' Start: ' +
@@ -56,7 +58,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         selectInfo.view.title +
         ', ' +
         selectInfo.view.type
-    ); */
+    );*/
     calendarApi.unselect();
   }
 
@@ -86,13 +88,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   handleDidMountEvent(info: MountArg<EventContentArg>): void
   {
-    // console.log('DisMount got FIRED...');
-    /*var tooltip = new Tooltip(info.el, {
-      title: info.event.extendedProps.description,
-      placement: 'top',
-      trigger: 'hover',
-      container: 'body'
-    });*/
+    console.log('DisMount got FIRED...' + info.event.title);
+    if (info.isDragging) {
+      console.log('Dragging');
+    }
+    console.log('isSelected: ' + info.isSelected + ' Info: ' + info);
+
   }
 
   handleWeekendsToggle(): void
@@ -217,9 +218,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
       eventSources: [
         {
           events: this.noteEvents,
-          color: 'yellow',
-          textColor: 'black',
-          borderColor: 'blue',
+          color: this.preference.highPriorityNoteColor, // 'yellow',
+          textColor: 'white',
+          borderColor: 'red',
         },
         {
           events: [
@@ -238,20 +239,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
             },
           ],
           // backgroundColor: 'gray',
-          color: 'lavendar',
+          color: this.preference.mediumPriorityNoteColor, // 'lavendar',
           textColor: 'black',
           borderColor: 'green',
           editable: true,
         },
         {
           events: this.getEvents(),
-          color: 'gray',
-          textColor: 'white',
+          color: this.preference.lowPriorityNoteColor, // 'gray',
+          textColor: 'black',
         },
         {
           events: this.todoEvents, // calService.getToDosOfMonthAsEvents(11),
-          color: 'green',
-          borderColor: 'red',
+          color: this.preference.todoColor, // 'green',
+          borderColor: 'blue',
         },
       ],
       select: this.handleDateSelect.bind(this),
