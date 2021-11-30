@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NotesServices } from '../services/notes.services';
 import { Note } from '../models/note';
+import { SnackbarService } from '../services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-create-note',
@@ -17,7 +18,8 @@ export class CreateNoteComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute,
-    public notesService: NotesServices
+    public notesService: NotesServices,
+    public snackBar:SnackbarService
   ) {}
 
   ngOnInit() {
@@ -25,7 +27,9 @@ export class CreateNoteComponent implements OnInit {
       title: new FormControl(null, { validators: [Validators.required] }),
       description: new FormControl(null, { validators: [Validators.required] }),
       startDate: new FormControl(null, { validators: [Validators.required] }),
+      startDateA:new FormControl(null, {validators:[Validators.required]}),
       endDate: new FormControl(null, { validators: [Validators.required] }),
+      endDateA: new FormControl(null, { validators: [Validators.required] }),
       createdDate: new FormControl(null, { validators: [Validators.required] }),
     });
 
@@ -50,6 +54,8 @@ export class CreateNoteComponent implements OnInit {
             description: this.note.description,
             startDate: this.note.startDate.toDateString(),
             endDate: this.note.endDate.toDateString(),
+            startDateA:this.note.startDate,
+            endDateA:this.note.endDate,
             createdDate: this.note.createdDate.toDateString(),
           });
         });

@@ -1,4 +1,4 @@
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="changeTabs($event)">
   <mat-tab label="View my Notes">
     <app-note-item
       *ngFor="let noteEl of notes; let i = index"
@@ -19,14 +19,18 @@
             />
           </mat-form-field>
         </div>
+        <span class="help-block"*ngIf="!createNoteForm.get('title')!.valid && createNoteForm.get('title')!.touched">
+          Please Enter a Valid Note Title
+        </span>
 
         <div>
-          <mat-form-field>
+          <!-- <mat-form-field>
             <mat-date-range-input [rangePicker]="pickerA">
               <input
                 matStartDate
                 placeholder="Start date"
                 formControlName="startDate"
+                [min]="minDate"
               />
               <input
                 matEndDate
@@ -38,6 +42,16 @@
               matSuffix
               [for]="pickerA"
             ></mat-datepicker-toggle>
+            <mat-date-range-picker #pickerA></mat-date-range-picker>
+          </mat-form-field> -->
+
+          <mat-form-field appearance="fill" >
+            <mat-date-range-input [rangePicker]="pickerA" [min]="minDate"
+               [max]="maxDate" >
+              <input  formControlName="startDate" matStartDate placeholder="Start date"    >
+              <input formControlName="endDate" matEndDate placeholder="End date"   >
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="pickerA"></mat-datepicker-toggle>
             <mat-date-range-picker #pickerA></mat-date-range-picker>
           </mat-form-field>
         </div>
