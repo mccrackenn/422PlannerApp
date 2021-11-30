@@ -71,7 +71,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           },
         ],
         // backgroundColor: 'gray',
-        color: 'lavendar',
+        color: 'lavender',
         textColor: 'black',
         borderColor: 'green',
         editable: true,

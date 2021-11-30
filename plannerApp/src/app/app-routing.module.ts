@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { NotesComponent } from './notes/notes.component';
 import { ToDosComponent } from './to-dos/to-dos.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'edit/:noteId', component: CreateNoteComponent },
   { path: 'to-dos', component: ToDosComponent },
   { path: 'home', component: CalendarComponent },
+  { path: 'profile', component: ProfileComponent },
 
   // Add More Routes
 ];

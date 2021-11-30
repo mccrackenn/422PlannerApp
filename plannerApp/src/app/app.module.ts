@@ -37,6 +37,7 @@ import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
 import { SignInComponent}  from './login/login.component'; 
 import { GoogleSigninComponent }  from './google.signin';
 import { LogoutComponent } from './logout/logout.component';
+import { ProfileComponent } from './profile/profile.component';
 
 // Register FullCalendar plugins
 FullCalendarModule.registerPlugins([
@@ -60,7 +61,8 @@ FullCalendarModule.registerPlugins([
     GoogleSigninComponent,
     SignInComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

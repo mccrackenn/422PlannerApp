@@ -1,0 +1,32 @@
+
+<body>
+    <div id ="profile">
+        <mat-card>
+            <p>{{userName}}</p>
+            <p>{{userEmail}}</p>
+        </mat-card> 
+    </div>
+    <div id = "colorchoice">
+        <mat-card>
+            <p><label for="colorpicker">Calender Priority</label></p>
+            <p>Priority One <input type="color" id="colorpicker1" value="#0000ff"></p>
+            <p>Priority Two <input type="color" id="colorpicker2" value="#0000ff"></p>
+            <p>Priority Three <input type="color" id="colorpicker3" value="#0000ff"></p>
+    </mat-card>
+    </div>
+    <div id = "holiday">
+        <mat-card>
+         <mat-checkbox class="showHoliday"> Show Holidays </mat-checkbox>
+        </mat-card>
+    </div>
+    <div id = "time">
+        <mat-card>
+            <mat-checkbox class="timepref"> 24 Hour Clock </mat-checkbox>
+        </mat-card>
+    </div>
+    <div id = "date">
+        <mat-card>
+            <mat-checkbox class="datepref"> European Time </mat-checkbox>
+        </mat-card>
+    </div>
+  </body>

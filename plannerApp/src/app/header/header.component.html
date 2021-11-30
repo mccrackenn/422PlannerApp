@@ -2,15 +2,30 @@
   style="background-image: linear-gradient(to right, #00b4db, #0083b0)"
 >
   <!-- <span class="spacer"></span> -->
-  <ul>
-    <li>
-      <a mat-button routerLink="/home" routerLinkActive="mat-accent">Home</a>
-    </li>
-    <li>
-      <a mat-button routerLink="/to-dos" routerLinkActive="mat-accent">ToDos</a>
-    </li>
-    <li>
-      <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
-    </li>
-  </ul>
+
+ 
+    
+    <ul id="header" >
+      <li>
+        <a mat-button routerLink="/home" routerLinkActive="mat-accent">Home</a>
+      </li>
+      <li>
+        <a mat-button routerLink="/to-dos" routerLinkActive="mat-accent">ToDos</a>
+      </li>
+      <li>
+       <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
+      </li>
+      <li>
+        <a mat-button routerLink="/profile" routerLinkActive="mat-accent">Profile</a>
+      </li>
+
+      <li>
+        <button mat-button (click)="clearLoginData()">Log Out</button>
+      </li>
+
+   </ul>
+
+
+
+  
 </mat-toolbar>

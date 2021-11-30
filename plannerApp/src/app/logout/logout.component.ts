@@ -10,9 +10,10 @@ export class LogoutComponent implements OnInit {
   constructor() { }
 
   clearLoginData(): void {
+    console.log("Logout Happened");
     sessionStorage.setItem('ID:', "" );
     sessionStorage.setItem('Name:', "" );
-    window.location.href = '/dashboard';
+    window.location.href = '/';
   }
 
   ngOnInit(): void {

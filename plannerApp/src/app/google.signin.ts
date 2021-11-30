@@ -7,7 +7,7 @@ declare const gapi: any;
 
 @Component({
   selector: 'google-signin',
-  template: '<button id="googleBtn">Google Sign-In</button>'
+  template: ' <div id = "center"><div class="vertical-center"><button mat-button id="googleBtn">Google Sign-In</button></div></div>'
 })
 export class GoogleSigninComponent implements AfterViewInit {
 
@@ -46,16 +46,19 @@ export class GoogleSigninComponent implements AfterViewInit {
         console.log('Email: ' + profile.getEmail());
         //YOUR CODE HERE
 
-          // save 2 to this session's strorage
+        // save 2 to this session's strorage
          sessionStorage.setItem('ID:', profile.getId() );
-          sessionStorage.setItem('Name:', profile.getName() );
-        window.location.href = '/dashboard';
+         sessionStorage.setItem('Name:', profile.getName() );
+         sessionStorage.setItem('Email:', profile.getEmail());
+         sessionStorage.setItem('Image URL:', profile.getImageUrl());
+         window.location.href = '/home';
 
 
       }, function (error: any) {
         console.log(JSON.stringify(error, undefined, 2));
       });
   }
+  
 
   constructor(private element: ElementRef) {
     console.log('ElementRef: ', this.element);
