@@ -15,7 +15,6 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
-          <!-- <mat-action-row> -->
             <button  mat-flat-button  
               title="Create new Note" color="accent" 
               routerLink="../notes">
@@ -27,7 +26,6 @@
                 routerLink="../to-dos">
                 + ToDo
             </button>
-          <!-- </mat-action-row> -->
         </div>
 
         <div class='cal-page-sidebar-section'>          
@@ -55,11 +53,6 @@
                 (change)='handleWeekendsToggle()'  
                 color='primary' >
               </mat-checkbox>
-              <!-- <input
-                type='checkbox' 
-                [checked]='this.calendarOptions.weekends'
-                (change)='handleWeekendsToggle()'
-              /> -->
               Show Weekends
             </label>
         </div>
