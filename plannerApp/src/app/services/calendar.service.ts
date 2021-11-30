@@ -10,8 +10,6 @@ import { FoundTodo } from '../models/foundTodo';
 import { map } from 'rxjs/operators';
 import { ToDoServices } from './toDo.services';
 
-// import { HttpHeaders, HttpClient } from '@angular/common/http';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -27,47 +25,8 @@ export class CalendarService {
   constructor(private noteService: NotesServices,
               private todoService: ToDoServices) {}
 
-  private populateCalItems(): void {
-    let c1 = new CalendarItem();
-    c1 = c1.createCalendarItem(1, new Date(2021, 11, 4));
-    // c1.listOfNotes = this.noteService.getNotes();
 
-    // Code we experimented with during 11/11 meeting
-    // this.noteService.getNotes().subscribe((notes) => (c1.listOfNotes = notes));
-    // console.log(c1.listOfNotes);
-    // c1.listOfNotes = notesA
-
-    const notes: Note[] = [
-      {
-        id: '11', title: '422 Notes', description: 'Notes for 422',
-        createdDate: new Date(2021, 10, 5),
-        startDate: new Date(2021, 11, 10),
-        endDate: new Date(2021, 11, 15),
-      },
-      {
-        id: '12', title: '10 Day Note', description: 'Note for 10 days',
-        createdDate: new Date(2021, 9, 18),
-        startDate: new Date(2021, 10, 15),
-        endDate: new Date(2021, 10, 25),
-      },
-      {
-        id: '13', title: 'Date Issue Note', description: 'Dates Issue',
-        createdDate: new Date(2021, 9, 18),
-        startDate: new Date('11-1-2021'),
-        endDate: new Date('11-10-2021'),
-      },
-    ];
-
-    let c2 = new CalendarItem();
-    c2 = c2.createCalendarItem(2, new Date(2021, 11, 1));
-    c2.listOfNotes = notes;
-    c2.listOfToDos = this.getInitialToDos();
-
-    this.calItems.push(c1);
-    this.calItems.push(c2);
-  }
-
-  // Try to retrieve the clicked Note from calendarItems by passing the note id
+  // Retrieve the Note from notes[] by passing the note id
   getNote(id: string): FoundNote {
     let ret: FoundNote = new FoundNote();
     const a = this.notes.find(n => n.id === id);
@@ -81,29 +40,25 @@ export class CalendarService {
     }
   }
 
-  // Try to retrieve the clicked ToDo from calendarItems by passing the todo id
+  // Updates passed note in the DB
+  updateNote(note: Note): void {
+    this.noteService.updateNote(note);
+  }
+
+  // Retrieve the ToDo from todos[] by passing the todo id
   getTodo(id: string): FoundTodo {
     let ret: FoundTodo = new FoundTodo();
-    this.calItems.forEach(item => {
-      ret = item.getTodo(id);
-    });
+    const t = this.todos.find(n => n.id === id);
+    if (t !== undefined) {
+      ret = { found: true, todo: t };
+    } else {
+      ret = { found: false };
+    }
 
     return ret;
   }
 
-  // Get CalendarItems for specified month as an Array
-  getCalendarItemsOfMonth(monthNumber: number): Observable<CalendarItem[]> {
-    if (this.calItems.length === 0) {
-      this.populateCalItems();
-    }
-
-    const itemForMonth = this.calItems.filter(
-      (item) => item.date.getMonth() === monthNumber
-    );
-
-    return of(itemForMonth);
-  }
-
+  // Retrieve all Notes as EventInput[]
   getNoteEvents(): Observable<Array<EventInput>> {
     const events: EventInput[] = [];
     return this.noteService.getNotes().pipe(map((data: any) => {
@@ -118,7 +73,7 @@ export class CalendarService {
     }));
   }
 
-  // Works equivalent to GetNotes() - this implementation uses Subjec<>
+  // Works equivalent to GetNoteEvents() - this implementation uses Subjec<>
   getNoteEvents1(): Observable<Array<EventInput>> {
     const events: EventInput[] = [];
     const result: Subject<Array<EventInput>> = new Subject<Array<EventInput>>();
@@ -147,6 +102,9 @@ export class CalendarService {
     }));
   } */
 
+  // NOT USED, RIGHT NOW
+  /*
+    // NOT USED
   getNotesOfMonthAsEvents(monthNumber: number): EventInput[] {
     const event: EventInput[] = [];
 
@@ -164,50 +122,19 @@ export class CalendarService {
     return event;
   }
 
-  // Get Notes for specified month as Array<Note>
-  getNotesOfMonth(monthNumber: number): Observable<Note[]> {
-    if (this.calItems.length === 0) {
-      this.populateCalItems();
-    }
+  */
 
-    const notes = new Array<Note>();
-
-    this.calItems.forEach((element) => {
-      if (element.listOfNotes.length > 0) {
-        notes.push(...element.listOfNotes);
-      }
-    });
-
-    return of(notes);
-  }
-
+  // Retrieve all ToDos as EventInput[]
   getToDosOfMonthAsEvents(monthNumber: number): EventInput[] {
     const event: EventInput[] = [];
 
-    const todos: ToDo[] = this.getToDosOfMonth(monthNumber);
+    this.todos = this.getInitialToDos(); // this.getToDosOfMonth(monthNumber);
 
-    todos.forEach((todo) => {
-      event.push(this.createToDoAsEventObject(todo));
+    this.todos.forEach((todo) => {
+      this.todoEvents.push(this.createToDoAsEventObject(todo));
     });
 
-    return event;
-  }
-
-  // Get ToDos for specified month as Array<ToDo>
-  getToDosOfMonth(monthNumber: number): ToDo[] {
-    if (this.calItems.length === 0) {
-      this.populateCalItems();
-    }
-
-    const todos = new Array<ToDo>();
-
-    this.calItems.forEach((element) => {
-      if (element.listOfToDos.length > 0) {
-        todos.push(...element.listOfToDos);
-      }
-    });
-
-    return todos;
+    return this.todoEvents;
   }
 
   getInitialToDos(): Array<ToDo> {

@@ -15,16 +15,44 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
+            <button  mat-flat-button  
+              title="Create new Note" color="accent" 
+              routerLink="../notes">
+              + Note
+            </button>
+
+            <button  mat-flat-button [ngStyle]="{ 'margin-left': '20px' }" 
+                title="Create new ToDo" color="accent" 
+                routerLink="../to-dos">
+                + ToDo
+            </button>
+        </div>
+
+        <div class='cal-page-sidebar-section'>          
+          <label>Note Priority :</label>
+          <mat-action-row>
+            <div>
+              <button [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
+              <label [ngStyle]="{ 'margin-right':'15px'}">Low</label>
+              <button [ngStyle]="{'background-color': this.preference.mediumPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
+              <label [ngStyle]="{ 'margin-right':'15px'}">Medium</label>
+              <button [ngStyle]="{'background-color': this.preference.highPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
+              <label>High</label>
+            </div>
+          </mat-action-row>
+
+          <mat-action-row>
+              <button [ngStyle]="{'background-color': this.preference.todoColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button>
+              <label [ngStyle]="{ 'margin-right':'15px' }">ToDo </label>
+          </mat-action-row>
+        </div>
+
+        <div class='cal-page-sidebar-section'>
             <label>
               <mat-checkbox [checked]="showWeekends" 
                 (change)='handleWeekendsToggle()'  
                 color='primary' >
               </mat-checkbox>
-              <!-- <input
-                type='checkbox' 
-                [checked]='this.calendarOptions.weekends'
-                (change)='handleWeekendsToggle()'
-              /> -->
               Show Weekends
             </label>
         </div>

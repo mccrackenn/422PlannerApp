@@ -1,20 +1,13 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  ChangeDetectorRef,
-  OnDestroy,
-} from '@angular/core';
+  Component,  OnInit,
+  ChangeDetectorRef,  OnDestroy } from '@angular/core';
 import {
   CalendarOptions,
-  DateSelectArg,
-  EventClickArg,
-  EventApi,
-  EventInput,
-  EventContentArg,
-  MountArg,
-} from '@fullcalendar/angular';
-import { Subscription, observable, Observable } from 'rxjs';
+  DateSelectArg, EventClickArg,
+  EventApi, EventInput, EventContentArg,
+  MountArg, EventDropArg } from '@fullcalendar/angular';
+
+import { Subscription } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { CalendarService } from '../services/calendar.service';
@@ -23,6 +16,7 @@ import { Note } from '../models/note';
 import { ToDo } from '../models/toDo';
 import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
 import { Router } from '@angular/router';
+import { Preferences } from '../models/preferences';
 
 @Component({
   selector: 'app-calendar',
@@ -38,6 +32,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   calendarVisible = true;
   private subscription?: Subscription;
   showWeekends  = true;
+  preference: Preferences = new Preferences();
 
   // Calendar Options
   calendarOptions: CalendarOptions = {};
@@ -45,7 +40,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   // Date Select
   handleDateSelect(selectInfo: DateSelectArg): void {
     const calendarApi = selectInfo.view.calendar;
-    /* console.log(
+    /*console.log(
       'Selected Date: All Day: ' +
         selectInfo.allDay +
         ' Start: ' +
@@ -56,7 +51,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         selectInfo.view.title +
         ', ' +
         selectInfo.view.type
-    ); */
+    );*/
     calendarApi.unselect();
   }
 
@@ -65,7 +60,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     // alert('Date clicked: ' + arg.dateStr);
   }
 
-  // Event Click
+  // Event Click - Open respective dialog
   handleEventClick(clickInfo: EventClickArg): void {
     const event = clickInfo.event;
     const extended = event.extendedProps.ofType;
@@ -86,13 +81,32 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   handleDidMountEvent(info: MountArg<EventContentArg>): void
   {
-    // console.log('DisMount got FIRED...');
-    /*var tooltip = new Tooltip(info.el, {
-      title: info.event.extendedProps.description,
-      placement: 'top',
-      trigger: 'hover',
-      container: 'body'
-    });*/
+    // Fires this event when an event is moved/dropped
+    /*console.log('DisMount got FIRED...' + info.event.title);
+    if (info.isDragging) {
+      console.log('Dragging');
+    }
+    console.log('isSelected: ' + info.isSelected + ' Info: ' + info);
+*/
+  }
+
+  handleEventDrop(drop: EventDropArg): void {
+    const droppedEvent  = drop.event;
+    const extended = droppedEvent.extendedProps.ofType;
+
+    if (extended === this.calService.EVENT_TYPE_NOTE) {
+      if (! this.updateDroppedNote(droppedEvent)) {
+        drop.revert();
+      }
+    }
+    else if (extended === this.calService.EVENT_TYPE_TODO) {
+      if (! this.updateDroppedTodo(droppedEvent)) {
+        drop.revert();
+      }
+    }
+    else {
+      drop.revert();
+    }
   }
 
   handleWeekendsToggle(): void
@@ -115,6 +129,45 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.cd.detectChanges();
   }
 
+  updateDroppedNote(droppedEvent: EventApi): boolean {
+    let updated = false;
+    const orgNoteEvent = this.noteEvents.find(e => e.id === droppedEvent.id);
+    if (orgNoteEvent?.start !== droppedEvent.startStr ||
+      orgNoteEvent?.end !== droppedEvent.endStr) {
+        // console.log('Drag-Drop has occured.');
+        const fn = this.calService.getNote(droppedEvent.id);
+        if (fn.found && fn.note) {
+          // console.log('Found Note: ' + fn.found);
+          const note = fn.note;
+          note.startDate = new Date(droppedEvent.startStr);
+          note.endDate = new Date(droppedEvent.endStr);
+          this.calService.updateNote(note);
+          updated = true;
+        }
+    }
+    return updated;
+  }
+
+  updateDroppedTodo(droppedEvent: EventApi): boolean {
+    let updated = false;
+
+    const orgTodoEvent = this.todoEvents.find(e => e.id === droppedEvent.id);
+    if (orgTodoEvent?.start !== droppedEvent.startStr ||
+      orgTodoEvent?.end !== droppedEvent.endStr) {
+        console.log('Drag-Drop of ToDo has occured.');
+        const fn = this.calService.getTodo(droppedEvent.id);
+        if (fn.found && fn.todo) {
+          // console.log('Found Todo: ' + fn.found);
+          const todo = fn.todo;
+          todo.startDate = new Date(droppedEvent.startStr);
+          todo.endDate = new Date(droppedEvent.endStr);
+          // this.calService.updateTodo(todo);
+          // updated = true;
+        }
+    }
+    return updated;
+  }
+
   // Gets/Sets events of specified date
   private getSelectedDaysEvents(date: Date): void {
     const dt = date;
@@ -126,12 +179,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     e.forEach((event) => {
       if (event._instance) {
-        if (event._instance?.range.start.getDate()+1 === dt.getDate()) {
+        if (event._instance?.range.start.getDate() + 1 === dt.getDate()) {
           this.selectedDayEvents.push(event);
         }
         else if (
           event._instance.range.end.getDate() >= dt.getDate() &&
-          event._instance?.range.start.getDate()+1 < dt.getDate() )
+          event._instance?.range.start.getDate() + 1 < dt.getDate() )
         {
           this.selectedDayEvents.push(event);
         }
@@ -217,9 +270,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
       eventSources: [
         {
           events: this.noteEvents,
-          color: 'yellow',
-          textColor: 'black',
-          borderColor: 'blue',
+          color: this.preference.highPriorityNoteColor,
+          textColor: 'white',
+          borderColor: 'red',
         },
         {
           events: [
@@ -238,20 +291,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
             },
           ],
           // backgroundColor: 'gray',
-          color: 'lavendar',
+          color: this.preference.mediumPriorityNoteColor,
           textColor: 'black',
           borderColor: 'green',
           editable: true,
         },
         {
           events: this.getEvents(),
-          color: 'gray',
-          textColor: 'white',
+          color: this.preference.lowPriorityNoteColor,
+          textColor: 'black',
         },
         {
-          events: this.todoEvents, // calService.getToDosOfMonthAsEvents(11),
-          color: 'green',
-          borderColor: 'red',
+          events: this.todoEvents,
+          color: this.preference.todoColor,
+          borderColor: 'blue',
         },
       ],
       select: this.handleDateSelect.bind(this),
@@ -259,6 +312,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       eventClick: this.handleEventClick.bind(this),
       eventsSet: this.handleEvents.bind(this),
       eventDidMount: this.handleDidMountEvent.bind(this),
+      eventDrop: this.handleEventDrop.bind(this),
       eventDisplay: 'block',
       eventInteractive: true,
     };
@@ -278,6 +332,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+    this.dialog.ngOnDestroy();
   }
 
   getEvents(): EventInput[] {
