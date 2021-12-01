@@ -159,8 +159,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
         if (fn.found && fn.todo) {
           // console.log('Found Todo: ' + fn.found);
           const todo = fn.todo;
-          todo.startDate = new Date(droppedEvent.startStr);
-          todo.endDate = new Date(droppedEvent.endStr);
+          todo.startDateTime = new Date(droppedEvent.startStr);
+          todo.endDateTime = new Date(droppedEvent.endStr);
           // this.calService.updateTodo(todo);
           // updated = true;
         }
