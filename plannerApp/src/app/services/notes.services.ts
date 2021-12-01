@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscriber, Subscription, Observable } from 'rxjs';
 import { Note } from 'src/app/models/note';
-import { map } from 'rxjs/operators';
+import { map,tap} from 'rxjs/operators';
+import { SnackbarService } from './snackbar/snackbar.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +13,13 @@ export class NotesServices {
   private notes: Note[] = [];
 
   notesUpdated = new Subject<Note[]>();
+  noteAdded = new Subject<Note>();
 
   constructor(
     public router: Router,
     public route: ActivatedRoute,
-    public httpClient: HttpClient
+    public httpClient: HttpClient,
+    public snackBar:SnackbarService
   ) {}
 
   getNotes(): Observable<Note[]> {
@@ -33,7 +36,7 @@ export class NotesServices {
               note.createdDate = new Date(note.createdDate);
               return note;
             })
-          )
+          ),tap(a => this.notes = a)
         )
     );
     // httpClient.get<Hero[]>(url).pipe(
@@ -60,9 +63,11 @@ export class NotesServices {
         };
         console.log(newNote);
         this.notes.push(newNote);
-        console.log(this.notes);
+        //console.log(this.notes);
         this.notesUpdated.next([...this.notes]);
-        //this.router.navigate(['/notes']).then(() => window.location.reload());
+        this.noteAdded.next(newNote);
+        //this.router.navigate(['/notes']).then(()=>console.log('hello'));
+        //this.snackBar.openSnackBar("message","action")
       });
   }
 
@@ -81,12 +86,12 @@ export class NotesServices {
   }
 
   deleteNote(noteId: string) {
+    console.log(this.notes)
     this.httpClient
       .delete('http://localhost:3000/api/notes/' + noteId)
-      .subscribe(() => {
-        console.log(this.notes);
+      .subscribe((response) => {
+        console.log(response);
         const updatedNotes = this.notes.filter((note) => note.id !== noteId);
-        console.log(updatedNotes);
         this.notes = updatedNotes;
         this.notesUpdated.next([...this.notes]);
         // this.router.navigate(['/notes']).then(() => window.location.reload())

@@ -3,31 +3,43 @@ const router = express.Router();
 const Note = require("../models/note");
 
 router.get("", (req, res, next) => {
-  Note.find().then((documents) => {
-    let returnedDocuments = [];
-    //Don't want the returned Array to have a _id key, want id, this loops through
-    //and replaces the it. Method is in the Mongoose Model
-    for (let i = 0; i < documents.length; i++) {
-      // const dateCheck= documents[i].createdDate;
-      //console.log(typeof dateCheck)
-      returnedDocuments.push(documents[i].transform());
-      //console.log(returnedDocuments);
-    }
-    res.status(200).json(returnedDocuments);
-  });
+  Note.find()
+    .then((documents) => {
+      let returnedDocuments = [];
+      //Don't want the returned Array to have a _id key, want id, this loops through
+      //and replaces the it. Method is in the Mongoose Model
+      for (let i = 0; i < documents.length; i++) {
+        // const dateCheck= documents[i].createdDate;
+        //console.log(typeof dateCheck)
+        returnedDocuments.push(documents[i].transform());
+        //console.log(returnedDocuments);
+      }
+      res.status(200).json(returnedDocuments);
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Fetching Posts failed!",
+      });
+    });
 });
 
 router.get("/:id", (req, res, next) => {
   console.log(req.params.id);
-  Note.findById(req.params.id).then((note) => {
-    if (note) {
-      let changedNote = note.transform();
-      console.log(changedNote);
-      res.status(200).json(changedNote);
-    } else {
-      res.status(404).json({ message: "Note not found" });
-    }
-  });
+  Note.findById(req.params.id)
+    .then((note) => {
+      if (note) {
+        let changedNote = note.transform();
+        console.log(changedNote);
+        res.status(200).json(changedNote);
+      } else {
+        res.status(404).json({ message: "Note not found" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Fetching Posts failed!",
+      });
+    });
 });
 
 router.post("", (req, res, next) => {
@@ -38,12 +50,19 @@ router.post("", (req, res, next) => {
     endDate: req.body.endDate,
     createdDate: req.body.createdDate,
   });
-  newNote.save().then((createdNote) => {
-    res.status(201).json({
-      message: "successfully added new Note to DB",
-      noteId: createdNote._id,
+  newNote
+    .save()
+    .then((createdNote) => {
+      res.status(201).json({
+        message: "successfully added new Note to DB",
+        noteId: createdNote._id,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Creating a note failed",
+      });
     });
-  });
 });
 
 router.put("/:id", (req, res, next) => {
@@ -56,10 +75,21 @@ router.put("/:id", (req, res, next) => {
     endDate: req.body.endDate,
     createdDate: req.body.createdDate,
   });
-  Note.updateOne({ _id: req.params.id }, note).then((result) =>
-    console.log(result)
-  );
-  /*
+  Note.updateOne({ _id: req.params.id }, note)
+    .then((result) => {
+      console.log(result);
+      if (result.modifiedCount > 0) {
+        res.status(200).json({ message: "Post Succesfully Updated" });
+      } else {
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: "Could not update Note",
+      });
+    });
+});
+/*
 
 router.put("/:id", (req, res, next) => {
   console.log(req.params.id);
@@ -88,15 +118,29 @@ router.put("/:id", (req, res, next) => {
       noteId: createdNote._id,
     });
   });*/
-});
 
 router.delete("/:id", (req, res, next) => {
-  //console.log(req.params);
+  console.log(req.params);
   Note.deleteOne({ _id: req.params.id }).then((result) => {
-    res.status(200).json({ message: "Note Deleted" });
+    if (result.deletedCount == 1) {
+      res.status(200).json({ message: "Note Deleted" });
+    } else {
+      res.status(404).json({ message: "Error, note not found" });
+    }
   });
 });
+// User.deleteOne({ age: { $gte: 10 } }).then(function(){
+//   console.log("Data deleted"); // Success
+// }).catch(function(error){
+//   console.log(error); // Failure
+// });
 
-// {id:1,title:"My First Note",description:"My First Test Note",createdDate:new Date(2021,10,5),startDate:new Date(),endDate:new Date()},
-// {id:2,title:"My Second Note",description:"My Second Test Note",createdDate:new Date(2021,9,18),startDate:new Date(),endDate:new Date()}
+// Post.findById(req.params.id).then((post) => {
+//   if (post) {
+//     res.status(200).json(post);
+//   } else {
+//     res.status(404).json({ message: "POST NOT HERE" });
+//   }
+// });
+
 module.exports = router;
