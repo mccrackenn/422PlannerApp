@@ -1,11 +1,12 @@
 import { Component, OnChanges, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { NotesServices } from '../services/notes.services';
 import { Note } from '../models/note';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-notes',
@@ -20,6 +21,7 @@ export class NotesComponent implements OnInit, OnChanges {
   minDate: Date = new Date();
   maxDate: Date = new Date();
   noteAddedNotification: Subscription = new Subscription();
+
 
   notes: Note[] = [];
 

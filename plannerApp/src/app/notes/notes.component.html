@@ -68,7 +68,7 @@
           ></textarea>
         </mat-form-field>
       </div>
-      <button mat-raised-button color="primary" type="submit">Create</button>
+      <button [disabled]="!createNoteForm.get('title')!.valid" mat-raised-button color="primary" type="submit">Create</button>
     </form>
   </mat-tab>
 

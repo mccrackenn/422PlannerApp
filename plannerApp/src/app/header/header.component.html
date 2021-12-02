@@ -2,7 +2,7 @@
   style="background-image: linear-gradient(to right, #00b4db, #0083b0)"
 >
   <!-- <span class="spacer"></span> -->
-  <ul>
+  <ul >
     <li>
       <a mat-button routerLink="/home" routerLinkActive="mat-accent">Home</a>
     </li>
@@ -11,6 +11,9 @@
     </li>
     <li>
       <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
+    </li>
+    <li>
+      <span *ngIf="isAuthenticated">{{user.id}}</span>
     </li>
   </ul>
 </mat-toolbar>
