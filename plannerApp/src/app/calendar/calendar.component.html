@@ -42,8 +42,13 @@
           </mat-action-row>
 
           <mat-action-row>
-              <button [ngStyle]="{'background-color': this.preference.todoColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button>
-              <label [ngStyle]="{ 'margin-right':'15px' }">ToDo </label>
+            <label>ToDo :</label>
+            <div>
+              <button [ngStyle]="{'background-color': this.preference.todoCompletedColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button>
+              <label [ngStyle]="{ 'margin-right':'15px' }">Complete </label>
+              <button [ngStyle]="{'background-color': this.preference.todoNotCompletedColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button>
+              <label [ngStyle]="{ 'margin-right':'15px' }">Not Complete </label>
+            </div>
           </mat-action-row>
         </div>
 
