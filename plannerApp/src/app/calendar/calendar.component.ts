@@ -17,6 +17,7 @@ import { ToDo } from '../models/toDo';
 import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
 import { Router } from '@angular/router';
 import { Preferences } from '../models/preferences';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-calendar',
@@ -246,9 +247,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   constructor(private calService: CalendarService,
+              private authService: AuthService,
               private cd: ChangeDetectorRef,
               private dialog: MatDialog,
-              private router: Router) { }
+              private router: Router) {
+                if (! authService.isAutheticated) {
+                  router.navigate(['']);
+                }
+              }
 
   ngOnInit(): void {
     // Fetch all data & populate in the Calendar

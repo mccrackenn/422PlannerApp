@@ -7,6 +7,7 @@ import { SnackbarService } from '../services/snackbar/snackbar.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-notes',
@@ -28,8 +29,13 @@ export class NotesComponent implements OnInit, OnChanges {
   constructor(
     private notesService: NotesServices,
     public snackBar: SnackbarService,
-    private router:Router
+    private authService: AuthService,
+    private router: Router
   ) {
+    if (! this.authService.isAutheticated) {
+      router.navigate(['']);
+    }
+
     const currentYear = new Date().getFullYear();
     //this.minDate = new Date(currentYear - 5, 12, 99);
     this.minDate.setDate(this.minDate.getDate());

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { NotesServices } from '../services/notes.services';
 import { Note } from '../models/note';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-create-note',
@@ -19,8 +20,14 @@ export class CreateNoteComponent implements OnInit {
   constructor(
     public route: ActivatedRoute,
     public notesService: NotesServices,
-    public snackBar:SnackbarService
-  ) {}
+    public snackBar: SnackbarService,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    if (! this.authService.isAutheticated) {
+      router.navigate(['']);
+    }
+  }
 
   ngOnInit() {
     this.form = new FormGroup({

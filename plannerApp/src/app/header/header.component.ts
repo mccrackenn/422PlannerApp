@@ -11,21 +11,26 @@ import { AuthService } from '../services/auth.service';
 })
 export class HeaderComponent implements OnInit {
 
-  private userSub!: Subscription; //get updates from the AuthService about a logged in User
-  isAuthenticated= false; //Bool to track whether a user is logged in/authenticated
-  user!:User;
+  private userSub!: Subscription; // get updates from the AuthService about a logged in User
+  isAuthenticated = false; // Bool to track whether a user is logged in/authenticated
+  user!: User;
 
-  constructor(private authService:AuthService, private router:Router) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.userSub=this.authService.user$.subscribe(user => {
+    this.userSub = this.authService.user$.subscribe(user => {
 
-        this.isAuthenticated =!!user; //short-hand to check if user logged in, could be a terinary statement also
-        this.user=user
-        console.log(this.isAuthenticated)
-        console.log(user)
+        this.isAuthenticated = !!user; // short-hand to check if user logged in, could be a terinary statement also
+        this.user = user;
+        console.log(this.isAuthenticated);
+        console.log(user);
       }
-    )
+    );
+  }
+
+  logoutClicked(): void {
+    this.isAuthenticated = false;
+    this.authService.logout();
   }
 
 }

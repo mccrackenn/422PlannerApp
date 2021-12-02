@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { ToDoServices } from '../services/toDo.services'
 import { ToDo } from '../models/toDo'
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-to-dos',
@@ -20,7 +22,12 @@ export class ToDosComponent implements OnInit {
   
     toDos: ToDo[] = [];
   
-    constructor(private toDoService: ToDoServices, ) {}
+    constructor(private toDoService: ToDoServices, private authService: AuthService,
+                private router: Router) {
+                    if (! this.authService.isAutheticated) {
+                        router.navigate(['']);
+                    }
+        }
 
     ngOnInit(): void {
         this.toDoService.getToDos().subscribe((toDos) => (this.toDos = toDos));
