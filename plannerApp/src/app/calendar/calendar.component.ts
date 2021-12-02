@@ -162,6 +162,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           const todo = fn.todo;
           todo.startDateTime = new Date(droppedEvent.startStr);
           todo.endDateTime = new Date(droppedEvent.endStr);
+
           // this.calService.updateTodo(todo);
           // updated = true;
         }
