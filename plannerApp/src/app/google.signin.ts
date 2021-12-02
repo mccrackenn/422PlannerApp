@@ -57,16 +57,18 @@ export class GoogleSigninComponent implements AfterViewInit {
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail());
-        //YOUR CODE HERE
+        // YOUR CODE HERE
 
         // save 2 to this session's strorage
         sessionStorage.setItem('ID:', profile.getId());
         sessionStorage.setItem('Name:', profile.getName());
-        const newUser = new User(profile.getId(), profile.getName());
+        const newUser = new User(profile.getId(), profile.getName(),
+          profile.getEmail(), profile.getImageUrl());
         console.log(newUser);
-        that.authService.login(newUser); //A user is logged in, now the rest of the app can react accordingly
-        //Had to use NgZone and wrap this call, kept getting an error related to trying to run
-        //Angular calls inside non-Angular JS callbacks.
+        // A user is logged in, now the rest of the app can react accordingly
+        that.authService.login(newUser);
+        // Had to use NgZone and wrap this call, kept getting an error related to trying to run
+        // Angular calls inside non-Angular JS callbacks.
         that.zone.run(() => {
           that.router.navigate(['/home']);
         });

@@ -1,9 +1,10 @@
 import { not } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ToDoServices } from '../services/toDo.services'
 import { ToDo } from '../models/toDo'
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-create-todo',
@@ -18,8 +19,14 @@ export class CreateToDoComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute,
+    private authService: AuthService,
+    private router: Router,
     public toDoService: ToDoServices
-  ) {}
+  ) {
+    if (! this.authService.isAutheticated) {
+      router.navigate(['']);
+    }
+  }
 
   ngOnInit() {
     //todomodel
