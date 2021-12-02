@@ -18,7 +18,8 @@ export class CalendarService {
   private notes: Note[] = [];
   private noteEvents: EventInput[] = [];
   private todos: ToDo[] = [];
-  private todoEvents: EventInput[] = [];
+  private todoCompletedEvents: EventInput[] = [];
+  private todoNotCompletedEvents: EventInput[] = [];
   EVENT_TYPE_NOTE = 'N';
   EVENT_TYPE_TODO = 'T';
 
@@ -89,18 +90,60 @@ export class CalendarService {
     return result;
   }
 
-/*
-  // Once TodoService provides the method to retrieve all ToDos, this is ready
+
+  // NOT USED - Retrieve all ToDos Events in one
   getToDoEvents(): Observable<Array<EventInput>> {
+    const events: EventInput[] = [];
     return this.todoService.getToDos().pipe(map((data: any) => {
+      this.todoCompletedEvents = [];
+      this.todos = [];
       data.forEach((todo: ToDo) => {
+        // console.log('ToDo: title: ' + todo.title + ' Desc: ' + todo.description + 
+        //  ' Completed: ' + todo.completed);
         const n = this.createToDoAsEventObject(todo);
-        this.todoEvents.push(n);
         this.todos.push(todo);
+        this.todoCompletedEvents.push(n);
       });
-      return this.noteEvents;
+      return this.todoCompletedEvents;
     }));
-  } */
+  }
+
+  // Fetches all todos from server, filters to Completed & NotCompleted. Returns nothing.
+  fetchToDoEvents(): Observable<any> {
+    return this.todoService.getToDos().pipe(map((data: any) => {
+      this.todoCompletedEvents = [];
+      this.todos = [];
+      this.todoNotCompletedEvents = [];
+      data.forEach((todo: ToDo) => {
+        // console.log('ToDo: title: ' + todo.title + ' Desc: ' + todo.description + ' Completed: ' + todo.completed);
+        const n = this.createToDoAsEventObject(todo);
+
+        const index = this.todos.findIndex(t => t.id === todo.id);
+        if (index === -1) {
+          this.todos.push(todo);
+        } else {
+          this.todos[index] = todo;
+        }
+
+        if (todo.completed) {
+          this.todoCompletedEvents.push(n);
+        } else {
+          this.todoNotCompletedEvents.push(n);
+        }
+      });
+      return;
+    }));
+  }
+
+  // Returns the ToDo Completed Events
+  getCompletedTodoEvents(): EventInput[] {
+    return this.todoCompletedEvents;
+  }
+
+  // Returns the ToDo Not Completed Events
+  getNotCompletedTodoEvents(): EventInput[] {
+    return this.todoNotCompletedEvents;
+  }
 
   // NOT USED, RIGHT NOW
   /*
@@ -121,8 +164,6 @@ export class CalendarService {
 
     return event;
   }
-
-  */
 
   // Retrieve all ToDos as EventInput[]
   getToDosOfMonthAsEvents(monthNumber: number): EventInput[] {
@@ -152,7 +193,7 @@ export class CalendarService {
     ];
 
     return todos;
-  }
+  }*/
 
   private createNoteAsEventObject(note: Note): any {
     const offsetInMins = 2 * 60;
@@ -167,13 +208,13 @@ export class CalendarService {
 
   private createToDoAsEventObject(todo: ToDo): any {
     const offsetInMins = 2 * 60;
-    const startStr = new Date(
+    const startStr = todo.startDateTime; /*new Date(
       todo.startDateTime.getTime() + offsetInMins * 60000
-    ).toISOString();
+    ).toISOString();*/
     // new Date(note.startDate.toString().split('GMT')[0] + ' UTC').toISOString();
     return {
       id: todo.id.toString(), title: todo.title, start: startStr,
-      end: todo.endDateTime.toISOString(), ofType: this.EVENT_TYPE_TODO
+      end: todo.endDateTime, ofType: this.EVENT_TYPE_TODO
     };
   }
 
