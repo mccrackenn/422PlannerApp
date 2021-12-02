@@ -27,7 +27,8 @@ import { Preferences } from '../models/preferences';
 export class CalendarComponent implements OnInit, OnDestroy {
   private currentEvents: EventApi[] = [];
   private noteEvents: EventInput[] = [];
-  private todoEvents: EventInput[] = [];
+  private todoCompletedEvents: EventInput[] = [];
+  private todoNotCompletedEvents: EventInput[] = [];
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
@@ -81,11 +82,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   handleDidMountEvent(info: MountArg<EventContentArg>): void
   {
-    // Fires this event when an event is moved/dropped
     /*console.log('DisMount got FIRED...' + info.event.title);
-    if (info.isDragging) {
-      console.log('Dragging');
-    }
     console.log('isSelected: ' + info.isSelected + ' Info: ' + info);
 */
   }
@@ -151,7 +148,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   updateDroppedTodo(droppedEvent: EventApi): boolean {
     let updated = false;
 
-    const orgTodoEvent = this.todoEvents.find(e => e.id === droppedEvent.id);
+    let orgTodoEvent = this.todoCompletedEvents.find(e => e.id === droppedEvent.id);
+    if (! orgTodoEvent) {
+      orgTodoEvent = this.todoNotCompletedEvents.find(e => e.id === droppedEvent.id);
+    }
+
     if (orgTodoEvent?.start !== droppedEvent.startStr ||
       orgTodoEvent?.end !== droppedEvent.endStr) {
         console.log('Drag-Drop of ToDo has occured.');
@@ -226,7 +227,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       if (data === 'edit') {
         // Navigate to Todo-Edit passing todo.id
-        alert('Navigate to Todo-Edit passing todo.id');
+        const url = '/editToDo/' + t.id;
+        this.router.navigate([url ] );
       }
     });
 
@@ -275,6 +277,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
           borderColor: 'red',
         },
         {
+          events: this.todoCompletedEvents,
+          color: this.preference.todoCompletedColor,
+          borderColor: 'blue',
+        },
+        {
+          events: this.todoNotCompletedEvents,
+          color: this.preference.todoNotCompletedColor,
+          borderColor: 'blue',
+        },
+        {
           events: [
             {
               title: '422 Meeting',
@@ -295,17 +307,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           textColor: 'black',
           borderColor: 'green',
           editable: true,
-        },
-        {
-          events: this.getEvents(),
-          color: this.preference.lowPriorityNoteColor,
-          textColor: 'black',
-        },
-        {
-          events: this.todoEvents,
-          color: this.preference.todoColor,
-          borderColor: 'blue',
-        },
+        }
       ],
       select: this.handleDateSelect.bind(this),
       dateClick: this.handleDateClick.bind(this),
@@ -322,8 +324,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   async getDataAsEvents(): Promise<void> {
     this.noteEvents = await this.calService.getNoteEvents().toPromise();
-    this.todoEvents = await this.calService.getToDosOfMonthAsEvents(11);
-    // console.log('Received ToDo ' + this.todoEvents.length + ' Received Notes: ' + this.noteEvents.length);
+    await this.calService.fetchToDoEvents().toPromise().then(() => {
+      this.todoCompletedEvents = this.calService.getCompletedTodoEvents();
+      this.todoNotCompletedEvents = this.calService.getNotCompletedTodoEvents();
+    });
 
     this.initCalendarOptions();
   }

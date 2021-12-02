@@ -9,7 +9,8 @@ export class Preferences {
     lowPriorityNoteColor: string;
     mediumPriorityNoteColor: string;
     highPriorityNoteColor: string;
-    todoColor: string;
+    todoCompletedColor: string;
+    todoNotCompletedColor: string;
 
     constructor() {
         this.userId = -1;
@@ -20,7 +21,8 @@ export class Preferences {
         this.lowPriorityNoteColor = 'cyan';
         this.mediumPriorityNoteColor = 'yellow';
         this.highPriorityNoteColor = 'blue';
-        this.todoColor = 'green';
+        this.todoCompletedColor = 'green';
+        this.todoNotCompletedColor = 'grey';
     }
 
 }
