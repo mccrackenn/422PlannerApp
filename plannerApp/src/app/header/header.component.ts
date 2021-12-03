@@ -15,8 +15,8 @@ export class HeaderComponent implements OnInit {
   isAuthenticated = false; // Bool to track whether a user is logged in/authenticated
   user!: User;
 
-  constructor(public authService: AuthService, private router: Router) { 
-    
+  constructor(public authService: AuthService, private router: Router) {
+
   }
 
   ngOnInit(): void {
@@ -24,8 +24,8 @@ export class HeaderComponent implements OnInit {
 
         this.isAuthenticated = !!user; // short-hand to check if user logged in, could be a terinary statement also
         this.user = user;
-        console.log(this.isAuthenticated);
         console.log(user);
+        console.log(this.isAuthenticated);
       }
     );
   }

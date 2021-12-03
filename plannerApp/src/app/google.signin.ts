@@ -62,6 +62,10 @@ export class GoogleSigninComponent implements AfterViewInit {
         // YOUR CODE HERE
 
         // save 2 to this session's strorage
+        localStorage.setItem("ID",profile.getId())
+        localStorage.setItem("Name",profile.getName())
+        localStorage.setItem("Email",profile.getEmail())
+        localStorage.setItem("ImageUrl",profile.getImageUrl())
         sessionStorage.setItem('ID:', profile.getId());
         sessionStorage.setItem('Name:', profile.getName());
         const newUser = new User(profile.getId(), profile.getName(),
