@@ -21,7 +21,7 @@ export class AuthService {
     this.user$.next(user);
 
     this.isAutheticated = true;
-    localStorage.setItem('userData', JSON.stringify(user));
+    //localStorage.setItem('userData', JSON.stringify(user));
     // Check if user existed in our system.
     // Update the login status of the user in DB
   }
@@ -30,6 +30,10 @@ export class AuthService {
     // Clear the contents from session
     sessionStorage.removeItem('ID:');
     sessionStorage.removeItem('Name:');
+    localStorage.removeItem('ID');
+    localStorage.removeItem('Name');
+    localStorage.removeItem('ImageUrl');
+    localStorage.removeItem('Email');
 
     localStorage.removeItem('userData');
 

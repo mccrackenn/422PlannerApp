@@ -14,8 +14,8 @@
     </li>
     <li>
       <span *ngIf="isAuthenticated">{{user.name}}</span>
-    </li>    
-    <li>
+    </li>
+    <li *ngIf="isAuthenticated">
       <img src="{{user.imageUrl}}" width="20px" height="20px" />
     </li>
     <li><a mat-button (click)="logoutClicked()" > Logout</a> </li>
