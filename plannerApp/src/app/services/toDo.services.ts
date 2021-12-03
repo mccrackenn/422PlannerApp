@@ -20,7 +20,8 @@ export class ToDoServices
         public route: ActivatedRoute,
         public httpClient: HttpClient
     ) {}
-
+    
+    //get todos from db
     getToDos(): Observable<ToDo[]> {
         return this.httpClient
           .get<ToDo[]>('http://localhost:3000/api/todos')
@@ -29,6 +30,7 @@ export class ToDoServices
           .pipe(map((toDos) => (this.toDos = toDos)));
       }
 
+    //add a todo to the db and then reloads the page.
     addToDo(toDo: ToDo) {
         this.httpClient
             .post<{ message: string; toDoId: string }>(
