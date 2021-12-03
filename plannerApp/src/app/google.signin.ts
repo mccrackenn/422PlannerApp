@@ -34,6 +34,7 @@ export class GoogleSigninComponent implements AfterViewInit {
   ].join(' ');
 
   public auth2: any;
+
   public googleInit() {
     let that = this;
     gapi.load('auth2', function () {
@@ -45,6 +46,7 @@ export class GoogleSigninComponent implements AfterViewInit {
       that.attachSignin(that.element.nativeElement.firstChild);
     });
   }
+
   public attachSignin(element: any) {
     let that = this;
     this.auth2.attachClickHandler(

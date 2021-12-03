@@ -42,4 +42,28 @@ export class AuthService {
     // Navigate back to Login page
     this.router.navigate(['']);
   }
+
+  checkAuthentication(): boolean {
+    if (this.isAutheticated) {
+      return true;
+    }
+    if (this.user$ !== undefined) {
+      this.isAutheticated = true;
+      return true;
+    }
+
+    // const id = sessionStorage.getItem('ID');
+    // console.log('Id from SS: ' + id);
+    // if (id) {
+    const data = localStorage.getItem('userData)');
+      if (data) {
+        const userObj: User = JSON.parse(data);
+        // this.user$.next(userObj);
+        this.isAutheticated = true;
+        return true;
+      }
+    // }
+
+    return false;
+  }
 }

@@ -132,13 +132,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const orgNoteEvent = this.noteEvents.find(e => e.id === droppedEvent.id);
     if (orgNoteEvent?.start !== droppedEvent.startStr ||
       orgNoteEvent?.end !== droppedEvent.endStr) {
-        // console.log('Drag-Drop has occured.');
+        console.log('Drag-Drop Note has occured.');
+        console.log('Org Start Dt: ' + orgNoteEvent?.start + ' End Dt: ' + orgNoteEvent?.end +
+        '\n New Start: ' + droppedEvent.start + ' End: ' + droppedEvent.end );
         const fn = this.calService.getNote(droppedEvent.id);
         if (fn.found && fn.note) {
           // console.log('Found Note: ' + fn.found);
           const note = fn.note;
           note.startDate = new Date(droppedEvent.startStr);
           note.endDate = new Date(droppedEvent.endStr);
+          console.log('Updated Note - Start: ' + note.startDate + ' End: ' + note.endDate);
           this.calService.updateNote(note);
           updated = true;
         }
