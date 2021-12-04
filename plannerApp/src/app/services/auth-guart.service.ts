@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 
+// NOT ACTIVE USING IT RIGHT NOW !!!
+
 @Injectable({providedIn: 'root'})
 export class AuthGuardService implements CanActivate {
 
@@ -13,7 +15,7 @@ export class AuthGuardService implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, router: RouterStateSnapshot): |boolean
     |UrlTree     | Promise<boolean   | UrlTree>     | Observable<boolean | UrlTree>
     {
-        return this.authService.user$.pipe(
+        return this.authService.userObj.pipe(
             take(1),
             map(user => {
                 const isAuth = !!user;

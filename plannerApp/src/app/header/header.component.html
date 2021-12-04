@@ -13,12 +13,12 @@
       <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
     </li>
     <li>
-      <span *ngIf="isAuthenticated">{{ user.name }}</span>
+      <span>{{ this.currentUser?.name }}</span>
     </li>
-    <li *ngIf="isAuthenticated">
-      <img src="{{ user.imageUrl }}" width="20px" height="20px" />
+    <li>
+      <img src="{{ this.currentUser?.imageUrl }}" width="20px" height="20px" />
     </li>
-    <li *ngIf="isAuthenticated">
+    <li>
       <a mat-button (click)="logoutClicked()"> Logout</a>
     </li>
   </ul>

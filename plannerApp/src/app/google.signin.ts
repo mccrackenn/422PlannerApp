@@ -1,9 +1,6 @@
-// this login scheme was dervied from this article
-//  https://stackoverflow.com/questions/42279585/how-to-use-google-api-from-different-components-of-angular
 
 import { Component, ElementRef, AfterViewInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { User } from './models/user';
 import { AuthService } from './services/auth.service';
 declare const gapi: any;
@@ -13,7 +10,7 @@ declare const gapi: any;
   template: '<button id="googleBtn">Google Sign-In</button>',
 })
 export class GoogleSigninComponent implements AfterViewInit {
-  private clientId: string =
+  private clientId =
     '652907536156-l6u4gvnflpgnvambreapqvknojiiiivg.apps.googleusercontent.com';
 
   constructor(
@@ -22,7 +19,6 @@ export class GoogleSigninComponent implements AfterViewInit {
     private zone: NgZone,
     private router: Router
   ) {
-    console.log('ElementRef: ', this.element);
   }
 
   private scope = [
@@ -35,9 +31,9 @@ export class GoogleSigninComponent implements AfterViewInit {
 
   public auth2: any;
 
-  public googleInit() {
-    let that = this;
-    gapi.load('auth2', function () {
+  public googleInit(): void {
+    const that = this;
+    gapi.load('auth2', () => {
       that.auth2 = gapi.auth2.init({
         client_id: that.clientId,
         cookiepolicy: 'single_host_origin',
@@ -47,31 +43,18 @@ export class GoogleSigninComponent implements AfterViewInit {
     });
   }
 
-  public attachSignin(element: any) {
-    let that = this;
+  public attachSignin(element: any): void {
+    const that = this;
     this.auth2.attachClickHandler(
       element,
       {},
-      function (googleUser: { getBasicProfile: () => any }) {
-        let profile = googleUser.getBasicProfile();
-        // console.log('Token || ' + googleUser.getAuthResponse().id_token);
-        console.log('ID: ' + profile.getId());
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail());
-        // YOUR CODE HERE
+      (googleUser: { getBasicProfile: () => any }) => {
+        const profile = googleUser.getBasicProfile();
 
-        // save 2 to this session's strorage
-        localStorage.setItem("ID",profile.getId())
-        localStorage.setItem("Name",profile.getName())
-        localStorage.setItem("Email",profile.getEmail())
-        localStorage.setItem("ImageUrl",profile.getImageUrl())
-        sessionStorage.setItem('ID:', profile.getId());
-        sessionStorage.setItem('Name:', profile.getName());
         const newUser = new User(profile.getId(), profile.getName(),
           profile.getEmail(), profile.getImageUrl());
-        console.log(newUser);
-        // A user is logged in, now the rest of the app can react accordingly
+        // console.log(newUser);
+
         that.authService.login(newUser);
         // Had to use NgZone and wrap this call, kept getting an error related to trying to run
         // Angular calls inside non-Angular JS callbacks.
@@ -79,13 +62,13 @@ export class GoogleSigninComponent implements AfterViewInit {
           that.router.navigate(['/home']);
         });
       },
-      function (error: any) {
-        console.log(JSON.stringify(error, undefined, 2));
+      (error: any) => {
+        console.log('Error Logging in: ' + JSON.stringify(error, undefined, 2));
       }
     );
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.googleInit();
   }
 }
