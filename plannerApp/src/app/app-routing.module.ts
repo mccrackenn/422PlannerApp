@@ -7,12 +7,13 @@ import { LoginComponent } from './login/login.component';
 import { NotesComponent } from './notes/notes.component';
 import { ToDosComponent } from './to-dos/to-dos.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { AuthGuardService } from './services/auth-guart.service';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'notes', component: NotesComponent },
-  { path: 'editNote/:noteId', component: CreateNoteComponent },
-  { path: 'to-dos', component: ToDosComponent },
+  { path: 'notes', component: NotesComponent  },
+  { path: 'editNote/:noteId', component: CreateNoteComponent  },
+  { path: 'to-dos', component: ToDosComponent  },
   { path: 'editToDo/:toDoId', component: CreateToDoComponent },
   { path: 'home', component: CalendarComponent },
 

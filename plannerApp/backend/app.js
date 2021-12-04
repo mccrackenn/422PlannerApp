@@ -8,7 +8,8 @@ app.use(express.json());
 
 mongoose
   .connect(
-    "mongodb+srv://mimicuser:mimic1234@cluster0.9vzxz.mongodb.net/Planner?retryWrites=true&w=majority"
+    "mongodb+srv://mimicuser:mimic1234@cluster0.9vzxz.mongodb.net/Planner?retryWrites=true&w=majority?authSource=admin",
+    { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => {
     console.log("connected to database");
