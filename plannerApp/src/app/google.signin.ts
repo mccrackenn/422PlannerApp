@@ -68,7 +68,7 @@ export class GoogleSigninComponent implements AfterViewInit {
         localStorage.setItem("ImageUrl",profile.getImageUrl())
         sessionStorage.setItem('ID:', profile.getId());
         sessionStorage.setItem('Name:', profile.getName());
-        const newUser = new User(profile.getId(), profile.getName(),
+        const newUser = new User("",profile.getId(), profile.getName(),
           profile.getEmail(), profile.getImageUrl());
         console.log(newUser);
         // A user is logged in, now the rest of the app can react accordingly

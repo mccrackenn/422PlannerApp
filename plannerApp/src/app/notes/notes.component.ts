@@ -18,34 +18,36 @@ export class NotesComponent implements OnInit, OnChanges {
   form!: FormGroup;
   createNoteForm!: FormGroup;
   private notesSub: Subscription = new Subscription();
+  private userSub: Subscription = new Subscription();
   filteredOptions?: Observable<Note[]>;
   minDate: Date = new Date();
   maxDate: Date = new Date();
   noteAddedNotification: Subscription = new Subscription();
-
+  user!: User;
 
   notes: Note[] = [];
 
   constructor(
     private notesService: NotesServices,
     public snackBar: SnackbarService,
-    private authService: AuthService,
-    private router: Router
+    public authService: AuthService,
   ) {
-    console.log('IsAuthenticated? ' + this.authService.isAutheticated);
-    if (! this.authService.isAutheticated) {
-      router.navigate(['']);
-    }
+    // console.log('IsAuthenticated? ' + this.authService.isAutheticated);
+    // if (!this.authService.isAutheticated) {
+    //   router.navigate(['']);
+    // }
 
     const currentYear = new Date().getFullYear();
-    //this.minDate = new Date(currentYear - 5, 12, 99);
     this.minDate.setDate(this.minDate.getDate());
     this.maxDate.setDate(this.minDate.getDate() + 20);
-    //this.maxDate = new Date(currentYear - 1, 12, 99);
   }
 
   ngOnInit(): void {
-    this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
+    this.userSub = this.authService.user$.subscribe((currentUser) => {
+      console.log(currentUser)
+    }
+    );
+    this.notesService.getUserNotes().subscribe((notes) => (this.notes = notes));
     this.notesSub = this.notesService
       .getNotesUpdateListener()
       .subscribe((notes: Note[]) => {
@@ -64,14 +66,15 @@ export class NotesComponent implements OnInit, OnChanges {
       startDate: new FormControl(null, { validators: [Validators.required] }),
       endDate: new FormControl(null, { validators: [Validators.required] }),
     });
-    this.noteAddedNotification = this.notesService.noteAdded.subscribe(
-     note => setTimeout(()=>{
-      console.log(note)
-      },2500)
-    );
+
+    // this.noteAddedNotification = this.notesService.noteAdded.subscribe((note) =>
+    //   setTimeout(() => {
+    //     console.log(note);
+    //   }, 2500)
+    // );
   }
 
-  ngOnChanges(){
+  ngOnChanges() {
     this.notesService.getNotesUpdateListener();
   }
 
@@ -93,13 +96,17 @@ export class NotesComponent implements OnInit, OnChanges {
     // console.log(this.createNoteForm.value.end)
   }
 
-  changeTabs($e: MatTabChangeEvent){
-    if($e.index === 0){
-      console.log($e)
+  changeTabs($e: MatTabChangeEvent) {
+    if ($e.index === 0) {
+      console.log($e);
       //this.notesService.getNotesUpdateListener()
     }
     //this.fetchAccounts(this.banks[$event.index].id)
-}
+  }
+
+  getUserNotes() {
+    this.notesService.getUserNotes().subscribe(result => console.log(result));
+  }
 
   date(e: any) {
     const convertDate = new Date(e.target.value).toISOString().substring(0, 10);

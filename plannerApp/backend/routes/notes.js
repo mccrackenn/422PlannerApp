@@ -42,13 +42,33 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
+router.post("/:id", (req,res,next) =>{
+  console.log("Arrived at the new Get Request!!!")
+  const myNotes =  Note.find({ user: req.params.id },(err,result)=>{
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+      let transformedResult=[];
+      for (let i = 0; i < result.length; i++) {
+
+        transformedResult.push(result[i].transform());
+      }
+      res.status(200).json(transformedResult)
+    }
+  })
+  console.log(myNotes)
+})
+
 router.post("", (req, res, next) => {
+  console.log(req.body._id)
   const newNote = new Note({
-    title: req.body.title,
-    description: req.body.description,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    createdDate: req.body.createdDate,
+    title: req.body.note.title,
+    description: req.body.note.description,
+    startDate: req.body.note.startDate,
+    endDate: req.body.note.endDate,
+    createdDate: req.body.note.createdDate,
+    user:req.body._id
   });
   newNote
     .save()

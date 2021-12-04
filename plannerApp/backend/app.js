@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const notesRoute = require("./routes/notes");
 const toDosRoute = require("./routes/toDos");
+const usersRoute= require("./routes/users")
 
 app.use(express.json());
 
@@ -36,5 +37,6 @@ app.use((req, res, next) => {
 
 app.use("/api/notes", notesRoute);
 app.use("/api/todos", toDosRoute);
+app.use("/api/users", usersRoute);
 
 module.exports = app;

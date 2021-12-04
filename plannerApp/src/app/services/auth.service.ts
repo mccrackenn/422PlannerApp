@@ -1,6 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Note } from '../models/note';
 import { User } from '../models/user';
 
 @Injectable({
@@ -10,16 +13,24 @@ export class AuthService {
 
   user$ = new Subject<User>();
   isAutheticated = false;
+  user!:User
 
   constructor(
-    private router: Router
+    private router: Router,
+    private httpClient:HttpClient,
   ) { }
 
 
   login(user: User): void {
+    console.log(user)
     // Sending out the update to the all Subscibers, if a component needs this info, they should subscribe via a Subscription
-    this.user$.next(user);
-
+    this.httpClient.get<User>('http://localhost:3000/api/users/'+user.email).pipe(
+      map((user) => {
+         user._id=user._id
+        return user
+      }),tap(result => this.user=result)
+    ).subscribe(result => this.user$.next(result))
+      console.log('sent update out')
     this.isAutheticated = true;
     //localStorage.setItem('userData', JSON.stringify(user));
     // Check if user existed in our system.
@@ -28,8 +39,8 @@ export class AuthService {
 
   logout(): void {
     // Clear the contents from session
-    sessionStorage.removeItem('ID:');
-    sessionStorage.removeItem('Name:');
+    // sessionStorage.removeItem('ID:');
+    // sessionStorage.removeItem('Name:');
     localStorage.removeItem('ID');
     localStorage.removeItem('Name');
     localStorage.removeItem('ImageUrl');
@@ -69,5 +80,9 @@ export class AuthService {
     // }
 
     return false;
+  }
+
+  getCurrentUser():User{
+    return this.user;
   }
 }
