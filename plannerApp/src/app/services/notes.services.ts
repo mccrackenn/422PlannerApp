@@ -12,6 +12,10 @@ import { SnackbarService } from './snackbar/snackbar.service';
 export class NotesServices {
   private notes: Note[] = [];
 
+  private localUrl = 'http://localhost:3000/api/notes';
+  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
+  private notesUrl = this.azureUrl;
+
   notesUpdated = new Subject<Note[]>();
   noteAdded = new Subject<Note>();
 
@@ -23,11 +27,12 @@ export class NotesServices {
   ) {}
 
   getNotes(): Observable<Note[]> {
+    // console.log('Retrieving notes from : ' + this.notesUrl);
     return (
       this.httpClient
-        .get<Note[]>('http://localhost:3000/api/notes')
-        //Using pipe & map so I can have a local copy of the note array,without it Delete and Add elements don't show up initially without refresh
-        //.pipe(map((notes) => (this.notes = notes)));
+        .get<Note[]>(this.notesUrl)
+        // Using pipe & map so I can have a local copy of the note array,without it Delete and Add elements don't show up initially without refresh
+        // .pipe(map((notes) => (this.notes = notes)));
         .pipe(
           map((notes) =>
             notes.map((note) => {
@@ -36,7 +41,7 @@ export class NotesServices {
               note.createdDate = new Date(note.createdDate);
               return note;
             })
-          ),tap(a => this.notes = a)
+          ), tap(a => this.notes = a)
         )
     );
     // httpClient.get<Hero[]>(url).pipe(
@@ -49,7 +54,7 @@ export class NotesServices {
   addNote(note: Note) {
     this.httpClient
       .post<{ message: string; noteId: string }>(
-        'http://localhost:3000/api/notes',
+        this.notesUrl,
         note
       )
       .subscribe((responseData) => {
@@ -77,7 +82,7 @@ export class NotesServices {
     console.log(id);
     this.httpClient
       .put<{ message: string; noteId: string }>(
-        'http://localhost:3000/api/notes/' + id,
+        this.notesUrl + id,
         note
       )
       .subscribe((responseData) => {
@@ -86,9 +91,9 @@ export class NotesServices {
   }
 
   deleteNote(noteId: string) {
-    console.log(this.notes)
+    console.log(this.notes);
     this.httpClient
-      .delete('http://localhost:3000/api/notes/' + noteId)
+      .delete(this.notesUrl + noteId)
       .subscribe((response) => {
         console.log(response);
         const updatedNotes = this.notes.filter((note) => note.id !== noteId);
@@ -104,7 +109,7 @@ export class NotesServices {
 
   getNote(id: string) {
     return this.httpClient
-      .get<Note>('http://localhost:3000/api/notes/' + id)
+      .get<Note>(this.notesUrl + id)
       .pipe(
         map((oneNote) => {
           oneNote.startDate = new Date(oneNote.startDate);

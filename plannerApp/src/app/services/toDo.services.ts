@@ -12,6 +12,9 @@ import { map } from 'rxjs/operators';
 export class ToDoServices
 {
     private toDos: ToDo[] = [];
+    private localUrl = 'http://localhost:3000/api/todos';
+    private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/todos/';
+    private todoUrl = this.azureUrl;
 
     toDosUpdated = new Subject<ToDo[]>();
 
@@ -22,17 +25,18 @@ export class ToDoServices
     ) {}
 
     getToDos(): Observable<ToDo[]> {
+        // console.log("retrieving ToDos from: " + this.todoUrl);
         return this.httpClient
-          .get<ToDo[]>('http://localhost:3000/api/todos')
-          //Using pipe & map to keep a local copy of the todo array
-          //without it Delete and Add elements don't show up initially without refresh
+          .get<ToDo[]>(this.todoUrl)
+          // Using pipe & map to keep a local copy of the todo array
+          // without it Delete and Add elements don't show up initially without refresh
           .pipe(map((toDos) => (this.toDos = toDos)));
       }
 
-    addToDo(toDo: ToDo) {
+    addToDo(toDo: ToDo): void {
         this.httpClient
             .post<{ message: string; toDoId: string }>(
-            'http://localhost:3000/api/todos',
+                this.todoUrl,
             toDo
             )
         .subscribe((responseData) => {
@@ -55,9 +59,9 @@ export class ToDoServices
         });
     }
 
-    deleteToDo(toDoId: string) {
+    deleteToDo(toDoId: string): void {
         this.httpClient
-            .delete('http://localhost:3000/api/todos/' + toDoId)
+            .delete(this.todoUrl + toDoId)
             .subscribe(() => {
                 console.log(this.toDos);
                 const updatedToDos = this.toDos.filter((toDo) => toDo.id !== toDoId);
@@ -68,13 +72,14 @@ export class ToDoServices
           });
     }
     getToDo(id: string) {
-        return this.httpClient.get<ToDo>('http://localhost:3000/api/todos/' + id);
-        //console.log(`ToDo is ${id}`)
-        //const returnToDo = this.toDos.find(toDo => toDo.id === id)
-        //console.log(`getToDo return an id of-${id}`)
+        return this.httpClient.get<ToDo>(this.todoUrl + id);
+        // console.log(`ToDo is ${id}`)
+        // const returnToDo = this.toDos.find(toDo => toDo.id === id)
+        // console.log(`getToDo return an id of-${id}`)
     }
-    getToDosUpdateListener()
+
+    getToDosUpdateListener(): Observable<ToDo[]>
     {
-        return this.toDosUpdated.asObservable()
+        return this.toDosUpdated.asObservable();
     }
 }
