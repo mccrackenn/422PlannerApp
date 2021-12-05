@@ -113,7 +113,7 @@ export class ToDosComponent implements OnInit {
             this.searchToDos = this.toDos.filter(function(i) {
                 //this doesnt work and always returns false even if using > instead
                 //has to be some sort of type incompatability
-                if(i.startDateTime == searchDate) {
+                if(i.startDateTime.toISOString() == searchDate.toISOString()) {
                     console.log('TRUE');
                     return true;
                 }
