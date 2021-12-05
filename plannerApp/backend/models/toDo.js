@@ -14,10 +14,6 @@ const toDoSchema = mongoose.Schema({
     type: Boolean,
     required: false, //q? does this mean it will be set by the model constructor?
   },
-  notification: {
-    type: Boolean,
-    required: false,
-  },
   createdDate: {
     type: Date,
     required: false,

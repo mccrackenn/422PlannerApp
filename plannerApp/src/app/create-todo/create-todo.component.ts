@@ -34,7 +34,6 @@ export class CreateToDoComponent implements OnInit {
         title: new FormControl(null, { validators: [Validators.required] }),
         description: new FormControl(null, { validators: [Validators.required] }),
         completed: new FormControl(null, { validators: [Validators.required] }),
-        notification: new FormControl(null, { validators: [Validators.required] }), //q? keep?
         createdDate: new FormControl(null, { validators: [Validators.required] }),
         startDateTime: new FormControl(null, { validators: [Validators.required] }),
         endDateTime: new FormControl(null, { validators: [Validators.required] }),
@@ -46,14 +45,12 @@ export class CreateToDoComponent implements OnInit {
             this.postId = paramMap.get('toDoId');
             console.log(this.postId);
             this.toDoService.getToDo(this.postId!).subscribe((responseData) => {
-                //console.log(typeof responseData.createdDate);
                 //todomodel
                 this.toDo = {
                     id: responseData.id,
                     title: responseData.title,
                     description: responseData.description,
                     completed: responseData.completed,
-                    notification: responseData.notification, //q? keep?
                     createdDate: responseData.createdDate,
                     startDateTime: responseData.startDateTime,
                     endDateTime: responseData.endDateTime,
@@ -63,14 +60,25 @@ export class CreateToDoComponent implements OnInit {
                     title: this.toDo.title,
                     description: this.toDo.description,
                     completed: this.toDo.completed,
-                    notification: this.toDo.notification, //q? keep?
                     createdDate: this.toDo.createdDate,
                     startDateTime: this.toDo.startDateTime,
                     endDateTime: this.toDo.endDateTime,
                 });
-                //console.log(typeof this.toDo?.createdDate);
             });
         }
       });
+  }
+
+  updateToDo(): void {
+    if (this.toDo) {
+      this.toDo.title = this.form.value.title;
+      this.toDo.description = this.form.value.description;
+      this.toDo.completed = this.form.value.completed;
+      this.toDo.startDateTime = this.form.value.startDate;
+      this.toDo.endDateTime = this.form.value.endDate;
+      this.toDo.createdDate = this.form.value.createdDate;
+      
+      this.toDoService.updateToDo(this.toDo);
+    }
   }
 }
