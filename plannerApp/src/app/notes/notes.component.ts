@@ -32,6 +32,7 @@ export class NotesComponent implements OnInit, OnChanges {
     private authService: AuthService,
     private router: Router
   ) {
+    console.log('IsAuthenticated? ' + this.authService.isAutheticated);
     if (! this.authService.isAutheticated) {
       router.navigate(['']);
     }

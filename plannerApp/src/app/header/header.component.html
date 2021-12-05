@@ -2,7 +2,7 @@
   style="background-image: linear-gradient(to right, #00b4db, #0083b0)"
 >
   <!-- <span class="spacer"></span> -->
-  <ul *ngIf="isAuthenticated" >
+  <ul *ngIf="this.authService.isAutheticated">
     <li>
       <a mat-button routerLink="/home" routerLinkActive="mat-accent">Home</a>
     </li>
@@ -13,14 +13,16 @@
       <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
     </li>
     <li>
-      <span *ngIf="isAuthenticated">{{user.name}}</span>
-    </li>    
-    <li>
-      <img src="{{user.imageUrl}}" width="20px" height="20px" />
+      <span>{{ this.currentUser?.name }}</span>
     </li>
-    <li><a mat-button (click)="logoutClicked()" > Logout</a> </li>
+    <li>
+      <img src="{{ this.currentUser?.imageUrl }}" width="20px" height="20px" />
+    </li>
+    <li>
+      <a mat-button (click)="logoutClicked()"> Logout</a>
+    </li>
   </ul>
-  <ul *ngIf="!isAuthenticated" >
+  <ul *ngIf="!this.authService.isAutheticated">
     <li><label> Login </label></li>
   </ul>
 </mat-toolbar>
