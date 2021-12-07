@@ -101,7 +101,6 @@ export class NotesComponent implements OnInit, OnChanges {
       console.log($e);
       //this.notesService.getNotesUpdateListener()
     }
-    //this.fetchAccounts(this.banks[$event.index].id)
   }
 
   getUserNotes() {
