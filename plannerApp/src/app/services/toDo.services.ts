@@ -55,8 +55,8 @@ export class ToDoServices
             this.toDos.push(newToDo);
             this.toDosUpdated.next([...this.toDos]);
             
+            //this.router.navigate(['/to-dos']).then(() => window.location.reload());
         });
-        this.router.navigate(['/to-dos']).then(() => window.location.reload());
     }
 
     updateToDo(toDo: ToDo): void {
