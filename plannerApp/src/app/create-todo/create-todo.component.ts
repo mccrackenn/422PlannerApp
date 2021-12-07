@@ -71,6 +71,8 @@ export class CreateToDoComponent implements OnInit {
 
   updateToDo(): void {
     if (this.toDo) {
+      console.log("Create");
+      console.log(this.toDo);
       this.toDo.title = this.form.value.title;
       this.toDo.description = this.form.value.description;
       this.toDo.completed = this.form.value.completed;

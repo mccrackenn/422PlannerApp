@@ -50,15 +50,18 @@ export class ToDoServices
                 startDateTime: toDo.startDateTime,
                 endDateTime: toDo.endDateTime,
             };
+            console.log("Services: add");
             console.log(newToDo);
             this.toDos.push(newToDo);
             this.toDosUpdated.next([...this.toDos]);
-            //this.router.navigate(['/to-dos']).then(() => window.location.reload());
+            
         });
+        this.router.navigate(['/to-dos']).then(() => window.location.reload());
     }
 
     updateToDo(toDo: ToDo): void {
         const id = toDo.id;
+        console.log("Services: update");
         console.log(toDo);
         console.log(id);
         this.httpClient

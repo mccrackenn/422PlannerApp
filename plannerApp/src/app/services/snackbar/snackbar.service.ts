@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -14,8 +15,10 @@ export class SnackbarService {
     3.the duration, alignment, etc. */
 
   openSnackBar(message: string, action: string) {
-    this.snackBar.open(message, action, {
-       duration: 2000,
-    });
+    this.snackBar.open(message, action);
+  }
+
+  dismiss() {
+      this.snackBar.dismiss();
   }
 }

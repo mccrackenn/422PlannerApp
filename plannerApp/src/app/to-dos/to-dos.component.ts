@@ -3,8 +3,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { ToDoServices } from '../services/toDo.services'
 import { ToDo } from '../models/toDo'
+import { SnackbarService } from '../services/snackbar/snackbar.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -27,6 +28,7 @@ export class ToDosComponent implements OnInit {
   
     constructor(
         private toDoService: ToDoServices,
+        public snackBar: SnackbarService,
         private authService: AuthService,
         private router: Router
     ) {
@@ -72,6 +74,7 @@ export class ToDosComponent implements OnInit {
 
     //Sorts by date created and completed
     sortToDo() {
+        // let sortArr = todo;
         let sortArr = this.toDos;
         if (this.searchToDos.length != 0) {
             sortArr = this.searchToDos;
@@ -101,40 +104,31 @@ export class ToDosComponent implements OnInit {
         });
       }
 
-    //STUCK HERE HELP
-    //Help on this Why cant I compare two Date Items :(
     onSearchDate(event: MatDatepickerInputEvent<Date>) {
         //date from user (matching 1 selected day to the start dates of todos for simplicity)
         let searchDate: Date = this.searchForm.value.searchDate;
 
         console.log("search date: " + searchDate.toISOString());
         if (searchDate != null) {
+            this.snackBar.dismiss();
             //search and filter through todos to find where the user entered date and start date are the same
-            this.searchToDos = this.toDos.filter(function(i) {
-                //this doesnt work and always returns false even if using > instead
-                //has to be some sort of type incompatability
-                if(i.startDateTime.toISOString() == searchDate.toISOString()) {
-                    console.log('TRUE');
+            this.searchToDos = this.toDos.filter(function(i: ToDo): any {
+                if(new Date(i.startDateTime).getTime() == searchDate.getTime()) {
+                    //console.log(i.startDateTime);
+                    //console.log('TRUE');
                     return true;
                 }
                 else {
-                    console.log(i.startDateTime);
-                    console.log('FALSE');
+                    //console.log(i.startDateTime);
+                    //console.log('FALSE');
                     return false;
                 }
             });
-            
-            //My First try uses a loop and an array of ToDo declared at the top.
-            // for (let i in this.toDos) {
-            //     console.log("todo start: " + this.toDos[i].startDateTime);
-            //     console.log(this.toDos[i].startDateTime == searchDate);
-            //     if (this.toDos[i].startDateTime == searchDate) {
-            //             this.searchToDos.push(this.toDos[i]);
-            //             console.log(this.toDos[i]);
-            //         }
-            // }
-            // console.log(this.searchToDos);
-            // this.ngOnInit();
+
+            //if no result throw snackBar.
+            if(this.searchToDos.length == 0) {
+                this.snackBar.openSnackBar("No ToDos with that start date", "Close");
+            }
         }
     }
 
@@ -150,10 +144,9 @@ export class ToDosComponent implements OnInit {
           createdDate: new Date(Date.now()),
         };
         this.toDoService.addToDo(newToDo);
-        console.log(this.createToDoForm.value.completed);
+        console.log("Component ts");
+        console.log(newToDo);
         // console.log(this.createToDoForm.get('newToDo')?.value)
-        // console.log(this.createToDoForm.value.start)
-        // console.log(this.createToDoForm.value.end)
     }
 
     changeTabs($e: MatTabChangeEvent){
