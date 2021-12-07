@@ -114,13 +114,13 @@ export class ToDosComponent implements OnInit {
             //search and filter through todos to find where the user entered date and start date are the same
             this.searchToDos = this.toDos.filter(function(i: ToDo): any {
                 if(new Date(i.startDateTime).getTime() == searchDate.getTime()) {
-                    //console.log(i.startDateTime);
-                    //console.log('TRUE');
+                    console.log(i.startDateTime);
+                    console.log('TRUE');
                     return true;
                 }
                 else {
-                    //console.log(i.startDateTime);
-                    //console.log('FALSE');
+                    console.log(i.startDateTime);
+                    console.log('FALSE');
                     return false;
                 }
             });
