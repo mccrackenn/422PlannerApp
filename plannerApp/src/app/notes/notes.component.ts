@@ -45,7 +45,7 @@ export class NotesComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.notesService.getUserNotes().subscribe((notes) => (this.notes = notes));
+    this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
 
     //this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
     this.notesSub = this.notesService
@@ -74,7 +74,7 @@ export class NotesComponent implements OnInit, OnChanges {
   }
 
   getUserNotes() {
-    this.notesService.getUserNotes().subscribe(result => console.log(result));
+    this.notesService.getNotes().subscribe(result => console.log(result));
   }
 
   ngOnChanges(){

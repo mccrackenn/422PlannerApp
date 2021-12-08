@@ -31,34 +31,29 @@ export class NotesServices {
     public authService: AuthService
   ) {}
 
-  getNotes(): Observable<Note[]> {
-    // console.log('Retrieving notes from : ' + this.notesUrl);
-    return (
-      this.httpClient
-        .get<Note[]>(this.localNotesUrl)
-        //.get<Note[]>(this.notesUrl)
-        // Using pipe & map so I can have a local copy of the note array,without it Delete and Add elements don't show up initially without refresh
-        // .pipe(map((notes) => (this.notes = notes)));
-        .pipe(
-          map((notes) =>
-            notes.map((note) => {
-              note.startDate = new Date(note.startDate);
-              note.endDate = new Date(note.endDate);
-              note.createdDate = new Date(note.createdDate);
-              return note;
-            })
-          ),
-          tap((a) => (this.notes = a))
-        )
-    );
-    // httpClient.get<Hero[]>(url).pipe(
-    //   map(hero => hero.map(h => {
-    //       h.dateOfBirth = new Date(h.dateOfBirth);
-    //       return h;
-    //   })))
-  }
+  // getNotes(): Observable<Note[]> {
+  //   return (
+  //     this.httpClient
+  //       .get<Note[]>(this.localNotesUrl)
+  //       //.get<Note[]>(this.notesUrl)
+  //       // Using pipe & map so I can have a local copy of the note array,without it Delete and Add elements don't show up initially without refresh
+  //       // .pipe(map((notes) => (this.notes = notes)));
+  //       .pipe(
+  //         map((notes) =>
+  //           notes.map((note) => {
+  //             note.startDate = new Date(note.startDate);
+  //             note.endDate = new Date(note.endDate);
+  //             note.createdDate = new Date(note.createdDate);
+  //             return note;
+  //           })
+  //         ),
+  //         tap((a) => (this.notes = a))
+  //       )
+  //   );
 
-  getUserNotes(): Observable<Note[]> {
+  // }
+
+  getNotes(): Observable<Note[]> {
     const newUser = this.authService.getCurrentUser();
     console.log(newUser._id);
     return (
