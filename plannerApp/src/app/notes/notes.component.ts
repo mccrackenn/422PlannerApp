@@ -45,7 +45,9 @@ export class NotesComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
+    this.notesService.getUserNotes().subscribe((notes) => (this.notes = notes));
+
+    //this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
     this.notesSub = this.notesService
       .getNotesUpdateListener()
       .subscribe((notes: Note[]) => {
@@ -71,6 +73,10 @@ export class NotesComponent implements OnInit, OnChanges {
     );
   }
 
+  getUserNotes() {
+    this.notesService.getUserNotes().subscribe(result => console.log(result));
+  }
+
   ngOnChanges(){
     this.notesService.getNotesUpdateListener();
   }
@@ -84,10 +90,13 @@ export class NotesComponent implements OnInit, OnChanges {
       startDate: this.createNoteForm.value.startDate,
       endDate: this.createNoteForm.value.endDate,
       createdDate: new Date(Date.now()),
+
     };
 
     console.log(newNote.startDate);
     this.notesService.addNote(newNote);
+    //this.createNoteForm.reset()
+    //this.router.navigate(['/notes'])
     // console.log(this.createNoteForm.get('newNote')?.value)
     // console.log(this.createNoteForm.value.start)
     // console.log(this.createNoteForm.value.end)

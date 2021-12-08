@@ -1,4 +1,3 @@
-
 import { Component, ElementRef, AfterViewInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from './models/user';
@@ -18,8 +17,7 @@ export class GoogleSigninComponent implements AfterViewInit {
     private authService: AuthService,
     private zone: NgZone,
     private router: Router
-  ) {
-  }
+  ) {}
 
   private scope = [
     'profile',
@@ -51,8 +49,13 @@ export class GoogleSigninComponent implements AfterViewInit {
       (googleUser: { getBasicProfile: () => any }) => {
         const profile = googleUser.getBasicProfile();
 
-        const newUser = new User(profile.getId(), profile.getName(),
-          profile.getEmail(), profile.getImageUrl());
+        const newUser = new User(
+          '', // a blank placeholder for _id value, will filled
+          profile.getId(),
+          profile.getName(),
+          profile.getEmail(),
+          profile.getImageUrl()
+        );
         // console.log(newUser);
 
         that.authService.login(newUser);

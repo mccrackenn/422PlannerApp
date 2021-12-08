@@ -1,22 +1,25 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 
-// Updated with BehaviorSubject & other from 
+// Updated with BehaviorSubject & other from
 // https://daily-dev-tips.com/posts/angular-authenticating-users-from-an-api/
 export class AuthService {
-
+  private localUserUrl = 'http://localhost:3000/api/users/';
+  user!:User
   private userSubject: BehaviorSubject<User | null>;
   public userObj: Observable<User | null>;
 
   isAutheticated = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private httpClient:HttpClient) {
     let data: any = '';
     if (localStorage.getItem('userData')) {
       data = localStorage.getItem('userData');
@@ -38,7 +41,13 @@ export class AuthService {
 
   login(user: User): User {
     localStorage.setItem('userData', JSON.stringify(user));
-    this.userSubject.next(user);
+    this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
+    //this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
+      map((user) => {
+        user._id = user._id
+        return user
+      }),tap(result => this.user = result)
+    ).subscribe(user => this.userSubject.next(user))
     this.isAutheticated = true;
 
     return user;
@@ -96,5 +105,10 @@ export class AuthService {
     }
 
     return false;
+  }
+
+  getCurrentUser():User{
+    console.log(this.user)
+    return this.user;
   }
 }
