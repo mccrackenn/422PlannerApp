@@ -9,15 +9,15 @@
       <p>{{ note?.endDate | date }}</p>
       <mat-action-row>
         <a mat-button color="primary" [routerLink]="['../editNote', note!.id]"
-          >EDIT</a
+          ><mat-icon>edit</mat-icon> EDIT</a
         >
         <button
           type="button"
           mat-button
           color="warn"
           (click)="deleteNote(note!.id)"
-        >
-          DELETE
+        ><mat-icon>delete</mat-icon>
+         DELETE
         </button>
       </mat-action-row>
     </mat-expansion-panel>
