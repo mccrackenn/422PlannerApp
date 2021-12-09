@@ -57,7 +57,7 @@ export class NotesServices {
     if (!newUser) {
       return of(this.userNotes);
     }
-    console.log(newUser._id);
+    // console.log(newUser._id);
     return (
       this.httpClient
         .post<Note[]>(this.notesUrl + newUser._id, newUser)
