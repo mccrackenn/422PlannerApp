@@ -1,13 +1,10 @@
 
 <h2 mat-dialog-title style="text-align: center;">Details of Note</h2>
 
-<!-- <Title>Details of Note</Title>
-<h2 mat-dialog-title></h2> -->
-
 <mat-dialog-content>
 
-    <!--
-    <table>
+<!--
+    <table border="0">
         <tbody>
             <tr>
                 <td>Title of Note</td>
@@ -17,10 +14,22 @@
                 <td>Description</td>
                 <td>{{note.description}}</td>
             </tr>
+            <tr>
+                <td>Created Date</td>
+                <td>{{note.createdDate}}</td>
+            </tr>
+            <tr>
+                <td>Start Date</td>
+                <td>{{note.startDate}}</td>
+            </tr>
+            <tr>
+                <td>End Date</td>
+                <td>{{note.endDate}}</td>
+            </tr>
         </tbody>
     </table>
-    -->
-
+-->
+    <br/>
     <div class="row">
         <label class="md-col-5">Title of Note</label>
         <textarea value="{{note.title}}" matInput cols="50" rows="1" 

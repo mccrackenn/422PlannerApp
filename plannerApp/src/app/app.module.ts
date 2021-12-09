@@ -18,6 +18,8 @@ import { NotesComponent } from './notes/notes.component';
 import { NoteItemComponent } from './notes/note-item/note-item.component';
 import { CreateNoteComponent } from './create-note/create-note.component';
 import { ToDosComponent } from './to-dos/to-dos.component';
+import { ToDoItemComponent } from './to-dos/todo-item/todo-item.component';
+import { CreateToDoComponent } from './create-todo/create-todo.component';
 
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -30,9 +32,15 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 import { CalendarComponent } from './calendar/calendar.component';
 import { ViewNoteComponent } from './dialogs/view-note/view-note.component';
+import { ViewTodoComponent } from './dialogs/view-todo/view-todo.component';
+
+import { GoogleSigninComponent } from './google.signin';
+import { LogoutComponent } from './logout/logout.component';
 
 // Register FullCalendar plugins
 FullCalendarModule.registerPlugins([
@@ -51,8 +59,14 @@ FullCalendarModule.registerPlugins([
     NoteItemComponent,
     CreateNoteComponent,
     ToDosComponent,
+    ToDoItemComponent,
+    CreateToDoComponent,
     CalendarComponent,
-    ViewNoteComponent
+    ViewNoteComponent,
+    ViewTodoComponent,
+    GoogleSigninComponent,
+    LoginComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +75,7 @@ FullCalendarModule.registerPlugins([
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatCardModule,
+    MatIconModule,
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -71,7 +86,9 @@ FullCalendarModule.registerPlugins([
     MatCheckboxModule,
     MatDialogModule,
     FullCalendarModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSnackBarModule
+
   ],
   providers: [],
   bootstrap: [AppComponent],

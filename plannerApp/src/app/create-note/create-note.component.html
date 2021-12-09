@@ -1,1 +1,55 @@
-<p>create-note works!</p>
+<p>{{ note?.title }}</p>
+<mat-card>
+  <form [formGroup]="form" (submit)="updateNote()" >
+    <div>
+      <mat-form-field>
+        <input matInput type="text" formControlName="title" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <input matInput type="text" formControlName="description" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <input matInput formControlName="startDate" />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-date-range-input [rangePicker]="pickerA" >
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="startDateA"
+          />
+          <input
+            matEndDate
+            placeholder="End date"
+            formControlName="endDateA"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="pickerA"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #pickerA></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <input matInput formControlName="endDate" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <input matInput formControlName="createdDate" />
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit">Save</button>
+  </form>
+</mat-card>

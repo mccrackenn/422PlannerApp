@@ -2,15 +2,31 @@
   style="background-image: linear-gradient(to right, #00b4db, #0083b0)"
 >
   <!-- <span class="spacer"></span> -->
-  <ul>
+  <ul *ngIf="this.authService.isAutheticated">
     <li>
-      <a mat-button routerLink="/home" routerLinkActive="mat-accent">Home</a>
+      <a mat-button routerLink="/home" routerLinkActive="mat-accent">
+        <mat-icon>home</mat-icon> Home</a>
     </li>
     <li>
-      <a mat-button routerLink="/to-dos" routerLinkActive="mat-accent">ToDos</a>
+      <a mat-button routerLink="/to-dos" routerLinkActive="mat-accent">
+        <mat-icon>task</mat-icon> ToDos</a>
     </li>
     <li>
-      <a mat-button routerLink="/notes" routerLinkActive="mat-accent">Notes</a>
+      <a mat-button routerLink="/notes" routerLinkActive="mat-accent">
+        <mat-icon>description</mat-icon> Notes</a>
     </li>
+    <li>
+      <span>{{ this.currentUser?.name }}</span>
+    </li>
+    <li>
+      <img src="{{ this.currentUser?.imageUrl }}" width="20px" height="20px" />
+    </li>
+    <li>
+      <a mat-button (click)="logoutClicked()"> 
+        <mat-icon>logout</mat-icon>Logout</a>
+    </li>
+  </ul>
+  <ul *ngIf="!this.authService.isAutheticated">
+    <li><label> Login </label></li>
   </ul>
 </mat-toolbar>

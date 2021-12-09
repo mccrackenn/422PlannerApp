@@ -15,15 +15,45 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
+            <button  mat-flat-button  
+              title="Create new Note" color="accent" 
+              routerLink="../notes">
+              <mat-icon>note_add</mat-icon> Note
+            </button>
+
+            <button  mat-flat-button [ngStyle]="{ 'margin-left': '20px' }" 
+                title="Create new ToDo" color="accent" 
+                routerLink="../to-dos">
+                <mat-icon>add_task</mat-icon> ToDo
+            </button>
+        </div>
+
+        <div class='cal-page-sidebar-section'>          
+          <label>Note Priority :</label>
+            <div>
+              <button class="color-button" [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor}"> </button>
+              <label class="color-label">Low</label>
+              <button class="color-button" [ngStyle]="{'background-color': this.preference.mediumPriorityNoteColor }"> </button>
+              <label class="color-label">Medium</label>
+              <button class="color-button" [ngStyle]="{'background-color': this.preference.highPriorityNoteColor }"> </button>
+              <label>High</label>
+            </div>
+
+            <label>ToDo :</label>
+            <div>
+              <button class="color-button" [ngStyle]="{'background-color': this.preference.todoCompletedColor }"> </button>
+              <label class="color-label">Complete </label>
+              <button class="color-button" [ngStyle]="{'background-color': this.preference.todoNotCompletedColor }"> </button>
+              <label class="color-label">Not Complete </label>
+            </div>
+        </div>
+
+        <div class='cal-page-sidebar-section'>
             <label>
-              <mat-checkbox value="this.calendarOptions.weekends" 
-                (change)='handleWeekendsToggle()' color='primary' >
+              <mat-checkbox [checked]="showWeekends" 
+                (change)='handleWeekendsToggle()'  
+                color='primary' >
               </mat-checkbox>
-              <!-- <input
-                type='checkbox' 
-                [checked]='this.calendarOptions.weekends'
-                (change)='handleWeekendsToggle()'
-              /> -->
               Show Weekends
             </label>
         </div>

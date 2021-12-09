@@ -1,129 +1,116 @@
-import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, EventContentArg, MountArg } from '@fullcalendar/angular';
-import { Subscription, observable } from 'rxjs';
+import {
+  Component,  OnInit,
+  ChangeDetectorRef,  OnDestroy } from '@angular/core';
+import {
+  CalendarOptions,
+  DateSelectArg, EventClickArg,
+  EventApi, EventInput, EventContentArg,
+  MountArg, EventDropArg } from '@fullcalendar/angular';
+
+import { Subscription } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { CalendarService } from '../services/calendar.service';
 import { ViewNoteComponent } from '../dialogs/view-note/view-note.component';
 import { Note } from '../models/note';
+import { ToDo } from '../models/toDo';
+import { ViewTodoComponent } from '../dialogs/view-todo/view-todo.component';
+import { Router } from '@angular/router';
+import { Preferences } from '../models/preferences';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css']
+  styleUrls: ['./calendar.component.css'],
 })
 
-export class CalendarComponent implements OnInit, OnDestroy
-{
-
+export class CalendarComponent implements OnInit, OnDestroy {
   private currentEvents: EventApi[] = [];
+  private noteEvents: EventInput[] = [];
+  private todoCompletedEvents: EventInput[] = [];
+  private todoNotCompletedEvents: EventInput[] = [];
   selectedDayEvents: EventApi[] = [];
   calendarVisible = true;
   private subscription?: Subscription;
+  showWeekends  = true;
+  preference: Preferences = new Preferences();
 
   // Calendar Options
-  calendarOptions: CalendarOptions = {
-    headerToolbar: {
-      left: 'prev,next,today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-    },
-    initialView: 'dayGridMonth',
-    weekends: true,
-    editable: true,
-    selectable: true,
-    selectMirror: true,
-    dayMaxEvents: true,
-    timeZone: 'local',
-    eventSources: [
-      {
-        events: this.calService.getNotesOfMonthAsEvents(11),
-        color: 'yellow',
-        textColor: 'black',
-        borderColor: 'blue',
-        // backgroundColor: 'yellow'
-      },
-      {
-        events: [
-          {
-            title: '422 Meeting', start: '2021-11-06T21:26:48.703Z',
-            end: '2021-11-06T08:00:00.000Z', id: '2', interactive: true
-          },
-          {
-            title: 'ASC', start: '2021-11-05T21:26:48.703Z',
-            end: '2021-11-06T21:26:48.703Z', editable: true
-          }
-        ],
-        // backgroundColor: 'gray',
-        color: 'lavendar',
-        textColor: 'black',
-        borderColor: 'green',
-        editable: true
-      },
-      {
-        events: this.getEvents(),
-        color: 'gray',
-        textColor: 'white',
-      },
-      {
-        events: this.calService.getToDosOfMonthAsEvents(11),
-        color: 'green',
-        borderColor: 'red'
-      }
-    ],
-    select: this.handleDateSelect.bind(this),
-    dateClick: this.handleDateClick.bind(this),
-    eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this),
-    eventDidMount: this.handleDidMountEvent.bind(this),
-    eventDisplay: 'block',
-    eventInteractive: true,
-  };
-
+  calendarOptions: CalendarOptions = {};
 
   // Date Select
-  handleDateSelect(selectInfo: DateSelectArg): void
-  {
+  handleDateSelect(selectInfo: DateSelectArg): void {
     const calendarApi = selectInfo.view.calendar;
-    console.log('Selected Date: All Day: ' + selectInfo.allDay +
-      ' Start: ' + selectInfo.startStr + ' End: ' + selectInfo.endStr +
-      ' View: ' +
-      selectInfo.view.title + ', ' + selectInfo.view.type);
+    /*console.log(
+      'Selected Date: All Day: ' +
+        selectInfo.allDay +
+        ' Start: ' +
+        selectInfo.startStr +
+        ' End: ' +
+        selectInfo.endStr +
+        ' View: ' +
+        selectInfo.view.title +
+        ', ' +
+        selectInfo.view.type
+    );*/
     calendarApi.unselect();
   }
 
   // Date Click
-  handleDateClick(arg: any): void
-  {
-    alert('Date clicked: ' + arg.dateStr);
+  handleDateClick(arg: any): void {
+    // alert('Date clicked: ' + arg.dateStr);
   }
 
-  // Event Click
-  handleEventClick(clickInfo: EventClickArg): void
-  {
+  // Event Click - Open respective dialog
+  handleEventClick(clickInfo: EventClickArg): void {
     const event = clickInfo.event;
-    // alert('Event Clicked: ' + JSON.stringify(clickInfo.event.toJSON()));
-    const n: Note = new Note()
-    n.id = "10";
-    n.title = 'Note Created';
-    n.description = 'A Note specially created to test the ViewNoteComponent dialog.';
-    this.openDialog(n);
+    const extended = event.extendedProps.ofType;
+
+    if (extended === this.calService.EVENT_TYPE_NOTE) {
+      const fn = this.calService.getNote(event.id);
+      if (fn.found && fn.note) {
+        this.openNoteDialog(fn.note);
+      }
+    }
+    else if (extended === this.calService.EVENT_TYPE_TODO) {
+      const ft = this.calService.getTodo(event.id);
+      if (ft.found && ft.todo) {
+        this.openTodoDialog(ft.todo);
+      }
+    }
   }
 
   handleDidMountEvent(info: MountArg<EventContentArg>): void
   {
-    console.log('DisMount got FIRED...');
-    /*var tooltip = new Tooltip(info.el, {
-      title: info.event.extendedProps.description,
-      placement: 'top',
-      trigger: 'hover',
-      container: 'body'
-    });*/
+    /*console.log('DisMount got FIRED...' + info.event.title);
+    console.log('isSelected: ' + info.isSelected + ' Info: ' + info);
+*/
+  }
+
+  handleEventDrop(drop: EventDropArg): void {
+    const droppedEvent  = drop.event;
+    const extended = droppedEvent.extendedProps.ofType;
+
+    if (extended === this.calService.EVENT_TYPE_NOTE) {
+      if (! this.updateDroppedNote(droppedEvent)) {
+        drop.revert();
+      }
+    }
+    else if (extended === this.calService.EVENT_TYPE_TODO) {
+      if (! this.updateDroppedTodo(droppedEvent)) {
+        drop.revert();
+      }
+    }
+    else {
+      drop.revert();
+    }
   }
 
   handleWeekendsToggle(): void
   {
-    this.calendarOptions.weekends = !this.calendarOptions.weekends;
+    this.showWeekends = !this.showWeekends;
+    this.calendarOptions.weekends = this.showWeekends;
 
     return;
   }
@@ -131,32 +118,79 @@ export class CalendarComponent implements OnInit, OnDestroy
   // EVENTS - handleEvents
   handleEvents(events: EventApi[]): void
   {
-    console.log('Handle EVENT Called');
     this.currentEvents = events;
     // console.log(this.currentEvents);
 
     this.getSelectedDaysEvents(new Date());
 
-    console.log(this.selectedDayEvents);
+    // console.log(this.selectedDayEvents);
     this.cd.detectChanges();
   }
 
+  updateDroppedNote(droppedEvent: EventApi): boolean {
+    let updated = false;
+    const orgNoteEvent = this.noteEvents.find(e => e.id === droppedEvent.id);
+    if (orgNoteEvent?.start !== droppedEvent.startStr ||
+      orgNoteEvent?.end !== droppedEvent.endStr) {
+        console.log('Drag-Drop Note has occured.');
+        console.log('Org Start Dt: ' + orgNoteEvent?.start + ' End Dt: ' + orgNoteEvent?.end +
+        '\n New Start: ' + droppedEvent.start + ' End: ' + droppedEvent.end );
+        const fn = this.calService.getNote(droppedEvent.id);
+        if (fn.found && fn.note) {
+          // console.log('Found Note: ' + fn.found);
+          const note = fn.note;
+          note.startDate = new Date(droppedEvent.startStr);
+          note.endDate = new Date(droppedEvent.endStr);
+          console.log('Updated Note - Start: ' + note.startDate + ' End: ' + note.endDate);
+          this.calService.updateNote(note);
+          updated = true;
+        }
+    }
+    return updated;
+  }
+
+  updateDroppedTodo(droppedEvent: EventApi): boolean {
+    let updated = false;
+
+    let orgTodoEvent = this.todoCompletedEvents.find(e => e.id === droppedEvent.id);
+    if (! orgTodoEvent) {
+      orgTodoEvent = this.todoNotCompletedEvents.find(e => e.id === droppedEvent.id);
+    }
+
+    if (orgTodoEvent?.start !== droppedEvent.startStr ||
+      orgTodoEvent?.end !== droppedEvent.endStr) {
+        console.log('Drag-Drop of ToDo has occured.');
+        const fn = this.calService.getTodo(droppedEvent.id);
+        if (fn.found && fn.todo) {
+          // console.log('Found Todo: ' + fn.found);
+          const todo = fn.todo;
+          todo.startDateTime = new Date(droppedEvent.startStr);
+          todo.endDateTime = new Date(droppedEvent.endStr);
+
+          // this.calService.updateTodo(todo);
+          // updated = true;
+        }
+    }
+    return updated;
+  }
+
   // Gets/Sets events of specified date
-  private getSelectedDaysEvents(date: Date): void
-  {
-    const dt = date.getDate();
+  private getSelectedDaysEvents(date: Date): void {
+    const dt = date;
 
     this.selectedDayEvents = [];
 
-    this.currentEvents.forEach(event =>
-    {
-      if (event._instance)
-      {
-        if (event._instance?.range.start.getDate() === dt)
-        {
+    let e =  this.currentEvents.filter(c => c.start?.getFullYear === dt.getFullYear);
+    e = e.filter(c => c.start?.getMonth() === dt.getMonth() );
+
+    e.forEach((event) => {
+      if (event._instance) {
+        if (event._instance?.range.start.getDate() + 1 === dt.getDate()) {
           this.selectedDayEvents.push(event);
         }
-        else if ((event._instance.range.end.getDate() <= dt) && (event._instance?.range.start.getDate() < dt))
+        else if (
+          event._instance.range.end.getDate() >= dt.getDate() &&
+          event._instance?.range.start.getDate() + 1 < dt.getDate() )
         {
           this.selectedDayEvents.push(event);
         }
@@ -164,51 +198,176 @@ export class CalendarComponent implements OnInit, OnDestroy
     });
   }
 
-  openDialog(n: Note): void
-  {
-    const dlgConfig = new MatDialogConfig();
-    dlgConfig.disableClose = true;
-    dlgConfig.autoFocus = false;
-    dlgConfig.role = 'dialog';
+  openNoteDialog(n: Note): void {
+    const dlgConfig = this.getDialogConfig();
     dlgConfig.data = {
-      note: n
+      note: n,
     };
 
     // Want to open from Top Left - Close Slide down
     // https://material.angularjs.org/1.1.2/demo/dialog
 
     const dlgRef = this.dialog.open(ViewNoteComponent, dlgConfig);
-    dlgRef.afterClosed().subscribe(data => console.log('Dialog output: ', data));
+    dlgRef
+      .afterClosed()
+      .subscribe((data) => {
+        if (data === 'edit') {
+          // Navigate to Note-Edit passing note.id
+          const url = '/editNote/' + n.id;
+          this.router.navigate([url ] );
+        }
+      });
 
+    return;
+  }
+
+  openTodoDialog(t: ToDo): void {
+    const dlgConfig = this.getDialogConfig();
+    dlgConfig.data = {
+      todo: t,
+    };
+
+    const dlgRef = this.dialog.open(ViewTodoComponent, dlgConfig);
+    dlgRef.afterClosed()
+    .subscribe((data) => {
+      if (data === 'edit') {
+        // Navigate to Todo-Edit passing todo.id
+        const url = '/editToDo/' + t.id;
+        this.router.navigate([url ] );
+      }
+    });
+
+    return;
+  }
+
+  private getDialogConfig(): MatDialogConfig {
+    const dlgConfig = new MatDialogConfig();
+    dlgConfig.disableClose = true;
+    dlgConfig.autoFocus = false;
+    dlgConfig.role = 'dialog';
+
+    return dlgConfig;
   }
 
   constructor(private calService: CalendarService,
-    private cd: ChangeDetectorRef,
-    private dialog: MatDialog) { }
+              private authService: AuthService,
+              private cd: ChangeDetectorRef,
+              private dialog: MatDialog,
+              private router: Router) {
+                if (! authService.isAutheticated) {
+                  router.navigate(['']);
+                }
+              }
 
-  ngOnInit(): void
-  {
+  ngOnInit(): void {
+    // Fetch all data & populate in the Calendar
+    this.getDataAsEvents();
+
   }
 
-  ngOnDestroy(): void
-  {
-    if (this.subscription)
-    {
+  private initCalendarOptions(): void {
+    this.calendarOptions = {
+      headerToolbar: {
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+      },
+      initialView: 'dayGridMonth',
+      weekends: this.showWeekends,
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      dayMaxEvents: true,
+      timeZone: 'local',
+      eventSources: [
+        {
+          events: this.noteEvents,
+          color: this.preference.highPriorityNoteColor,
+          textColor: 'white',
+          borderColor: 'red',
+        },
+        {
+          events: this.todoCompletedEvents,
+          color: this.preference.todoCompletedColor,
+          borderColor: 'blue',
+        },
+        {
+          events: this.todoNotCompletedEvents,
+          color: this.preference.todoNotCompletedColor,
+          borderColor: 'blue',
+        },
+        {
+          events: [
+            {
+              title: '422 Meeting',
+              start: '2021-11-06T21:26:48.703Z',
+              end: '2021-11-06T08:00:00.000Z',
+              id: '2',
+              interactive: true,
+            },
+            {
+              title: 'ASC',
+              start: '2021-11-05T21:26:48.703Z',
+              end: '2021-11-06T21:26:48.703Z',
+              editable: true,
+            },
+          ],
+          // backgroundColor: 'gray',
+          color: this.preference.mediumPriorityNoteColor,
+          textColor: 'black',
+          borderColor: 'green',
+          editable: true,
+        }
+      ],
+      select: this.handleDateSelect.bind(this),
+      dateClick: this.handleDateClick.bind(this),
+      eventClick: this.handleEventClick.bind(this),
+      eventsSet: this.handleEvents.bind(this),
+      eventDidMount: this.handleDidMountEvent.bind(this),
+      eventDrop: this.handleEventDrop.bind(this),
+      eventDisplay: 'block',
+      eventInteractive: true,
+    };
+
+    return;
+  }
+
+  async getDataAsEvents(): Promise<void> {
+    this.noteEvents = await this.calService.getNoteEvents().toPromise();
+    await this.calService.fetchToDoEvents().toPromise().then(() => {
+      this.todoCompletedEvents = this.calService.getCompletedTodoEvents();
+      this.todoNotCompletedEvents = this.calService.getNotCompletedTodoEvents();
+    });
+
+    this.initCalendarOptions();
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
       this.subscription.unsubscribe();
     }
+    this.dialog.ngOnDestroy();
   }
 
-  getEvents(): EventInput[]
-  {
+  getEvents(): EventInput[] {
     const event: EventInput[] = [];
-    event.push(
-      { title: 'Sp. Note 1', start: '2021-11-05T21:26:48.703Z', end: '2021-11-06T21:26:48.703Z' });
-    event.push(
-      { title: 'Sp. Note 2', start: '2021-11-02T21:26:48.703Z', end: '2021-11-04T21:26:48.703Z', interactive: true });
-    event.push(
-      { title: 'Sp. Note 3', start: '2021-11-03T21:26:48.703Z', end: '2021-11-03T21:26:48.703Z' });
+    event.push({
+      title: 'Sp. Note 1',
+      start: '2021-11-05T21:26:48.703Z',
+      end: '2021-11-06T21:26:48.703Z',
+    });
+    event.push({
+      title: 'Sp. Note 2',
+      start: '2021-11-02T21:26:48.703Z',
+      end: '2021-11-04T21:26:48.703Z',
+      interactive: true,
+    });
+    event.push({
+      title: 'Sp. Note 3',
+      start: '2021-11-03T21:26:48.703Z',
+      end: '2021-11-03T21:26:48.703Z',
+    });
 
     return event;
   }
-
 }

@@ -1,24 +1,21 @@
-import { ToDoItem } from './toDoItem';
-
 export class ToDo {
-    id: number;
-    todoTitle: string;
+    id: string;
+    title: string;
+    description: string;
+    completed: boolean;
+    notification: boolean;
     createdDate: Date;
-    startDate: Date;    // Date with earliest ToDoItem - by default it will be today's date
-    endDate: Date;      // Date with last ToDoItem - by default it will be today's date
-    listOfItems: ToDoItem[];
+    startDateTime: Date;    // User entered Todo Start date & time
+    endDateTime: Date;      // User entered Todo End date & time
 
-    constructor(title?: string) {
-        this.id = -1;
-        if (title) {
-            this.todoTitle = title;
-        } else {
-            this.todoTitle = 'Untitled ToDo';
-        }
+    constructor() {
+        this.id = '';
+        this.title = '';
+        this.description = '';
+        this.completed = false;
+        this.notification = false;
         this.createdDate = new Date();
-        this.startDate = new Date();
-        this.endDate = new Date();
-        this.listOfItems = new Array<ToDoItem>();
+        this.startDateTime = new Date();
+        this.endDateTime = new Date();
     }
-
 }
