@@ -4,6 +4,7 @@
   <!-- <span class="spacer"></span> -->
   <ul *ngIf="this.authService.isAutheticated">
     <li>
+
       <a mat-button routerLink="/home" routerLinkActive="mat-accent">
         <mat-icon>home</mat-icon> Home</a>
     </li>
@@ -14,6 +15,7 @@
     <li>
       <a mat-button routerLink="/notes" routerLinkActive="mat-accent">
         <mat-icon>description</mat-icon> Notes</a>
+
     </li>
     <li>
       <span>{{ this.currentUser?.name }}</span>
@@ -22,8 +24,10 @@
       <img src="{{ this.currentUser?.imageUrl }}" width="20px" height="20px" />
     </li>
     <li>
+
       <a mat-button (click)="logoutClicked()"> 
         <mat-icon>logout</mat-icon>Logout</a>
+
     </li>
   </ul>
   <ul *ngIf="!this.authService.isAutheticated">

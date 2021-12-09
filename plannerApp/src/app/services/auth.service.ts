@@ -6,17 +6,19 @@ import { map, tap } from 'rxjs/operators';
 import { User } from '../models/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 
 // Updated with BehaviorSubject & other from
 // https://daily-dev-tips.com/posts/angular-authenticating-users-from-an-api/
 export class AuthService {
+
   private localUserUrl = 'http://localhost:3000/api/users/';
   private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/users';
   private userUrl = this.localUserUrl;
 
   user!:User;
+
   private userSubject: BehaviorSubject<User | null>;
   public userObj: Observable<User | null>;
 
@@ -26,9 +28,7 @@ export class AuthService {
     let data: any = '';
     if (localStorage.getItem('userData')) {
       data = localStorage.getItem('userData');
-      this.userSubject = new BehaviorSubject<User | null>(
-        JSON.parse(data)
-      );
+      this.userSubject = new BehaviorSubject<User | null>(JSON.parse(data));
       this.isAutheticated = true;
     } else {
       this.userSubject = new BehaviorSubject<User | null>(null);
@@ -42,17 +42,23 @@ export class AuthService {
     return this.userSubject.value;
   }
 
+
+
+ 
   login(user: User): Observable<User> {
     return this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
       map((u: User) => {
         user._id = u._id;
         this.user = user;
+
         this.userSubject.next(user);
         this.userObj = this.userSubject.asObservable();
         this.isAutheticated = true;
         localStorage.setItem('userData', JSON.stringify(user));
         return user;
+
       }));
+
   }
 
   logout(): void {
@@ -77,14 +83,18 @@ export class AuthService {
   }
 
   checkAuthentication(): boolean {
-    console.log('checkAuthentication: isAuthenticated: ' +
-      this.isAutheticated + ' User: ' + this.userSubject);
+    console.log(
+      'checkAuthentication: isAuthenticated: ' +
+        this.isAutheticated +
+        ' User: ' +
+        this.userSubject
+    );
     if (this.isAutheticated) {
       return true;
     }
 
     if (this.getUserValue()) {
-      console.log('checkAuthentication: Returning true, bcoz user exists' );
+      console.log('checkAuthentication: Returning true, bcoz user exists');
       this.isAutheticated = true;
       return true;
     }
@@ -100,7 +110,9 @@ export class AuthService {
     return false;
   }
 
+
   getCurrentUser(): User{
+
     console.log(this.user);
     return this.user;
   }

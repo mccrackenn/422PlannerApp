@@ -14,10 +14,12 @@ export class NotesServices {
   private notes: Note[] = [];
   private userNotes: Note[] = [];
 
+
   private localNotesUrl = 'http://localhost:3000/api/notes/';
 
-  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
-  private notesUrl = this.azureUrl;
+
+  //private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
+  //private notesUrl = this.azureUrl;
 
   notesUpdated = new Subject<Note[]>();
   noteAdded = new Subject<Note>();
@@ -53,6 +55,7 @@ export class NotesServices {
   // }
 
   getNotes(): Observable<Note[]> {
+
     const newUser = this.authService.getUserValue();  // .getCurrentUser();
     if (!newUser) {
       return of(this.userNotes);
@@ -61,6 +64,7 @@ export class NotesServices {
     return (
       this.httpClient
         .post<Note[]>(this.notesUrl + newUser._id, newUser)
+
         .pipe(
           map(
             (
@@ -127,7 +131,9 @@ export class NotesServices {
 
   deleteNote(noteId: string): void {
     this.httpClient
+
       .delete(this.notesUrl + noteId)
+
       .subscribe((response) => {
         console.log(response);
         const updatedNotes = this.userNotes.filter((note) => note.id !== noteId);
@@ -141,8 +147,8 @@ export class NotesServices {
     return this.notesUpdated.asObservable();
   }
 
+
   getNote(id: string): Observable<Note> {
-    // return this.httpClient.get<Note>(this.localNotesUrl + id).pipe(
     return this.httpClient.get<Note>(this.notesUrl + id).pipe(
       map((oneNote) => {
         oneNote.startDate = new Date(oneNote.startDate);
