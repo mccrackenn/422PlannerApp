@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Subscriber, Subscription, Observable } from 'rxjs';
+import { Subject, Subscriber, Subscription, Observable, of } from 'rxjs';
 import { Note } from 'src/app/models/note';
 import { map, tap } from 'rxjs/operators';
 import { SnackbarService } from './snackbar/snackbar.service';
@@ -14,11 +14,10 @@ export class NotesServices {
   private notes: Note[] = [];
   private userNotes: Note[] = [];
 
-  private localNotesUrl = 'http://localhost:3000/api/notes/';
-  private localUserUrl = 'http://localhost:3000/api/users/';
+  private notesUrl = 'http://localhost:3000/api/notes/';
 
-  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
-  private notesUrl = this.azureUrl;
+  //private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
+  //private notesUrl = this.azureUrl;
 
   notesUpdated = new Subject<Note[]>();
   noteAdded = new Subject<Note>();
@@ -54,11 +53,14 @@ export class NotesServices {
   // }
 
   getNotes(): Observable<Note[]> {
-    const newUser = this.authService.getCurrentUser();
+    const newUser = this.authService.getUserValue()!;
     console.log(newUser._id);
+    if(!newUser){
+      return of(this.userNotes)
+    }
     return (
       this.httpClient
-        .post<Note[]>(this.localNotesUrl + '/' + newUser._id, newUser)
+        .post<Note[]>(this.notesUrl + '/' + newUser._id, newUser)
         //.post<Note[]>(this.notesUrl + newUser._id, newUser)
         .pipe(
           map(
@@ -82,7 +84,7 @@ export class NotesServices {
     const _id = currentUser._id;
     this.httpClient
       .post<{ message: string; noteId: string }>(
-       this.localNotesUrl,
+       this.notesUrl,
         {
           note,
           _id,
@@ -113,7 +115,7 @@ export class NotesServices {
     console.log(note);
     console.log(id);
     this.httpClient
-      .put<{ message: string; noteId: string }>(this.localNotesUrl + id, note)
+      .put<{ message: string; noteId: string }>(this.notesUrl + id, note)
       .subscribe((responseData) => {
         console.log(responseData);
       });
@@ -121,7 +123,7 @@ export class NotesServices {
 
   deleteNote(noteId: string) {
     this.httpClient
-      .delete(this.localNotesUrl + noteId)
+      .delete(this.notesUrl+ noteId)
       .subscribe((response) => {
         console.log(response);
         const updatedNotes = this.userNotes.filter((note) => note.id !== noteId);
@@ -136,7 +138,7 @@ export class NotesServices {
   }
 
   getNote(id: string) {
-    return this.httpClient.get<Note>(this.localNotesUrl + id).pipe(
+    return this.httpClient.get<Note>(this.notesUrl + id).pipe(
       map((oneNote) => {
         oneNote.startDate = new Date(oneNote.startDate);
         oneNote.endDate = new Date(oneNote.endDate);

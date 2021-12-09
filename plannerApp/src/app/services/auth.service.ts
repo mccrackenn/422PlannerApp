@@ -6,26 +6,25 @@ import { map, tap } from 'rxjs/operators';
 import { User } from '../models/user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 
 // Updated with BehaviorSubject & other from
 // https://daily-dev-tips.com/posts/angular-authenticating-users-from-an-api/
 export class AuthService {
-  private localUserUrl = 'http://localhost:3000/api/users/';
-  user!:User
+  private usersUrl = 'http://localhost:3000/api/users/';
+
+  user!: User;
   private userSubject: BehaviorSubject<User | null>;
   public userObj: Observable<User | null>;
 
   isAutheticated = false;
 
-  constructor(private router: Router, private httpClient:HttpClient) {
+  constructor(private router: Router, private httpClient: HttpClient) {
     let data: any = '';
     if (localStorage.getItem('userData')) {
       data = localStorage.getItem('userData');
-      this.userSubject = new BehaviorSubject<User | null>(
-        JSON.parse(data)
-      );
+      this.userSubject = new BehaviorSubject<User | null>(JSON.parse(data));
       this.isAutheticated = true;
     } else {
       this.userSubject = new BehaviorSubject<User | null>(null);
@@ -39,27 +38,36 @@ export class AuthService {
     return this.userSubject.value;
   }
 
-  login(user: User): User {
-    localStorage.setItem('userData', JSON.stringify(user));
-    this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
-    //this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
-      map((user) => {
-        user._id = user._id
-        return user
-      }),tap(result => this.user = result)
-    ).subscribe(user => this.userSubject.next(user))
-    this.isAutheticated = true;
+  // login(user: User): User {
+  //   localStorage.setItem('userData', JSON.stringify(user));
+  //   this.httpClient
+  //     .get<User>(this.localUserUrl + user.email)
+  //     .pipe(
+  //       //this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
+  //       map((user) => {
+  //         user._id = user._id;
+  //         return user;
+  //       }),
+  //       tap((result) => (this.user = result))
+  //     )
+  //     .subscribe((user) => this.userSubject.next(user));
+  //   this.isAutheticated = true;
 
-    return user;
-    /*
-    // Sending out the update to the all Subscibers, if a component needs this info, they should subscribe via a Subscription
-    this.user$.next(user);
+  //   return user;
+  // }
 
-    this.isAutheticated = true;
-    // localStorage.setItem('userData', JSON.stringify(user));
-    // Check if user existed in our system.
-    // Update the login status of the user in DB
-    */
+  login(user: User): Observable<User> {
+    return this.httpClient.get<User>(this.usersUrl + user.email).pipe(
+      map((u: User) => {
+        user._id = u._id;
+        this.userSubject.next(user);
+        this.userObj = this.userSubject.asObservable();
+        this.isAutheticated = true;
+        localStorage.setItem('userData', JSON.stringify(user));
+        return user;
+      }),
+      tap((result) => (this.user = result))
+    );
   }
 
   logout(): void {
@@ -84,14 +92,18 @@ export class AuthService {
   }
 
   checkAuthentication(): boolean {
-    console.log('checkAuthentication: isAuthenticated: ' +
-      this.isAutheticated + ' User: ' + this.userSubject);
+    console.log(
+      'checkAuthentication: isAuthenticated: ' +
+        this.isAutheticated +
+        ' User: ' +
+        this.userSubject
+    );
     if (this.isAutheticated) {
       return true;
     }
 
     if (this.getUserValue()) {
-      console.log('checkAuthentication: Returning true, bcoz user exists' );
+      console.log('checkAuthentication: Returning true, bcoz user exists');
       this.isAutheticated = true;
       return true;
     }
@@ -107,8 +119,8 @@ export class AuthService {
     return false;
   }
 
-  getCurrentUser():User{
-    console.log(this.user)
+  getCurrentUser(): User {
+    console.log(this.user);
     return this.user;
   }
 }

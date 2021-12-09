@@ -2,7 +2,7 @@
   <mat-accordion>
     <mat-expansion-panel hideToggle>
       <mat-expansion-panel-header>
-        <mat-panel-title> {{ note?.title }}</mat-panel-title>
+        <mat-panel-title> {{ note?.title }}<div fxFlexAlign="right"><mat-icon>expand_more</mat-icon></div></mat-panel-title>
       </mat-expansion-panel-header>
       <p>{{ note?.description }}</p>
       <p>{{ note?.startDate | date }}</p>
