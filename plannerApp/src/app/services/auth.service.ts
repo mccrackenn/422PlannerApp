@@ -13,10 +13,10 @@ import { User } from '../models/user';
 // https://daily-dev-tips.com/posts/angular-authenticating-users-from-an-api/
 export class AuthService {
   private localUserUrl = 'http://localhost:3000/api/users/';
-  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/users';
-  private userUrl = this.localUserUrl;
+  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/users/';
+  private userUrl = this.azureUrl;
 
-  user!:User;
+  user!: User;
   private userSubject: BehaviorSubject<User | null>;
   public userObj: Observable<User | null>;
 
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   login(user: User): Observable<User> {
-    return this.httpClient.get<User>(this.localUserUrl + user.email).pipe(
+    return this.httpClient.get<User>(this.userUrl + user.email).pipe(
       map((u: User) => {
         user._id = u._id;
         this.user = user;
@@ -99,9 +99,9 @@ export class AuthService {
 
     return false;
   }
-
+/*
   getCurrentUser(): User{
     console.log(this.user);
     return this.user;
-  }
+  }*/
 }
