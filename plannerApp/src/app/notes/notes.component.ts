@@ -32,22 +32,22 @@ export class NotesComponent implements OnInit, OnChanges {
     private authService: AuthService,
     private router: Router
   ) {
-    console.log('IsAuthenticated? ' + this.authService.isAutheticated);
+    // console.log('IsAuthenticated? ' + this.authService.isAutheticated);
     if (! this.authService.isAutheticated) {
       router.navigate(['']);
     }
 
     const currentYear = new Date().getFullYear();
-    //this.minDate = new Date(currentYear - 5, 12, 99);
+    // this.minDate = new Date(currentYear - 5, 12, 99);
     this.minDate.setDate(this.minDate.getDate());
     this.maxDate.setDate(this.minDate.getDate() + 20);
-    //this.maxDate = new Date(currentYear - 1, 12, 99);
+    // this.maxDate = new Date(currentYear - 1, 12, 99);
   }
 
   ngOnInit(): void {
     this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
 
-    //this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
+    // this.notesService.getNotes().subscribe((notes) => (this.notes = notes));
     this.notesSub = this.notesService
       .getNotesUpdateListener()
       .subscribe((notes: Note[]) => {
@@ -67,22 +67,24 @@ export class NotesComponent implements OnInit, OnChanges {
       endDate: new FormControl(null, { validators: [Validators.required] }),
     });
     this.noteAddedNotification = this.notesService.noteAdded.subscribe(
-     note => setTimeout(()=>{
-      console.log(note)
-      },2500)
+     note => setTimeout(() => {
+      console.log(note);
+      }, 2500)
     );
   }
 
-  getUserNotes() {
+  getUserNotes(): void {
     this.notesService.getNotes().subscribe(result => console.log(result));
   }
 
-  ngOnChanges(){
+  ngOnChanges(): void{
     this.notesService.getNotesUpdateListener();
   }
 
-  onSaveDate() {}
-  submitNewNote() {
+  // On searchForm submit
+  onSaveDate(): void {}
+
+  submitNewNote(): void {
     const newNote: Note = {
       id: 'temp',
       title: this.createNoteForm.value.title,
@@ -93,24 +95,24 @@ export class NotesComponent implements OnInit, OnChanges {
 
     };
 
-    console.log(newNote.startDate);
+    // console.log(newNote.startDate);
     this.notesService.addNote(newNote);
-    //this.createNoteForm.reset()
-    //this.router.navigate(['/notes'])
+    // this.createNoteForm.reset()
+    // this.router.navigate(['/notes'])
     // console.log(this.createNoteForm.get('newNote')?.value)
     // console.log(this.createNoteForm.value.start)
     // console.log(this.createNoteForm.value.end)
   }
 
-  changeTabs($e: MatTabChangeEvent){
-    if($e.index === 0){
-      console.log($e)
-      //this.notesService.getNotesUpdateListener()
+  changeTabs($e: MatTabChangeEvent): void{
+    if ($e.index === 0){
+      console.log($e);
+      // this.notesService.getNotesUpdateListener()
     }
-    //this.fetchAccounts(this.banks[$event.index].id)
-}
+    // this.fetchAccounts(this.banks[$event.index].id)
+  }
 
-  date(e: any) {
+  date(e: any): void {
     const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
     this.form.get('dob')?.setValue(convertDate, {
       onlyself: true,

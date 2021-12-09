@@ -33,7 +33,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatIconModule} from '@angular/material/icon'
+import {MatIconModule} from '@angular/material/icon';
+
+
 
 import { CalendarComponent } from './calendar/calendar.component';
 import { ViewNoteComponent } from './dialogs/view-note/view-note.component';

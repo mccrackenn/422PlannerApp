@@ -14,7 +14,9 @@ export class NotesServices {
   private notes: Note[] = [];
   private userNotes: Note[] = [];
 
-  private notesUrl = 'http://localhost:3000/api/notes/';
+
+  private localNotesUrl = 'http://localhost:3000/api/notes/';
+
 
   //private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
   //private notesUrl = this.azureUrl;
@@ -53,19 +55,20 @@ export class NotesServices {
   // }
 
   getNotes(): Observable<Note[]> {
-    const newUser = this.authService.getUserValue()!;
-    console.log(newUser._id);
-    if(!newUser){
-      return of(this.userNotes)
+
+    const newUser = this.authService.getUserValue();  // .getCurrentUser();
+    if (!newUser) {
+      return of(this.userNotes);
     }
+    // console.log(newUser._id);
     return (
       this.httpClient
-        .post<Note[]>(this.notesUrl + '/' + newUser._id, newUser)
-        //.post<Note[]>(this.notesUrl + newUser._id, newUser)
+        .post<Note[]>(this.notesUrl + newUser._id, newUser)
+
         .pipe(
           map(
             (
-              notes //Mapping operation was needed to convert dates back to date objects
+              notes // Mapping operation was needed to convert dates back to date objects
             ) =>
               notes.map((note) => {
                 note.startDate = new Date(note.startDate);
@@ -79,8 +82,12 @@ export class NotesServices {
     );
   }
 
-  addNote(note: Note) {
-    const currentUser = this.authService.getCurrentUser();
+  addNote(note: Note): void {
+    const currentUser = this.authService.getUserValue();
+    if (!currentUser) {
+      console.log('Failed to add Note....');
+      return;
+    }
     const _id = currentUser._id;
     this.httpClient
       .post<{ message: string; noteId: string }>(
@@ -91,7 +98,7 @@ export class NotesServices {
         }
       )
       .subscribe((responseData) => {
-        console.log(responseData)
+        // console.log(responseData)
         const newNote: Note = {
           id: responseData.noteId,
           title: note.title,
@@ -100,30 +107,33 @@ export class NotesServices {
           endDate: note.endDate,
           createdDate: note.createdDate,
         };
-        console.log(newNote);
+        // console.log(newNote);
         this.userNotes.push(newNote);
-        //console.log(this.notes);
+        // console.log(this.notes);
+        console.log('Note \"' + newNote.title + '\" successfully added. ');
         this.notesUpdated.next([...this.userNotes]);
         this.noteAdded.next(newNote);
-        //this.router.navigate(['/notes']).then(()=>console.log('hello'));
-        //this.snackBar.openSnackBar("message","action")
+        // this.router.navigate(['/notes']).then(()=>console.log('hello'));
+        // this.snackBar.openSnackBar("message","action")
       });
   }
 
   updateNote(note: Note): void {
     const id = note.id;
-    console.log(note);
-    console.log(id);
+    // console.log(note);
+    // console.log(id);
     this.httpClient
       .put<{ message: string; noteId: string }>(this.notesUrl + id, note)
       .subscribe((responseData) => {
-        console.log(responseData);
+        console.log('UPDATED Note successfully. ' + responseData);
       });
   }
 
-  deleteNote(noteId: string) {
+  deleteNote(noteId: string): void {
     this.httpClient
-      .delete(this.notesUrl+ noteId)
+
+      .delete(this.notesUrl + noteId)
+
       .subscribe((response) => {
         console.log(response);
         const updatedNotes = this.userNotes.filter((note) => note.id !== noteId);
@@ -133,11 +143,12 @@ export class NotesServices {
       });
   }
 
-  getNotesUpdateListener() {
+  getNotesUpdateListener(): Observable<Note[]> {
     return this.notesUpdated.asObservable();
   }
 
-  getNote(id: string) {
+
+  getNote(id: string): Observable<Note> {
     return this.httpClient.get<Note>(this.notesUrl + id).pipe(
       map((oneNote) => {
         oneNote.startDate = new Date(oneNote.startDate);

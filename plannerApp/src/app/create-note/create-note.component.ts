@@ -29,12 +29,12 @@ export class CreateNoteComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required] }),
       description: new FormControl(null, { validators: [Validators.required] }),
       startDate: new FormControl(null, { validators: [Validators.required] }),
-      startDateA:new FormControl(null, {validators:[Validators.required]}),
+      startDateA: new FormControl(null, {validators:[Validators.required]}),
       endDate: new FormControl(null, { validators: [Validators.required] }),
       endDateA: new FormControl(null, { validators: [Validators.required] }),
       createdDate: new FormControl(null, { validators: [Validators.required] }),
@@ -46,7 +46,7 @@ export class CreateNoteComponent implements OnInit {
         this.noteId = paramMap.get('noteId');
         console.log(this.noteId);
         this.notesService.getNote(this.noteId!).subscribe((responseData) => {
-          console.log(responseData);
+          // console.log(responseData);
           this.note = {
             id: responseData.id,
             title: responseData.title,
@@ -55,7 +55,7 @@ export class CreateNoteComponent implements OnInit {
             endDate: responseData.endDate,
             createdDate: responseData.createdDate,
           };
-          console.log(this.note);
+          console.log('Received Note to edit: ' + this.note);
           this.form.setValue({
             title: this.note.title,
             description: this.note.description,
@@ -77,7 +77,7 @@ export class CreateNoteComponent implements OnInit {
       this.note.startDate = this.form.value.startDate;
       this.note.endDate = this.form.value.endDate;
       this.note.createdDate = this.form.value.createdDate;
-      console.log('Going to service....');
+      // console.log('Going to service....');
       this.notesService.updateNote(this.note);
     }
   }

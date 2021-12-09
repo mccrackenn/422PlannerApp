@@ -59,13 +59,13 @@ export class GoogleSigninComponent implements AfterViewInit {
         // console.log(newUser);
 
         that.authService.login(newUser).subscribe(() => {
+        // Had to use NgZone and wrap this call, kept getting an error related to trying to run
+        // Angular calls inside non-Angular JS callbacks.
           that.zone.run(() => {
             that.router.navigate(['/home']);
           });
-
         });
-        // Had to use NgZone and wrap this call, kept getting an error related to trying to run
-        // Angular calls inside non-Angular JS callbacks.
+
       },
       (error: any) => {
         console.log('Error Logging in: ' + JSON.stringify(error, undefined, 2));
