@@ -14,7 +14,7 @@ export class NotesServices {
   private notes: Note[] = [];
   private userNotes: Note[] = [];
 
-  private localNotesUrl = 'http://localhost:3000/api/notes/';
+  //private notesUrl = 'http://localhost:3000/api/notes/';
 
   private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
   private notesUrl = this.azureUrl;
