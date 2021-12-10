@@ -102,8 +102,11 @@ export class NotesServices {
         this.userNotes.push(newNote);
         this.notesUpdated.next([...this.userNotes]);
         this.noteAdded.next(newNote);
-        window.location.reload();
-        // this.snackBar.openSnackBar("message","action")
+        this.snackBar.openSnackBar("Note Added","Dismiss")
+        setTimeout(() =>{
+          this.router.navigate(['/notes']).then(() => window.location.reload())
+
+        },3000)
       });
   }
 
@@ -116,9 +119,9 @@ export class NotesServices {
       .subscribe((responseData) => {
         console.log('UPDATED Note successfully. ' + responseData);
       });
-      this.snackBar.openSnackBar("Note Saved","Note Saved")
+      this.snackBar.openSnackBar("Note Edited","Dismiss")
       setTimeout(() =>{
-        this.router.navigate(['/notes'])
+        this.router.navigate(['/notes']).then(()=> window.location.reload())
 
       },3000)
   }
