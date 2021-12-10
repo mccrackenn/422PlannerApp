@@ -14,10 +14,10 @@ export class NotesServices {
   private notes: Note[] = [];
   private userNotes: Note[] = [];
 
-  private notesUrl = 'http://localhost:3000/api/notes/';
+  //private notesUrl = 'http://localhost:3000/api/notes/';
 
-  // private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
-  // private notesUrl = this.azureUrl;
+  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
+  private notesUrl = this.azureUrl;
 
   notesUpdated = new Subject<Note[]>();
   noteAdded = new Subject<Note>();
