@@ -1,4 +1,4 @@
-<mat-tab-group (selectedTabChange)="changeTabs($event)">
+<mat-tab-group [(selectedIndex)]="toDoTabIndex" (selectedTabChange)="changeTabs($event)">
     <mat-tab label="View my ToDos">
         <mat-card class="card">
             <mat-card-title>Search ToDos</mat-card-title>

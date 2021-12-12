@@ -8,7 +8,6 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
     selector: 'app-to-dos',
@@ -16,11 +15,11 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
     styleUrls: ['./to-dos.component.css']
 })
 export class ToDosComponent implements OnInit {
-
     form!: FormGroup;
     searchForm!: FormGroup;
     createToDoForm!: FormGroup;
     private toDosSub: Subscription = new Subscription();
+    public toDoTabIndex = 0;  //sets which tab to load
     filteredOptions?: Observable<ToDo[]>;
 
     toDos: ToDo[] = [];
@@ -66,11 +65,22 @@ export class ToDosComponent implements OnInit {
             startDateTime: new FormControl(null, { validators: [Validators.required] }),
             endDateTime: new FormControl(null, { validators: [Validators.required] }),
         });
+
+        //sets opening tab
+        if (this.router.url == '/to-dos/createToDo') {
+            this.toDoTabIndex = 1;
+        } else {
+            this.toDoTabIndex = 0;
+        }
+    }
+
+    getUserToDos(): void {
+        this.toDoService.getToDos().subscribe(result => console.log(result));
     }
 
     ngOnChanges(){
         this.toDoService.getToDosUpdateListener();
-      }
+    }
 
     //Sorts by date created and completed
     sortToDo() {
@@ -102,7 +112,7 @@ export class ToDosComponent implements OnInit {
                 return 0;
             }
         });
-      }
+    }
 
     onSearchDate(event: MatDatepickerInputEvent<Date>) {
         //date from user (matching 1 selected day to the start dates of todos for simplicity)
@@ -144,8 +154,7 @@ export class ToDosComponent implements OnInit {
           createdDate: new Date(Date.now()),
         };
         this.toDoService.addToDo(newToDo);
-        console.log("Component ts");
-        console.log(newToDo);
+        // console.log(newToDo);
         // console.log(this.createToDoForm.get('newToDo')?.value)
     }
 

@@ -2,31 +2,35 @@ const mongoose = require("mongoose");
 
 //todomodel
 const toDoSchema = mongoose.Schema({
-  title: {
+user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"users"
+},  
+title: {
     type: String,
     required: true,
-  },
-  description: {
+},
+description: {
     type: String,
-    required: true, //q? make this false in case they only want a simple title?
-  },
-  completed: {
+    required: true,
+},
+completed: {
     type: Boolean,
-    required: false, //q? does this mean it will be set by the model constructor?
-  },
-  createdDate: {
+    required: false,
+},
+createdDate: {
     type: Date,
     required: false,
-  },
-  startDateTime: {
+},
+startDateTime: {
     type: Date,
     required: true,
-  },
-  endDateTime: {
+},
+endDateTime: {
     type: Date,
     required: true,
-  },
-  
+},
+
 });
 
 toDoSchema.method("transform", function () {
