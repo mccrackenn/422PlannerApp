@@ -15,9 +15,11 @@ export class ToDoServices
 {
     private toDos: ToDo[] = [];
     private userToDos: ToDo[] = [];
-    //private toDosUrl = 'http://localhost:3000/api/todos/'; //local
+    //local
+    //private toDosUrl = 'http://localhost:3000/api/todos/'; 
     private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/todos/';
-    private toDosUrl = this.azureUrl; //azure
+    //azure
+    private toDosUrl = this.azureUrl;
 
     toDosUpdated = new Subject<ToDo[]>();
     toDoAdded = new Subject<ToDo>();

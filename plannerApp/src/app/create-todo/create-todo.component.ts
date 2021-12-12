@@ -82,8 +82,8 @@ export class CreateToDoComponent implements OnInit {
       this.toDo.title = this.form.value.title;
       this.toDo.description = this.form.value.description;
       this.toDo.completed = this.form.value.completed;
-      this.toDo.startDateTime = this.form.value.startDate;
-      this.toDo.endDateTime = this.form.value.endDate;
+      this.toDo.startDateTime = this.form.value.startDateTime;
+      this.toDo.endDateTime = this.form.value.endDateTime;
       this.toDo.createdDate = new Date(Date.now());
       
       this.toDoService.updateToDo(this.toDo);
