@@ -25,7 +25,7 @@ export class ToDosComponent implements OnInit {
 
     toDos: ToDo[] = [];
     searchToDos: ToDo[] = [];
-  
+
     constructor(
         private toDoService: ToDoServices,
         public snackBar: SnackbarService,
@@ -49,15 +49,15 @@ export class ToDosComponent implements OnInit {
             dob: new FormControl(null, {
                 validators: [Validators.minLength(3), Validators.required],
             }),
-            toDo: new FormControl(null, { 
-                validators: [Validators.required] 
+            toDo: new FormControl(null, {
+                validators: [Validators.required]
             }),
         });
 
         this.searchForm = new FormGroup({
             searchDate: new FormControl(null, { validators: [Validators.required] }),
         });
-        
+
         //todomodel
         this.createToDoForm = new FormGroup({
             title: new FormControl(null, { validators: [Validators.required] }),
@@ -78,7 +78,7 @@ export class ToDosComponent implements OnInit {
         let sortArr = this.toDos;
         if (this.searchToDos.length != 0) {
             sortArr = this.searchToDos;
-        }       
+        }
         let newestFirstArr = sortArr.sort(function(a, b) {
             if (a.createdDate < b.createdDate) {
                 return 1;
@@ -110,7 +110,7 @@ export class ToDosComponent implements OnInit {
 
         console.log("search date: " + searchDate.toISOString());
         if (searchDate != null) {
-            this.snackBar.dismiss();
+            //this.snackBar.dismiss();
             //search and filter through todos to find where the user entered date and start date are the same
             this.searchToDos = this.toDos.filter(function(i: ToDo): any {
                 if(new Date(i.startDateTime).getTime() == searchDate.getTime()) {
