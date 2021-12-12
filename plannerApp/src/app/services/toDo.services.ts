@@ -136,10 +136,7 @@ export class ToDoServices
                 const updatedToDos = this.userToDos.filter((toDo) => toDo.id !== toDoId);
                 this.userToDos = updatedToDos;
                 this.toDosUpdated.next([...this.userToDos]);
-                setTimeout(() => {
-                    this.router.navigate(['/to-dos']).then(() => window.location.reload())
-            
-                },3500)
+                this.snackBar.openSnackBar("ToDo Deleted","Done");
             });
     }
 
