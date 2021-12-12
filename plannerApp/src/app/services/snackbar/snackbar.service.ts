@@ -20,8 +20,9 @@ export class SnackbarService {
        verticalPosition:'bottom',
        horizontalPosition:'center'
     });
+  }
 
   dismiss() {
-      this.snackBar.dismiss();
+    this.snackBar.dismiss();
   }
 }
