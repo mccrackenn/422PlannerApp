@@ -68,7 +68,7 @@ export class NotesComponent implements OnInit, OnChanges {
 
   }
 
-  doStuff(note:Note){
+  notePicker(note:Note){
     this.noteSelected={
       id:note.id,
       title:note.title,

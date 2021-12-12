@@ -24,26 +24,7 @@
         </span>
 
         <div>
-          <!-- <mat-form-field>
-            <mat-date-range-input [rangePicker]="pickerA">
-              <input
-                matStartDate
-                placeholder="Start date"
-                formControlName="startDate"
-                [min]="minDate"
-              />
-              <input
-                matEndDate
-                placeholder="End date"
-                formControlName="endDate"
-              />
-            </mat-date-range-input>
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="pickerA"
-            ></mat-datepicker-toggle>
-            <mat-date-range-picker #pickerA></mat-date-range-picker>
-          </mat-form-field> -->
+
 
           <mat-form-field appearance="fill" >
             <mat-date-range-input [rangePicker]="pickerA" [min]="minDate"
@@ -85,7 +66,7 @@
             placeholder="Enter Note"
           />
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let note of filteredNotes | async let i = index" [value]="note.title" (click)="doStuff(note)">
+            <mat-option *ngFor="let note of filteredNotes | async let i = index" [value]="note.title" (click)="notePicker(note)">
               {{note.title}}
             </mat-option>
           </mat-autocomplete>
