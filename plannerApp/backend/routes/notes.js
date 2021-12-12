@@ -1,4 +1,5 @@
 const express = require("express");
+const { title } = require("process");
 const router = express.Router();
 const Note = require("../models/note");
 
@@ -43,26 +44,77 @@ router.get("/:id", (req, res, next) => {
 });
 
 router.post("", (req, res, next) => {
-  const newNote = new Note({
-    title: req.body.title,
-    description: req.body.description,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    createdDate: req.body.createdDate,
+  const { title, description, startDate, endDate, createdDate } = req.body.note;
+  console.log(title);
+  console.log(req.body._id);
+  const myNote = new Note({
+    title: req.body.note.title,
+    description: req.body.note.description,
+    startDate: req.body.note.startDate,
+    endDate: req.body.note.endDate,
+    createdDate: req.body.note.createdDate,
+    user: req.body._id,
+    // title,
+    // description,
+    // startDate,
+    // endDate,
+    // createdDate,
+    // user:req.body._id
   });
-  newNote
+  console.log(myNote);
+  myNote
     .save()
     .then((createdNote) => {
+      console.log(createdNote);
       res.status(201).json({
         message: "successfully added new Note to DB",
         noteId: createdNote._id,
       });
     })
     .catch((error) => {
-      res.status(500).json({
-        message: "Creating a note failed",
-      });
+      console.log(error)
+      //This is a workaround to an error encountered from hosting on Azure and extra code we had to put into the URI string in app.js (authSource=admin),
+      //note saves to Mongo but generates this error, catching and acknowldeging but continuing since this is not really a problem
+      if(error.result.writeConcernError['code'] === 79){
+        res.status(201).json({
+          message:"Threw write concern error but saved",
+          noteId: myNote._id
+        })
+      }else{
+        res.status(500).json({
+          message: "Creating a note failed",
+        });
+      }
+
     });
+});
+// .then((createdNote) => {
+
+//   res.status(201).json({
+//     message: "successfully added new Note to DB",
+//     noteId: createdNote._id,
+//   });
+// })
+// .catch((error) => {
+//   res.status(500).json({
+//     message: "Creating a note failed",
+//   });
+// });
+
+router.post("/:id", (req, res, next) => {
+  console.log("Arrived at the new Get Request!!!");
+  console.log(req.params.id);
+  const myNotes = Note.find({ user: req.params.id }, (err, result) => {
+    if (err) {
+      console.log(err + "This is a get request disguised as a Post");
+    } else {
+      let transformedResult = [];
+      for (let i = 0; i < result.length; i++) {
+        transformedResult.push(result[i].transform());
+      }
+      res.status(200).json(transformedResult);
+    }
+  });
 });
 
 router.put("/:id", (req, res, next) => {

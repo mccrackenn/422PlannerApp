@@ -1,22 +1,28 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 
-// Updated with BehaviorSubject & other from 
+// Updated with BehaviorSubject & other from
 // https://daily-dev-tips.com/posts/angular-authenticating-users-from-an-api/
 export class AuthService {
+  private localUserUrl = 'http://localhost:3000/api/users/';
+  private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/users/';
+  private userUrl = this.azureUrl;
 
+  user!: User;
   private userSubject: BehaviorSubject<User | null>;
   public userObj: Observable<User | null>;
 
   isAutheticated = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private httpClient: HttpClient) {
     let data: any = '';
     if (localStorage.getItem('userData')) {
       data = localStorage.getItem('userData');
@@ -36,21 +42,17 @@ export class AuthService {
     return this.userSubject.value;
   }
 
-  login(user: User): User {
-    localStorage.setItem('userData', JSON.stringify(user));
-    this.userSubject.next(user);
-    this.isAutheticated = true;
-
-    return user;
-    /*
-    // Sending out the update to the all Subscibers, if a component needs this info, they should subscribe via a Subscription
-    this.user$.next(user);
-
-    this.isAutheticated = true;
-    // localStorage.setItem('userData', JSON.stringify(user));
-    // Check if user existed in our system.
-    // Update the login status of the user in DB
-    */
+  login(user: User): Observable<User> {
+    return this.httpClient.get<User>(this.userUrl + user.email).pipe(
+      map((u: User) => {
+        user._id = u._id;
+        this.user = user;
+        this.userSubject.next(user);
+        this.userObj = this.userSubject.asObservable();
+        this.isAutheticated = true;
+        localStorage.setItem('userData', JSON.stringify(user));
+        return user;
+      }));
   }
 
   logout(): void {
@@ -97,4 +99,9 @@ export class AuthService {
 
     return false;
   }
+/*
+  getCurrentUser(): User{
+    console.log(this.user);
+    return this.user;
+  }*/
 }

@@ -15,8 +15,11 @@ export class SnackbarService {
     3.the duration, alignment, etc. */
 
   openSnackBar(message: string, action: string) {
-    this.snackBar.open(message, action);
-  }
+    this.snackBar.open(message, action, {
+       duration: 2500,
+       verticalPosition:'bottom',
+       horizontalPosition:'center'
+    });
 
   dismiss() {
       this.snackBar.dismiss();
