@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -19,5 +20,8 @@ export class SnackbarService {
        verticalPosition:'bottom',
        horizontalPosition:'center'
     });
+
+  dismiss() {
+      this.snackBar.dismiss();
   }
 }

@@ -26,12 +26,12 @@ router.get("/:id", (req, res, next) => {
   });
 });
 
+//todomodel
 router.post("", (req, res, next) => {
   const newToDo = new ToDo({
     title: req.body.title,
     description: req.body.description,
     completed: req.body.completed,
-    notification: req.body.notification,
     createdDate: req.body.createdDate,
     startDateTime: req.body.startDateTime,
     endDateTime: req.body.endDateTime,

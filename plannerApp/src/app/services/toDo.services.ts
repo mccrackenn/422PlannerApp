@@ -46,17 +46,32 @@ export class ToDoServices
                 title: toDo.title,
                 description: toDo.description,
                 completed: toDo.completed,
-                notification: toDo.notification,
                 createdDate: toDo.createdDate,
                 startDateTime: toDo.startDateTime,
                 endDateTime: toDo.endDateTime,
             };
+            console.log("Services: add");
             console.log(newToDo);
             this.toDos.push(newToDo);
-            console.log(this.toDos);
             this.toDosUpdated.next([...this.toDos]);
-            this.router.navigate(['/to-dos']).then(() => window.location.reload());
+            
+            //this.router.navigate(['/to-dos']).then(() => window.location.reload());
         });
+    }
+
+    updateToDo(toDo: ToDo): void {
+        const id = toDo.id;
+        console.log("Services: update");
+        console.log(toDo);
+        console.log(id);
+        this.httpClient
+          .put<{ message: string; toDoId: string }>(
+            'http://localhost:3000/api/todos/' + id,
+            toDo
+          )
+          .subscribe((responseData) => {
+            console.log(responseData);
+          });
     }
 
     deleteToDo(toDoId: string): void {

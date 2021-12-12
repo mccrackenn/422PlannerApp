@@ -183,12 +183,12 @@ export class CalendarService {
       {
         id: '1', title: 'ToDo 1', description: 'td1 desc', createdDate: new Date('11-6-2021'),
         startDateTime: new Date('11-7-2021'), endDateTime: new Date('11-7-2021'),
-        completed: true, notification: false,
+        completed: true,
       },
       {
         id: '2', title: 'ToDo 2', description: 'td2 desc', createdDate: new Date('11-6-2021'),
         startDateTime: new Date('11-7-2021'), endDateTime: new Date('11-9-2021'),
-        completed: false, notification: false,
+        completed: false,
       }
     ];
 

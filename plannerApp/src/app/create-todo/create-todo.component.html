@@ -1,6 +1,6 @@
 <p>{{ toDo?.title }}</p>
 <mat-card>
-    <form [formGroup]="form">
+    <form [formGroup]="form" (submit)="updateToDo()" >
         <div>
             <mat-form-field>
                 <input matInput type="text" formControlName="title" />
@@ -16,13 +16,26 @@
         </div>
         <div>
             <mat-form-field>
-                <input matInput formControlName="startDateTime" />
+              <mat-date-range-input [rangePicker]="pickerA" >
+                <input
+                  matStartDate
+                  placeholder="Start date"
+                  formControlName="startDateTime"
+                />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  formControlName="endDateTime"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="pickerA"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker #pickerA></mat-date-range-picker>
             </mat-form-field>
-        </div>
-        <div>
-            <mat-form-field>
-                <input matInput formControlName="endDateTime" />
-            </mat-form-field>
-        </div>
+          </div>
+
+          <button mat-raised-button color="primary" type="submit">Save</button>
     </form>
 </mat-card>
