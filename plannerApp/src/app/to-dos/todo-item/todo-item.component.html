@@ -1,7 +1,7 @@
 <mat-card class="card">
     <div id="toDoItem">
         <mat-accordion>
-            <mat-expansion-panel hideToggle>
+            <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title> {{ toDo?.title }}</mat-panel-title>
                 </mat-expansion-panel-header>
@@ -11,7 +11,7 @@
                 <p>Completed? {{ toDo?.completed }}</p>
                 <mat-action-row>
                     <a mat-button color="primary" [routerLink]="['../editToDo', toDo!.id]"
-                        >EDIT</a
+                        ><mat-icon>edit</mat-icon> EDIT</a
                     >
                     <button
                         type="button"
@@ -19,7 +19,7 @@
                         color="warn"
                         (click)="deleteToDo(toDo!.id)"
                     >
-                        DELETE
+                    <mat-icon>delete</mat-icon> DELETE
                     </button>
                 </mat-action-row>
             </mat-expansion-panel>

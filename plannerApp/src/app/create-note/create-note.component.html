@@ -1,35 +1,30 @@
-<p>{{ note?.title }}</p>
 <mat-card>
-  <form [formGroup]="form" (submit)="updateNote()" >
+  <h2>{{ this.mode === "create" ? "Create Note" : "Edit Note" }}</h2>
+  <form [formGroup]="form" (submit)="saveNote()">
     <div>
       <mat-form-field>
-        <input matInput type="text" formControlName="title" />
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <input matInput type="text" formControlName="description" />
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field>
-        <input matInput formControlName="startDate" />
+        <input
+          matInput
+          type="text"
+          formControlName="title"
+          [placeholder]="mode === 'create' ? 'Enter Note Title' : ''"
+          placeholder="Enter Note Title"
+        />
+        <mat-error *ngIf="form.get('title')?.invalid"
+          >Please Enter a Note Title</mat-error
+        >
       </mat-form-field>
     </div>
 
     <div>
       <mat-form-field>
-        <mat-date-range-input [rangePicker]="pickerA" >
+        <mat-date-range-input [rangePicker]="pickerA">
           <input
             matStartDate
             placeholder="Start date"
             formControlName="startDateA"
           />
-          <input
-            matEndDate
-            placeholder="End date"
-            formControlName="endDateA"
-          />
+          <input matEndDate placeholder="End date" formControlName="endDateA" />
         </mat-date-range-input>
         <mat-datepicker-toggle
           matSuffix
@@ -41,12 +36,24 @@
 
     <div>
       <mat-form-field>
-        <input matInput formControlName="endDate" />
+        <textarea
+          matInput
+          type="text"
+          formControlName="description"
+          [placeholder]="mode === 'create' ? 'Enter Note Description' : ''"
+          placeholder="Enter Note Description"
+        ></textarea>
       </mat-form-field>
     </div>
-    <div>
+
+    <div *ngIf="mode==='edit'">
       <mat-form-field>
-        <input matInput formControlName="createdDate" />
+        <input
+        placeholder="Created Date, not editable"
+        matInput
+        readonly
+        formControlName="createdDate"
+        />
       </mat-form-field>
     </div>
 

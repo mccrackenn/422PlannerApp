@@ -1,9 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, Subscriber, Subscription, Observable } from "rxjs";
+import { Subject, Subscriber, Subscription, Observable, of } from "rxjs";
 import { ToDo } from '../models/toDo';
-import { map } from 'rxjs/operators';
+import { map, tap, timeout } from 'rxjs/operators';
+import { SnackbarService } from './snackbar/snackbar.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,33 +14,79 @@ import { map } from 'rxjs/operators';
 export class ToDoServices
 {
     private toDos: ToDo[] = [];
-    private localUrl = 'http://localhost:3000/api/todos';
+    private userToDos: ToDo[] = [];
+    //private toDosUrl = 'http://localhost:3000/api/todos/'; //local
     private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/todos/';
-    private todoUrl = this.azureUrl;
+    private toDosUrl = this.azureUrl; //azure
 
     toDosUpdated = new Subject<ToDo[]>();
+    toDoAdded = new Subject<ToDo>();
 
     constructor(
         public router: Router,
         public route: ActivatedRoute,
-        public httpClient: HttpClient
+        public httpClient: HttpClient,
+        public snackBar: SnackbarService,
+        public authService: AuthService
     ) {}
 
+    //local
+    // getToDos(): Observable<ToDo[]> {
+    //     return (
+    //         this.httpClient
+    //             .get<ToDo[]>(this.toDosUrl)
+    //             // Using pipe & map so I can have a local copy of the todo array,without it Delete and Add elements don't show up initially without refresh
+    //             .pipe(
+    //                 map((toDos) =>
+    //                     toDos.map((toDo) => {
+    //                         toDo.startDateTime = new Date(toDo.startDateTime);
+    //                         toDo.endDateTime = new Date(toDo.endDateTime);
+    //                         toDo.createdDate = new Date(toDo.createdDate);
+    //                     return toDo;
+    //                     })
+    //                 ),
+    //                 tap((a) => (this.toDos = a))
+    //             )
+    //     );
+    // }
+
+    //azure  
     getToDos(): Observable<ToDo[]> {
-        // console.log("retrieving ToDos from: " + this.todoUrl);
+        const newUser = this.authService.getUserValue(); // .getCurrentUser();
+        if (!newUser) {
+          return of(this.userToDos);
+        }
+        // console.log(newUser._id);
         return this.httpClient
-          .get<ToDo[]>(this.todoUrl)
-          // Using pipe & map to keep a local copy of the todo array
-          // without it Delete and Add elements don't show up initially without refresh
-          .pipe(map((toDos) => (this.toDos = toDos)));
+          .post<ToDo[]>(this.toDosUrl + newUser._id, newUser)
+          .pipe(
+            map(
+              (
+                toDos // Mapping operation was needed to convert dates back to date objects
+              ) =>
+                toDos.map((toDo) => {
+                  toDo.startDateTime = new Date(toDo.startDateTime);
+                  toDo.endDateTime = new Date(toDo.endDateTime);
+                  toDo.createdDate = new Date(toDo.createdDate);
+                  return toDo;
+                })
+            ),
+            tap((a) => (this.userToDos = a))
+          );
       }
 
     addToDo(toDo: ToDo): void {
+        const currentUser = this.authService.getUserValue();
+        if (!currentUser) {
+            console.log('Failed to add ToDo....');
+            return;
+        }
+        const _id = currentUser._id;
         this.httpClient
-            .post<{ message: string; toDoId: string }>(
-                this.todoUrl,
-            toDo
-            )
+            .post<{ message: string; toDoId: string }>(this.toDosUrl, {
+                toDo,
+                _id,
+            })
         .subscribe((responseData) => {
             //todomodel
             const newToDo: ToDo = {
@@ -46,40 +94,67 @@ export class ToDoServices
                 title: toDo.title,
                 description: toDo.description,
                 completed: toDo.completed,
-                notification: toDo.notification,
                 createdDate: toDo.createdDate,
                 startDateTime: toDo.startDateTime,
                 endDateTime: toDo.endDateTime,
             };
-            console.log(newToDo);
-            this.toDos.push(newToDo);
-            console.log(this.toDos);
+            //console.log(newToDo);
+            this.userToDos.push(newToDo);
             this.toDosUpdated.next([...this.toDos]);
-            this.router.navigate(['/to-dos']).then(() => window.location.reload());
+            this.toDoAdded.next(newToDo);
+            this.snackBar.openSnackBar("ToDo Added","Dismiss")
+            setTimeout(() =>{
+            this.router.navigate(['/to-dos']).then(() => window.location.reload())
+
+            },3000)
         });
+    }
+
+    updateToDo(toDo: ToDo): void {
+        const id = toDo.id;
+        // console.log(toDo);
+        // console.log(id);
+        this.httpClient
+            .put<{ message: string; toDoId: string }>(this.toDosUrl + id, toDo)
+            .subscribe((responseData) => {
+            console.log("Updated ToDo Successfully. " + responseData);
+            });
+            this.snackBar.openSnackBar("ToDo Edited","Dismiss")
+            setTimeout(() =>{
+                this.router.navigate(['/to-dos']).then(()=> window.location.reload())
+
+            },3000)
     }
 
     deleteToDo(toDoId: string): void {
         this.httpClient
-            .delete(this.todoUrl + toDoId)
-            .subscribe(() => {
-                console.log(this.toDos);
-                const updatedToDos = this.toDos.filter((toDo) => toDo.id !== toDoId);
-                console.log(updatedToDos);
-                this.toDos = updatedToDos;
-                this.toDosUpdated.next([...this.toDos]);
-                this.router.navigate(['/toDos']).then(() => window.location.reload())
-          });
-    }
-    getToDo(id: string) {
-        return this.httpClient.get<ToDo>(this.todoUrl + id);
-        // console.log(`ToDo is ${id}`)
-        // const returnToDo = this.toDos.find(toDo => toDo.id === id)
-        // console.log(`getToDo return an id of-${id}`)
+            .delete(this.toDosUrl + toDoId)
+            .subscribe((response) => {
+                console.log(response);
+                const updatedToDos = this.userToDos.filter((toDo) => toDo.id !== toDoId);
+                this.userToDos = updatedToDos;
+                this.toDosUpdated.next([...this.userToDos]);
+                setTimeout(() => {
+                    this.router.navigate(['/to-dos']).then(() => window.location.reload())
+            
+                },3500)
+            });
     }
 
     getToDosUpdateListener(): Observable<ToDo[]>
     {
         return this.toDosUpdated.asObservable();
+    }
+
+    getToDo(id: string): Observable<ToDo> {
+        console.log(this.toDosUrl + id);
+        return this.httpClient.get<ToDo>(this.toDosUrl + id).pipe(
+            map((oneToDo) => {
+              oneToDo.startDateTime = new Date(oneToDo.startDateTime);
+              oneToDo.endDateTime = new Date(oneToDo.endDateTime);
+              oneToDo.createdDate = new Date(oneToDo.createdDate);
+              return oneToDo;
+            })
+        );
     }
 }
