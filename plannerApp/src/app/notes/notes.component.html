@@ -47,7 +47,7 @@
 
           <mat-form-field appearance="fill" >
             <mat-date-range-input [rangePicker]="pickerA" [min]="minDate"
-               [max]="maxDate" >
+                >
               <input  formControlName="startDate" matStartDate placeholder="Start date"    >
               <input formControlName="endDate" matEndDate placeholder="End date"   >
             </mat-date-range-input>
@@ -74,15 +74,21 @@
 
   <mat-tab label="Search my Notes">
     <div>
-      <form [formGroup]="form" (submit)="onSaveDate()">
+
         <h2>Search my Notes</h2>
         <mat-form-field>
           <input
             matInput
             type="text"
-            formControlName="note"
+            [matAutocomplete]="auto"
+            [formControl]="noteSearch"
             placeholder="Enter Note"
           />
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let note of filteredNotes | async let i = index" [value]="note.title" (click)="doStuff(note)">
+              {{note.title}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field>
@@ -96,41 +102,18 @@
           ></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
-      </form>
+
     </div>
+
+<div *ngIf="noteSearchSelected">
+  <app-note-item [note]="noteSelected">
+
+  </app-note-item>
+</div>
   </mat-tab>
 </mat-tab-group>
 
-<!-- <mat-card>
-  <form [formGroup]="form" (submit)="onSaveDate()">
-    <mat-form-field>
-      <input
-        matInput
-        type="text"
-        formControlName="note"
-        placeholder="Enter Note"
-      />
-    </mat-form-field>
 
-    <mat-form-field>
-      <mat-date-range-input [rangePicker]="picker">
-        <input matStartDate placeholder="Start date" />
-        <input matEndDate placeholder="End date" />
-      </mat-date-range-input>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-    </mat-form-field>
-  </form>
-</mat-card> -->
 
-<!-- <mat-form-field>
-  <mat-label>Choose a date</mat-label>
-  <input
-    matInput
-    [matDatepicker]="picker"
-    formControlName="dob"
-    (dateChange)="date($event)"
-  />
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker></mat-datepicker>
-</mat-form-field> -->
+
+

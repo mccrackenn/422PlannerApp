@@ -1,6 +1,6 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import {  Component, OnChanges, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {  Observable, Subscription } from 'rxjs';
 import { NotesServices } from '../services/notes.services';
 import { Note } from '../models/note';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
@@ -8,6 +8,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-notes',
@@ -18,13 +19,12 @@ export class NotesComponent implements OnInit, OnChanges {
   form!: FormGroup;
   createNoteForm!: FormGroup;
   private notesSub: Subscription = new Subscription();
-  filteredOptions?: Observable<Note[]>;
+  filteredNotes!: Observable<Note[]>;
   minDate: Date = new Date();
-  maxDate: Date = new Date();
-  noteAddedNotification: Subscription = new Subscription();
-
-
   notes: Note[] = [];
+  noteSearch = new FormControl();
+  noteSearchSelected:boolean=false;
+  noteSelected!:Note;
 
   constructor(
     private notesService: NotesServices,
@@ -40,8 +40,6 @@ export class NotesComponent implements OnInit, OnChanges {
     const currentYear = new Date().getFullYear();
     // this.minDate = new Date(currentYear - 5, 12, 99);
     this.minDate.setDate(this.minDate.getDate());
-    this.maxDate.setDate(this.minDate.getDate() + 20);
-    // this.maxDate = new Date(currentYear - 1, 12, 99);
   }
 
   ngOnInit(): void {
@@ -54,24 +52,45 @@ export class NotesComponent implements OnInit, OnChanges {
         this.notes = notes;
       });
 
-    this.form = new FormGroup({
-      dob: new FormControl(null, {
-        validators: [Validators.minLength(3), Validators.required],
-      }),
-      note: new FormControl(null, { validators: [Validators.required] }),
-    });
+
     this.createNoteForm = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required] }),
       description: new FormControl(null, { validators: [Validators.required] }),
       startDate: new FormControl(null, { validators: [Validators.required] }),
       endDate: new FormControl(null, { validators: [Validators.required] }),
     });
-    this.noteAddedNotification = this.notesService.noteAdded.subscribe(
-     note => setTimeout(() => {
-      console.log(note);
-      }, 2500)
-    );
+
+    this.filteredNotes=this.noteSearch.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value))
+      )
+
   }
+
+  doStuff(note:Note){
+    this.noteSelected={
+      id:note.id,
+      title:note.title,
+      description:note.description,
+      startDate:note.startDate,
+      endDate: note.endDate,
+      createdDate: note.createdDate,
+
+    }
+    this.noteSearchSelected=true;
+    console.log(note)
+
+  }
+
+  private _filter(value:string): Note[] {
+    const filterValue=value.toLowerCase();
+    console.log(filterValue)
+    console.log(this.notes.filter(option => option.title.toLowerCase().includes(filterValue)))
+    return this.notes.filter(option => option.title.toLowerCase().includes(filterValue))
+  }
+
+
 
   getUserNotes(): void {
     this.notesService.getNotes().subscribe(result => console.log(result));
@@ -82,7 +101,7 @@ export class NotesComponent implements OnInit, OnChanges {
   }
 
   // On searchForm submit
-  onSaveDate(): void {}
+
 
   submitNewNote(): void {
     const newNote: Note = {
@@ -95,28 +114,26 @@ export class NotesComponent implements OnInit, OnChanges {
 
     };
 
-    // console.log(newNote.startDate);
     this.notesService.addNote(newNote);
     // this.createNoteForm.reset()
     // this.router.navigate(['/notes'])
-    // console.log(this.createNoteForm.get('newNote')?.value)
-    // console.log(this.createNoteForm.value.start)
-    // console.log(this.createNoteForm.value.end)
+
   }
 
   changeTabs($e: MatTabChangeEvent): void{
     if ($e.index === 0){
       console.log($e);
-      // this.notesService.getNotesUpdateListener()
     }
-    // this.fetchAccounts(this.banks[$event.index].id)
-  }
-
-  date(e: any): void {
-    const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
-    this.form.get('dob')?.setValue(convertDate, {
-      onlyself: true,
-    });
-    console.log(convertDate);
   }
 }
+
+
+
+
+  // date(e: any): void {
+  //   const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
+  //   this.form.get('dob')?.setValue(convertDate, {
+  //     onlyself: true,
+  //   });
+  //   console.log(convertDate);
+  // }
