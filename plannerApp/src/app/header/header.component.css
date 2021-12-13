@@ -17,3 +17,7 @@ ul li {
 /* .spacer{
   flex: auto;
 } */
+.logo{
+  height: 30px;
+  width: 30px;
+}

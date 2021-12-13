@@ -1,5 +1,5 @@
 <mat-tab-group (selectedTabChange)="changeTabs($event)">
-  <mat-tab label="View my Notes">
+  <mat-tab label="View Notes">
     <app-note-item
       *ngFor="let noteEl of notes; let i = index"
       [note]="noteEl"
@@ -72,7 +72,7 @@
     </form>
   </mat-tab>
 
-  <mat-tab label="Search my Notes">
+  <mat-tab label="Search Notes">
     <div>
       <form [formGroup]="form" (submit)="onSaveDate()">
         <h2>Search my Notes</h2>

@@ -1,8 +1,7 @@
-<mat-toolbar
-  style="background-image: linear-gradient(to right, #00b4db, #0083b0)"
->
+<mat-toolbar color="primary" class="header">
   <!-- <span class="spacer"></span> -->
   <ul *ngIf="this.authService.isAutheticated">
+    <li> <img class = "logo" src="./assets/logo.png"></li>
     <li>
       <a mat-button routerLink="/home" routerLinkActive="mat-accent">Home</a>
     </li>
@@ -23,6 +22,8 @@
     </li>
   </ul>
   <ul *ngIf="!this.authService.isAutheticated">
-    <li><label> Login </label></li>
+    <li> <img class = "logo" src="./assets/logo.png"></li>
+    <li><label> Mimic </label></li>
+    
   </ul>
 </mat-toolbar>

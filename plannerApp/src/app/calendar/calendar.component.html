@@ -9,12 +9,6 @@
     <div class='cal-page-sidebar'>
         <div class='cal-page-sidebar-section'>
             <h2>Instructions</h2>
-            <ul>
-              <li></li>
-            </ul>
-        </div>
-
-        <div class='cal-page-sidebar-section'>
             <button  mat-flat-button  
               title="Create new Note" color="accent" 
               routerLink="../notes">
@@ -29,27 +23,26 @@
         </div>
 
         <div class='cal-page-sidebar-section'>          
-          <label>Note Priority :</label>
-          <mat-action-row>
+          <label>Note Priority:</label>
             <div>
-              <button [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
-              <label [ngStyle]="{ 'margin-right':'15px'}">Low</label>
-              <button [ngStyle]="{'background-color': this.preference.mediumPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
-              <label [ngStyle]="{ 'margin-right':'15px'}">Medium</label>
-              <button [ngStyle]="{'background-color': this.preference.highPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
-              <label>High</label>
+              <ul style="list-style: none;">
+              <li><label [ngStyle]="{ 'margin-right':'15px'}">Low</label><button [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
+              </li>
+              <li><label [ngStyle]="{ 'margin-right':'15px'}">Medium</label><button [ngStyle]="{'background-color': this.preference.mediumPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
+              </li>
+              <li><label>High </label><button [ngStyle]="{'background-color': this.preference.highPriorityNoteColor, 'width': '20px', 'height': '20px', 'margin-right': '5px'}"> </button>
+              </li>
+              </ul>
             </div>
-          </mat-action-row>
 
-          <mat-action-row>
-            <label>ToDo :</label>
+          <label>ToDo Status:</label>
             <div>
-              <button [ngStyle]="{'background-color': this.preference.todoCompletedColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button>
-              <label [ngStyle]="{ 'margin-right':'15px' }">Complete </label>
-              <button [ngStyle]="{'background-color': this.preference.todoNotCompletedColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button>
-              <label [ngStyle]="{ 'margin-right':'15px' }">Not Complete </label>
+              <ul style="list-style: none;">
+               <li><label [ngStyle]="{ 'margin-right':'15px' }">Complete </label> <button [ngStyle]="{'background-color': this.preference.todoCompletedColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button></li> 
+              <li><label [ngStyle]="{ 'margin-right':'15px' }">Not Complete </label><button [ngStyle]="{'background-color': this.preference.todoNotCompletedColor, 'width': '20px', 'height': '20px', 'margin-right': '5px' }"> </button></li>
+            </ul>
             </div>
-          </mat-action-row>
+  
         </div>
 
         <div class='cal-page-sidebar-section'>
@@ -63,7 +56,7 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
-            <h2>All Events of Today ({{selectedDayEvents.length}})</h2>
+            <h2>Today's Events ({{selectedDayEvents.length}})</h2>
             <ul>
               <li *ngFor='let event of selectedDayEvents'>
                 <b>{{event.start | date}}</b> 
