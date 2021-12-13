@@ -1,28 +1,67 @@
-<p>{{ toDo?.title }}</p>
+<h2>Edit Todo:</h2>
 <mat-card>
-    <form [formGroup]="form">
+    <form [formGroup]="form" (submit)="saveToDo()" >
         <div>
             <mat-form-field>
-                <input matInput type="text" formControlName="title" />
+                <input 
+                matInput type="text" 
+                formControlName="title" 
+                placeholder="Enter ToDo Title"
+                />
+                <mat-error *ngIf="form.get('title')?.invalid"
+                    >Please Enter a ToDo Title</mat-error
+                >
             </mat-form-field>
         </div>
+
         <div>
             <mat-form-field>
-                <input matInput type="text" formControlName="description" />
+                <mat-date-range-input [rangePicker]="pickerA" >
+                    <input
+                    matStartDate
+                    placeholder="Start date"
+                    formControlName="startDateTime"
+                    />
+                    <input
+                    matEndDate
+                    placeholder="End date"
+                    formControlName="endDateTime"
+                    />
+                </mat-date-range-input>
+                <mat-datepicker-toggle
+                    matSuffix
+                    [for]="pickerA"
+                ></mat-datepicker-toggle>
+                <mat-date-range-picker #pickerA></mat-date-range-picker>
             </mat-form-field>
         </div>
+
         <div>
             <mat-checkbox formControlName="completed">Completed?</mat-checkbox>
         </div>
+
         <div>
             <mat-form-field>
-                <input matInput formControlName="startDateTime" />
+                <textarea 
+                matInput 
+                type="text" 
+                formControlName="description" 
+                placeholder="Enter details about your ToDo..."
+                ></textarea>
             </mat-form-field>
         </div>
+
         <div>
             <mat-form-field>
-                <input matInput formControlName="endDateTime" />
+              <input
+              placeholder="Created Date, not editable"
+              matInput
+              readonly
+              formControlName="createdDate"
+              />
             </mat-form-field>
-        </div>
+          </div>
+
+        <button mat-raised-button color="primary" type="submit">Save</button>
     </form>
 </mat-card>
