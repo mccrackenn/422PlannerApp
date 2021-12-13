@@ -105,6 +105,19 @@ export class ToDoServices
             },3000)
     }
 
+    // Updates the note in DB - doesn't refresh the UI or display a snackbar
+    updateToDo_DB(toDo: ToDo): void {
+        const id = toDo.id;
+        // console.log(note);
+        // console.log(id);
+        this.httpClient
+        .put<{ message: string; noteId: string }>(this.toDosUrl + id, toDo)
+        .subscribe((responseData) => {
+            console.log('UPDATED Note successfully. ' + responseData);
+        });
+        this.snackBar.openSnackBar('ToDo Edited', 'Dismiss');
+    }
+
     deleteToDo(toDoId: string): void {
         this.httpClient
             .delete(this.toDosUrl + toDoId)

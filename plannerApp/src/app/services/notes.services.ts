@@ -126,6 +126,19 @@ export class NotesServices {
       },3000)
   }
 
+  // Updates the note in DB - doesn't refresh the UI or display a snackbar
+  updateNote_DB(note: Note): void {
+    const id = note.id;
+    // console.log(note);
+    // console.log(id);
+    this.httpClient
+      .put<{ message: string; noteId: string }>(this.notesUrl + id, note)
+      .subscribe((responseData) => {
+        console.log('UPDATED Note successfully. ' + responseData);
+      });
+    this.snackBar.openSnackBar('Note Edited', 'Dismiss');
+  }
+
   deleteNote(noteId: string): void {
     this.httpClient.delete(this.notesUrl + noteId).subscribe((response) => {
       console.log(response);

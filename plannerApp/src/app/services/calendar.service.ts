@@ -43,7 +43,12 @@ export class CalendarService {
 
   // Updates passed note in the DB
   updateNote(note: Note): void {
-    this.noteService.updateNote(note);
+    this.noteService.updateNote_DB(note);
+  }
+
+  // Updates passed note in the DB
+  updateTodo(todo: ToDo): void {
+    this.todoService.updateToDo_DB(todo);
   }
 
   // Retrieve the ToDo from todos[] by passing the todo id

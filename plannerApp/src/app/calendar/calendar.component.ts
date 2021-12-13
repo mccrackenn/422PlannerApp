@@ -132,9 +132,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const orgNoteEvent = this.noteEvents.find(e => e.id === droppedEvent.id);
     if (orgNoteEvent?.start !== droppedEvent.startStr ||
       orgNoteEvent?.end !== droppedEvent.endStr) {
-        console.log('Drag-Drop Note has occured.');
-        console.log('Org Start Dt: ' + orgNoteEvent?.start + ' End Dt: ' + orgNoteEvent?.end +
-        '\n New Start: ' + droppedEvent.start + ' End: ' + droppedEvent.end );
+        // console.log('Drag-Drop Note has occured.');
+        // console.log('Org Start Dt: ' + orgNoteEvent?.start + ' End Dt: ' + orgNoteEvent?.end +
+        // '\n New Start: ' + droppedEvent.start + ' End: ' + droppedEvent.end );
         const fn = this.calService.getNote(droppedEvent.id);
         if (fn.found && fn.note) {
           // console.log('Found Note: ' + fn.found);
@@ -159,7 +159,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     if (orgTodoEvent?.start !== droppedEvent.startStr ||
       orgTodoEvent?.end !== droppedEvent.endStr) {
-        console.log('Drag-Drop of ToDo has occured.');
+        // console.log('Drag-Drop of ToDo has occured.');
         const fn = this.calService.getTodo(droppedEvent.id);
         if (fn.found && fn.todo) {
           // console.log('Found Todo: ' + fn.found);
@@ -167,8 +167,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
           todo.startDateTime = new Date(droppedEvent.startStr);
           todo.endDateTime = new Date(droppedEvent.endStr);
 
-          // this.calService.updateTodo(todo);
-          // updated = true;
+          this.calService.updateTodo(todo);
+          updated = true;
         }
     }
     return updated;
