@@ -43,7 +43,12 @@ export class CalendarService {
 
   // Updates passed note in the DB
   updateNote(note: Note): void {
-    this.noteService.updateNote(note);
+    this.noteService.updateNote_DB(note);
+  }
+
+  // Updates passed note in the DB
+  updateTodo(todo: ToDo): void {
+    this.todoService.updateToDo_DB(todo);
   }
 
   // Retrieve the ToDo from todos[] by passing the todo id
@@ -114,8 +119,10 @@ export class CalendarService {
       this.todoCompletedEvents = [];
       this.todos = [];
       this.todoNotCompletedEvents = [];
+      // console.log('Cal Serv: Fetched tods from todoService');
       data.forEach((todo: ToDo) => {
         // console.log('ToDo: title: ' + todo.title + ' Desc: ' + todo.description + ' Completed: ' + todo.completed);
+        // console.log('Todo: ' + JSON.stringify(todo));
         const n = this.createToDoAsEventObject(todo);
 
         const index = this.todos.findIndex(t => t.id === todo.id);
@@ -183,12 +190,12 @@ export class CalendarService {
       {
         id: '1', title: 'ToDo 1', description: 'td1 desc', createdDate: new Date('11-6-2021'),
         startDateTime: new Date('11-7-2021'), endDateTime: new Date('11-7-2021'),
-        completed: true, notification: false,
+        completed: true,
       },
       {
         id: '2', title: 'ToDo 2', description: 'td2 desc', createdDate: new Date('11-6-2021'),
         startDateTime: new Date('11-7-2021'), endDateTime: new Date('11-9-2021'),
-        completed: false, notification: false,
+        completed: false,
       }
     ];
 

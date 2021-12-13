@@ -10,10 +10,29 @@ span {
 ul li {
   list-style: none;
   padding: 0;
-  margin: 2rem;
+  margin: 1.5rem;
   display: inline;
 }
-/* https://www.w3schools.com/cssref/css3_pr_flex.asp */
-/* .spacer{
-  flex: auto;
-} */
+
+.flexExpand {
+  flex: 1 1 auto;
+}
+
+.flexSpaceBetween {
+  justify-content: space-between;
+}
+
+mat-toolbar {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0px;
+  z-index: 999;
+  background-image: linear-gradient(to right, #00b4db, #0083b0);
+}
+
+.valign-center {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+}
+

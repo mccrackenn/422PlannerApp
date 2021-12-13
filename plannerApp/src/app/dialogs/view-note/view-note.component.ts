@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Note } from 'src/app/models/note';
 
@@ -17,6 +17,7 @@ export class ViewNoteComponent implements OnInit {
               }
 
   ngOnInit(): void {
+    this.dlgRef.updateSize();
   }
 
   edit(): void {
@@ -26,5 +27,4 @@ export class ViewNoteComponent implements OnInit {
   close(): void {
     this.dlgRef.close();
   }
-
 }

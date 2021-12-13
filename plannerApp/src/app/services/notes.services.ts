@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscriber, Subscription, Observable, of } from 'rxjs';
 import { Note } from 'src/app/models/note';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, timeout } from 'rxjs/operators';
 import { SnackbarService } from './snackbar/snackbar.service';
 import { AuthService } from './auth.service';
 
@@ -14,7 +14,7 @@ export class NotesServices {
   private notes: Note[] = [];
   private userNotes: Note[] = [];
 
-  private localNotesUrl = 'http://localhost:3000/api/notes/';
+  //private notesUrl = 'http://localhost:3000/api/notes/';
 
   private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/notes/';
   private notesUrl = this.azureUrl;
@@ -53,29 +53,27 @@ export class NotesServices {
   // }
 
   getNotes(): Observable<Note[]> {
-    const newUser = this.authService.getUserValue();  // .getCurrentUser();
+    const newUser = this.authService.getUserValue(); // .getCurrentUser();
     if (!newUser) {
       return of(this.userNotes);
     }
     // console.log(newUser._id);
-    return (
-      this.httpClient
-        .post<Note[]>(this.notesUrl + newUser._id, newUser)
-        .pipe(
-          map(
-            (
-              notes // Mapping operation was needed to convert dates back to date objects
-            ) =>
-              notes.map((note) => {
-                note.startDate = new Date(note.startDate);
-                note.endDate = new Date(note.endDate);
-                note.createdDate = new Date(note.createdDate);
-                return note;
-              })
-          ),
-          tap((a) => (this.userNotes = a))
-        )
-    );
+    return this.httpClient
+      .post<Note[]>(this.notesUrl + newUser._id, newUser)
+      .pipe(
+        map(
+          (
+            notes // Mapping operation was needed to convert dates back to date objects
+          ) =>
+            notes.map((note) => {
+              note.startDate = new Date(note.startDate);
+              note.endDate = new Date(note.endDate);
+              note.createdDate = new Date(note.createdDate);
+              return note;
+            })
+        ),
+        tap((a) => (this.userNotes = a))
+      );
   }
 
   addNote(note: Note): void {
@@ -86,13 +84,10 @@ export class NotesServices {
     }
     const _id = currentUser._id;
     this.httpClient
-      .post<{ message: string; noteId: string }>(
-       this.notesUrl,
-        {
-          note,
-          _id,
-        }
-      )
+      .post<{ message: string; noteId: string }>(this.notesUrl, {
+        note,
+        _id,
+      })
       .subscribe((responseData) => {
         // console.log(responseData)
         const newNote: Note = {
@@ -105,12 +100,13 @@ export class NotesServices {
         };
         // console.log(newNote);
         this.userNotes.push(newNote);
-        // console.log(this.notes);
-        console.log('Note \"' + newNote.title + '\" successfully added. ');
         this.notesUpdated.next([...this.userNotes]);
         this.noteAdded.next(newNote);
-        // this.router.navigate(['/notes']).then(()=>console.log('hello'));
-        // this.snackBar.openSnackBar("message","action")
+        this.snackBar.openSnackBar("Note Added","Dismiss")
+        setTimeout(() =>{
+          this.router.navigate(['/notes']).then(() => window.location.reload())
+
+        },3000)
       });
   }
 
@@ -123,18 +119,38 @@ export class NotesServices {
       .subscribe((responseData) => {
         console.log('UPDATED Note successfully. ' + responseData);
       });
+      this.snackBar.openSnackBar("Note Edited","Dismiss")
+      setTimeout(() =>{
+        this.router.navigate(['/notes']).then(()=> window.location.reload())
+
+      },3000)
+  }
+
+  // Updates the note in DB - doesn't refresh the UI or display a snackbar
+  updateNote_DB(note: Note): void {
+    const id = note.id;
+    // console.log(note);
+    // console.log(id);
+    this.httpClient
+      .put<{ message: string; noteId: string }>(this.notesUrl + id, note)
+      .subscribe((responseData) => {
+        console.log('UPDATED Note successfully. ' + responseData);
+      });
+    this.snackBar.openSnackBar('Note Edited', 'Dismiss');
   }
 
   deleteNote(noteId: string): void {
-    this.httpClient
-      .delete(this.notesUrl + noteId)
-      .subscribe((response) => {
-        console.log(response);
-        const updatedNotes = this.userNotes.filter((note) => note.id !== noteId);
-        this.userNotes = updatedNotes;
-        this.notesUpdated.next([...this.userNotes]);
-        // this.router.navigate(['/notes']).then(() => window.location.reload())
-      });
+    this.httpClient.delete(this.notesUrl + noteId).subscribe((response) => {
+      console.log(response);
+      const updatedNotes = this.userNotes.filter((note) => note.id !== noteId);
+      this.userNotes = updatedNotes;
+      this.notesUpdated.next([...this.userNotes]);
+      this.snackBar.openSnackBar("Note Deleted","Note Deleted")
+      setTimeout(() => {
+        this.router.navigate(['/notes']).then(() => window.location.reload())
+
+      },3500)
+    });
   }
 
   getNotesUpdateListener(): Observable<Note[]> {

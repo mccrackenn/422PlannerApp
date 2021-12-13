@@ -25,7 +25,7 @@ router.get("", (req, res, next) => {
 });
 
 router.get("/:id", (req, res, next) => {
-  console.log(req.params.id);
+  // console.log(req.params.id);
   Note.findById(req.params.id)
     .then((note) => {
       if (note) {
@@ -45,8 +45,8 @@ router.get("/:id", (req, res, next) => {
 
 router.post("", (req, res, next) => {
   const { title, description, startDate, endDate, createdDate } = req.body.note;
-  console.log(title);
-  console.log(req.body._id);
+  // console.log(title);
+  // console.log(req.body._id);
   const myNote = new Note({
     title: req.body.note.title,
     description: req.body.note.description,

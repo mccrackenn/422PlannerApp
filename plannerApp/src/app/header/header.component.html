@@ -1,7 +1,52 @@
+<mat-toolbar class="flexSpaceBetween">
+  <!-- LEFT -->
+  <span>
+    <ul *ngIf="this.authService.isAutheticated">
+      <li>
+        <a mat-button routerLink="/home" routerLinkActive="mat-accent">
+          <mat-icon>home</mat-icon> Home</a>
+      </li>
+      <li>
+        <a mat-button routerLink="/to-dos" routerLinkActive="mat-accent">
+          <mat-icon>task</mat-icon> ToDos</a>
+      </li>
+      <li>
+        <a mat-button routerLink="/notes" routerLinkActive="mat-accent">
+          <mat-icon>description</mat-icon> Notes</a>
+      </li>
+    </ul>
+    <ul *ngIf="!this.authService.isAutheticated">
+      <li><label> Login </label></li>
+    </ul>
+  </span>
+
+  <!-- CENTER -->
+  <span>
+    <a class="valign-center" [routerLink]="['']">
+      <img src="../../assets/logo.png" width="50px" height="50px" />
+      <div style="margin-left: 10px;">Mimic Planner</div>
+    </a> 
+  </span>
+
+  <!-- RIGHT -->
+  <span>
+    <label *ngIf="this.authService.isAutheticated" style="font-size: small;">
+      {{ this.currentUser?.name }}</label>
+
+    <img class="valign-center" *ngIf="this.authService.isAutheticated"  style="margin-left: 10px;" 
+      src="{{ this.currentUser?.imageUrl }}" width="30px" height="30px" />
+
+    <a *ngIf="this.authService.isAutheticated" mat-button style="margin-left: 10px;" 
+      (click)="logoutClicked()"> 
+      <mat-icon>logout</mat-icon>Logout
+    </a>
+  </span>
+</mat-toolbar>
+
+<!-- Original
 <mat-toolbar
   style="background-image: linear-gradient(to right, #00b4db, #0083b0)"
 >
-  <!-- <span class="spacer"></span> -->
   <ul *ngIf="this.authService.isAutheticated">
     <li>
       <a mat-button routerLink="/home" routerLinkActive="mat-accent">
@@ -19,7 +64,7 @@
       <span>{{ this.currentUser?.name }}</span>
     </li>
     <li>
-      <img src="{{ this.currentUser?.imageUrl }}" width="20px" height="20px" />
+      <img src="{{ this.currentUser?.imageUrl }}" width="30px" height="30px" />
     </li>
     <li>
       <a mat-button (click)="logoutClicked()"> 
@@ -29,4 +74,5 @@
   <ul *ngIf="!this.authService.isAutheticated">
     <li><label> Login </label></li>
   </ul>
-</mat-toolbar>
+</mat-toolbar> 
+-->

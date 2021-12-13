@@ -13,9 +13,10 @@ import { AuthService } from '../services/auth.service';
 })
 export class CreateNoteComponent implements OnInit {
   private noteId: string | null | undefined;
-  private mode: string = '';
+  public mode: string = '';
   note?: Note;
   form!: FormGroup;
+  loading: boolean = false;
 
   constructor(
     public route: ActivatedRoute,
@@ -24,7 +25,7 @@ export class CreateNoteComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    if (! this.authService.isAutheticated) {
+    if (!this.authService.isAutheticated) {
       router.navigate(['']);
     }
   }
@@ -33,11 +34,9 @@ export class CreateNoteComponent implements OnInit {
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required] }),
       description: new FormControl(null, { validators: [Validators.required] }),
-      startDate: new FormControl(null, { validators: [Validators.required] }),
-      startDateA: new FormControl(null, {validators:[Validators.required]}),
-      endDate: new FormControl(null, { validators: [Validators.required] }),
+      startDateA: new FormControl(null, { validators: [Validators.required] }),
       endDateA: new FormControl(null, { validators: [Validators.required] }),
-      createdDate: new FormControl(null, { validators: [Validators.required] }),
+      createdDate: new FormControl(null),
     });
 
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -46,7 +45,6 @@ export class CreateNoteComponent implements OnInit {
         this.noteId = paramMap.get('noteId');
         console.log(this.noteId);
         this.notesService.getNote(this.noteId!).subscribe((responseData) => {
-          // console.log(responseData);
           this.note = {
             id: responseData.id,
             title: responseData.title,
@@ -59,25 +57,43 @@ export class CreateNoteComponent implements OnInit {
           this.form.setValue({
             title: this.note.title,
             description: this.note.description,
-            startDate: this.note.startDate.toDateString(),
-            endDate: this.note.endDate.toDateString(),
-            startDateA:this.note.startDate,
-            endDateA:this.note.endDate,
+            startDateA: this.note.startDate,
+            endDateA: this.note.endDate,
             createdDate: this.note.createdDate.toDateString(),
           });
         });
+      } else {
+        this.mode = 'create';
       }
     });
   }
 
-  updateNote(): void {
+  saveNote(): void {
+    if (this.form.invalid) {
+      console.log("invalid!")
+      return;
+    }
+    this.loading = true;
+    if(this.mode === 'create'){
+      console.log("in the conditional")
+      const newNote: Note = {
+        id: 'temp',
+        title: this.form.value.title,
+        description: this.form.value.description,
+        startDate: this.form.value.startDateA,
+        endDate: this.form.value.endDateA,
+        createdDate: new Date(Date.now()),
+
+      };
+      console.log(newNote)
+      this.notesService.addNote(newNote);
+    }else
     if (this.note) {
       this.note.title = this.form.value.title;
       this.note.description = this.form.value.description;
-      this.note.startDate = this.form.value.startDate;
-      this.note.endDate = this.form.value.endDate;
-      this.note.createdDate = this.form.value.createdDate;
-      // console.log('Going to service....');
+      this.note.startDate = this.form.value.startDateA;
+      this.note.endDate = this.form.value.endDateA;
+      this.note.createdDate = new Date(Date.now());
       this.notesService.updateNote(this.note);
     }
   }

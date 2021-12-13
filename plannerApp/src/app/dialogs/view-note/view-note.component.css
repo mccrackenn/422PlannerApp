@@ -1,7 +1,8 @@
-table {
-    border: 1px solid black;
-}
 
 h2 {
-    align-content: center;
+    text-align: center;
+}
+
+.mat-dialog-actions {
+    justify-content: flex-end;
 }

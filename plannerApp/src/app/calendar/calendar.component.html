@@ -1,11 +1,11 @@
 <div class="cal-page">
 
-    <div class='cal-app-main'>     
+    <div class='cal-app-main'>
         <full-calendar *ngIf='calendarVisible'
             [options]='calendarOptions' >
-        </full-calendar>   
+        </full-calendar>
     </div>
-    
+
     <div class='cal-page-sidebar'>
         <div class='cal-page-sidebar-section'>
             <h2>Instructions</h2>
@@ -15,20 +15,20 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
-            <button  mat-flat-button  
-              title="Create new Note" color="accent" 
-              routerLink="../notes">
+            <button  mat-flat-button
+              title="Create new Note" color="accent"
+              routerLink="../create">
               <mat-icon>note_add</mat-icon> Note
             </button>
 
-            <button  mat-flat-button [ngStyle]="{ 'margin-left': '20px' }" 
-                title="Create new ToDo" color="accent" 
-                routerLink="../to-dos">
+            <button  mat-flat-button [ngStyle]="{ 'margin-left': '20px' }"
+                title="Create new ToDo" color="accent"
+                routerLink="../to-dos/createToDo">
                 <mat-icon>add_task</mat-icon> ToDo
             </button>
         </div>
 
-        <div class='cal-page-sidebar-section'>          
+        <div class='cal-page-sidebar-section'>
           <label>Note Priority :</label>
             <div>
               <button class="color-button" [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor}"> </button>
@@ -50,8 +50,8 @@
 
         <div class='cal-page-sidebar-section'>
             <label>
-              <mat-checkbox [checked]="showWeekends" 
-                (change)='handleWeekendsToggle()'  
+              <mat-checkbox [checked]="showWeekends"
+                (change)='handleWeekendsToggle()'
                 color='primary' >
               </mat-checkbox>
               Show Weekends
@@ -62,12 +62,12 @@
             <h2>All Events of Today ({{selectedDayEvents.length}})</h2>
             <ul>
               <li *ngFor='let event of selectedDayEvents'>
-                <b>{{event.start | date}}</b> 
+                <b>{{event.start | date}}</b>
                 <i style="margin-left: 5px;">{{event.title}}</i>
               </li>
             </ul>
         </div>
 
-    </div> 
+    </div>
 
 </div>
