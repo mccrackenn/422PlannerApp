@@ -5,9 +5,9 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title> {{ toDo?.title }}</mat-panel-title>
                 </mat-expansion-panel-header>
-                <p>Start Time: {{ toDo?.startDateTime | date }}</p>
-                <p>End Time: {{ toDo?.endDateTime | date }}</p>
-                <p>Desc: {{ toDo?.description }}</p>
+                <p>Start Date: {{ toDo?.startDateTime | date }}</p>
+                <p>End Date: {{ toDo?.endDateTime | date }}</p>
+                <p>Details: {{ toDo?.description }}</p>
                 <p>Completed? {{ toDo?.completed }}</p>
                 <mat-action-row>
                     <a mat-button color="primary" [routerLink]="['../editToDo', toDo!.id]"

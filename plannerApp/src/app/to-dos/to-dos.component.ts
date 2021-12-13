@@ -19,12 +19,12 @@ export class ToDosComponent implements OnInit {
     searchForm!: FormGroup;
     createToDoForm!: FormGroup;
     private toDosSub: Subscription = new Subscription();
-    public toDoTabIndex = 0;  //sets which tab to load
+    public toDoTabIndex = 0;  // sets which tab to load
     filteredOptions?: Observable<ToDo[]>;
 
     toDos: ToDo[] = [];
     searchToDos: ToDo[] = [];
-  
+
     constructor(
         private toDoService: ToDoServices,
         public snackBar: SnackbarService,
@@ -48,16 +48,16 @@ export class ToDosComponent implements OnInit {
             dob: new FormControl(null, {
                 validators: [Validators.minLength(3), Validators.required],
             }),
-            toDo: new FormControl(null, { 
-                validators: [Validators.required] 
+            toDo: new FormControl(null, {
+                validators: [Validators.required]
             }),
         });
 
         this.searchForm = new FormGroup({
             searchDate: new FormControl(null, { validators: [Validators.required] }),
         });
-        
-        //todomodel
+
+        // todomodel
         this.createToDoForm = new FormGroup({
             title: new FormControl(null, { validators: [Validators.required] }),
             description: new FormControl(null, { validators: [Validators.required] }),
@@ -66,7 +66,7 @@ export class ToDosComponent implements OnInit {
             endDateTime: new FormControl(null, { validators: [Validators.required] }),
         });
 
-        //sets opening tab
+        // sets opening tab
         if (this.router.url == '/to-dos/createToDo') {
             this.toDoTabIndex = 1;
         } else {
@@ -78,7 +78,7 @@ export class ToDosComponent implements OnInit {
         this.toDoService.getToDos().subscribe(result => console.log(result));
     }
 
-    ngOnChanges(){
+    ngOnChanges():void{
         this.toDoService.getToDosUpdateListener();
     }
 
@@ -114,16 +114,15 @@ export class ToDosComponent implements OnInit {
         });
     }
 
-    onSearchDate(event: MatDatepickerInputEvent<Date>) {
-        //date from user (matching 1 selected day to the start dates of todos for simplicity)
+    onSearchDate(event: MatDatepickerInputEvent<Date>): void {
+        // date from user (matching 1 selected day to the start dates of todos for simplicity)
         let searchDate: Date = this.searchForm.value.searchDate;
 
         console.log("search date: " + searchDate.toISOString());
         if (searchDate != null) {
-            this.snackBar.dismiss();
-            //search and filter through todos to find where the user entered date and start date are the same
+            // search and filter through todos to find where the user entered date and start date are the same
             this.searchToDos = this.toDos.filter(function(i: ToDo): any {
-                if(new Date(i.startDateTime).getTime() == searchDate.getTime()) {
+                if (new Date(i.startDateTime).getTime() == searchDate.getTime()) {
                     console.log(i.startDateTime);
                     console.log('TRUE');
                     return true;
@@ -135,14 +134,14 @@ export class ToDosComponent implements OnInit {
                 }
             });
 
-            //if no result throw snackBar.
-            if(this.searchToDos.length == 0) {
+            // if no result throw snackBar.
+            if (this.searchToDos.length == 0) {
                 this.snackBar.openSnackBar("No ToDos with that start date", "Close");
             }
         }
     }
 
-    submitNewToDo() {
+    submitNewToDo(): void {
         //todomodel
         const newToDo: ToDo = {
           id: 'temp',
@@ -158,13 +157,13 @@ export class ToDosComponent implements OnInit {
         // console.log(this.createToDoForm.get('newToDo')?.value)
     }
 
-    changeTabs($e: MatTabChangeEvent){
+    changeTabs($e: MatTabChangeEvent): void{
         if($e.index === 0){
-          console.log($e)
+          console.log($e);
         }
     }
 
-    date(e: any) {
+    date(e: any): void {
         const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
         this.form.get('dob')?.setValue(convertDate, {
           onlyself: true,

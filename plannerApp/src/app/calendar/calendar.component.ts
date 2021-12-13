@@ -335,6 +335,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   async getDataAsEvents(): Promise<void> {
     this.noteEvents = await this.calService.getNoteEvents().toPromise();
     await this.calService.fetchToDoEvents().toPromise().then(() => {
+      // console.log('Cal Compo: After fetching todos');
       this.todoCompletedEvents = this.calService.getCompletedTodoEvents();
       this.todoNotCompletedEvents = this.calService.getNotCompletedTodoEvents();
     });

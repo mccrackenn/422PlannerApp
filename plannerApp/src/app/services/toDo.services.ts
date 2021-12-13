@@ -15,7 +15,7 @@ export class ToDoServices
 {
     private toDos: ToDo[] = [];
     private userToDos: ToDo[] = [];
-    //private toDosUrl = 'http://localhost:3000/api/todos/'; //local
+    // private toDosUrl = 'http://localhost:3000/api/todos/'; //local
     private azureUrl = 'https://mimicnodeserver.azurewebsites.net/api/todos/';
     private toDosUrl = this.azureUrl; //azure
 
@@ -30,27 +30,6 @@ export class ToDoServices
         public authService: AuthService
     ) {}
 
-    //local
-    // getToDos(): Observable<ToDo[]> {
-    //     return (
-    //         this.httpClient
-    //             .get<ToDo[]>(this.toDosUrl)
-    //             // Using pipe & map so I can have a local copy of the todo array,without it Delete and Add elements don't show up initially without refresh
-    //             .pipe(
-    //                 map((toDos) =>
-    //                     toDos.map((toDo) => {
-    //                         toDo.startDateTime = new Date(toDo.startDateTime);
-    //                         toDo.endDateTime = new Date(toDo.endDateTime);
-    //                         toDo.createdDate = new Date(toDo.createdDate);
-    //                     return toDo;
-    //                     })
-    //                 ),
-    //                 tap((a) => (this.toDos = a))
-    //             )
-    //     );
-    // }
-
-    //azure  
     getToDos(): Observable<ToDo[]> {
         const newUser = this.authService.getUserValue(); // .getCurrentUser();
         if (!newUser) {
@@ -134,10 +113,7 @@ export class ToDoServices
                 const updatedToDos = this.userToDos.filter((toDo) => toDo.id !== toDoId);
                 this.userToDos = updatedToDos;
                 this.toDosUpdated.next([...this.userToDos]);
-                setTimeout(() => {
-                    this.router.navigate(['/to-dos']).then(() => window.location.reload())
-            
-                },3500)
+                this.snackBar.openSnackBar('ToDo Deleted', 'Done');
             });
     }
 

@@ -42,8 +42,8 @@ router.get("/:id", (req, res, next) => {
 //todomodel
 router.post("", (req, res, next) => {
     const { title, description, completed, startDateTime, endDateTime, createdDate } = req.body.toDo;
-    console.log(title);
-    console.log(req.body._id);
+    // console.log(title);
+    // console.log(req.body._id);
     const myToDo = new ToDo({
         title: req.body.toDo.title,
         description: req.body.toDo.description,
@@ -53,7 +53,7 @@ router.post("", (req, res, next) => {
         createdDate: req.body.toDo.createdDate,
         user: req.body._id,
     });
-    console.log(myToDo);
+    // console.log(myToDo);
     myToDo.save().then((createdToDo) => {
         res.status(201).json({
         message: "successfully added new ToDo to DB",
@@ -79,7 +79,7 @@ router.post("", (req, res, next) => {
 
 router.post("/:id", (req, res, next) => {
     console.log("Arrived at the new Get Request");
-    console.log(req.params.id);
+    // console.log(req.params.id);
     const myToDos = ToDo.find({ user: req.params.id }, (err, result) => {
         if (err) {
             console.log(err + "This is a get request disguised as a Post");

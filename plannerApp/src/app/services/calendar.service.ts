@@ -114,8 +114,10 @@ export class CalendarService {
       this.todoCompletedEvents = [];
       this.todos = [];
       this.todoNotCompletedEvents = [];
+      // console.log('Cal Serv: Fetched tods from todoService');
       data.forEach((todo: ToDo) => {
         // console.log('ToDo: title: ' + todo.title + ' Desc: ' + todo.description + ' Completed: ' + todo.completed);
+        // console.log('Todo: ' + JSON.stringify(todo));
         const n = this.createToDoAsEventObject(todo);
 
         const index = this.todos.findIndex(t => t.id === todo.id);
