@@ -19,20 +19,35 @@
             />
           </mat-form-field>
         </div>
-        <span class="help-block"*ngIf="!createNoteForm.get('title')!.valid && createNoteForm.get('title')!.touched">
-          Please Enter a Valid Note Title
+
+        <span
+          class="help-block"
+          *ngIf="
+            createNoteForm.get('title')?.invalid &&
+            createNoteForm.get('title')?.touched
+          "
+        >
+          A Note Title Must Be At Least 3 Characters
         </span>
 
         <div>
-
-
-          <mat-form-field appearance="fill" >
-            <mat-date-range-input [rangePicker]="pickerA" [min]="minDate"
-                >
-              <input  formControlName="startDate" matStartDate placeholder="Start date"    >
-              <input formControlName="endDate" matEndDate placeholder="End date"   >
+          <mat-form-field appearance="fill">
+            <mat-date-range-input [rangePicker]="pickerA" [min]="minDate">
+              <input
+                formControlName="startDate"
+                matStartDate
+                placeholder="Start date"
+              />
+              <input
+                formControlName="endDate"
+                matEndDate
+                placeholder="End date"
+              />
             </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="pickerA"></mat-datepicker-toggle>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerA"
+            ></mat-datepicker-toggle>
             <mat-date-range-picker #pickerA></mat-date-range-picker>
           </mat-form-field>
         </div>
@@ -49,52 +64,93 @@
           ></textarea>
         </mat-form-field>
       </div>
-      <button [disabled]="!createNoteForm.get('title')!.valid" mat-raised-button color="primary" type="submit">Create</button>
+      <div
+        class="help-block"
+        *ngIf="
+          createNoteForm.get('description')?.invalid &&
+          createNoteForm.get('description')?.touched
+        "
+      >
+        Note Description Must Be At Least 4 Characters
+      </div>
+      <button
+        [disabled]="!createNoteForm.get('title')!.valid"
+        mat-raised-button
+        color="primary"
+        type="submit"
+      >
+        Create
+      </button>
     </form>
   </mat-tab>
 
   <mat-tab label="Search my Notes">
     <div>
+      <h2>Search my Notes</h2>
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          [matAutocomplete]="auto"
+          [formControl]="noteSearch"
+          placeholder="Enter Note"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option
+            *ngFor="let note of filteredNotes | async; let i = index"
+            [value]="note.title"
+            (click)="notePicker(note)"
+          >
+            {{ note.title }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
 
-        <h2>Search my Notes</h2>
-        <mat-form-field>
+      <mat-form-field>
+        <mat-date-range-input [rangePicker]="picker">
           <input
-            matInput
-            type="text"
-            [matAutocomplete]="auto"
-            [formControl]="noteSearch"
-            placeholder="Enter Note"
+            matStartDate
+            placeholder="Start date"
+            [formControl]="searchStartDate"
+            required
           />
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let note of filteredNotes | async let i = index" [value]="note.title" (click)="notePicker(note)">
-              {{note.title}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Start date" />
-            <input matEndDate placeholder="End date" />
-          </mat-date-range-input>
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
-
+          <input
+            matEndDate
+            placeholder="End date"
+            [formControl]="searchEndDate"
+            required
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+      <button
+        type="button"
+        (click)="searchByDate()"
+        mat-raised-button
+        color="primary"
+      >
+        Search by Date
+      </button>
     </div>
 
-<div *ngIf="noteSearchSelected">
-  <app-note-item [note]="noteSelected">
+    <div *ngIf="noteSearchSelected">
+      <app-note-item [note]="noteSelected"> </app-note-item>
+    </div>
 
-  </app-note-item>
-</div>
+    <div *ngIf="noteSearchRangeSelected">
+      <h2 >{{inDateRangeArray.length === 0?'No Notes Found in that Date Range':'Notes in Range'}}</h2>
+      <app-note-item
+        *ngFor="let noteEl of inDateRangeArray; let i = index"
+        [note]="noteEl"
+        [index]="i"
+      >
+      </app-note-item>
+    </div>
+
+
+
+
+
   </mat-tab>
 </mat-tab-group>
-
-
-
-
-

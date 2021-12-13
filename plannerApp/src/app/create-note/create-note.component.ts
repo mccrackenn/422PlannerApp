@@ -68,6 +68,8 @@ export class CreateNoteComponent implements OnInit {
     });
   }
 
+
+
   saveNote(): void {
     if (this.form.invalid) {
       console.log("invalid!")

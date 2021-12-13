@@ -1,6 +1,6 @@
-import {  Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import {  Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { NotesServices } from '../services/notes.services';
 import { Note } from '../models/note';
 import { SnackbarService } from '../services/snackbar/snackbar.service';
@@ -23,8 +23,12 @@ export class NotesComponent implements OnInit, OnChanges {
   minDate: Date = new Date();
   notes: Note[] = [];
   noteSearch = new FormControl();
-  noteSearchSelected:boolean=false;
-  noteSelected!:Note;
+  noteSearchSelected: boolean = false;
+  noteSearchRangeSelected: boolean = false;
+  noteSelected!: Note;
+  searchStartDate = new FormControl();
+  searchEndDate = new FormControl();
+  inDateRangeArray: Note[] = [];
 
   constructor(
     private notesService: NotesServices,
@@ -33,7 +37,7 @@ export class NotesComponent implements OnInit, OnChanges {
     private router: Router
   ) {
     // console.log('IsAuthenticated? ' + this.authService.isAutheticated);
-    if (! this.authService.isAutheticated) {
+    if (!this.authService.isAutheticated) {
       router.navigate(['']);
     }
 
@@ -52,58 +56,73 @@ export class NotesComponent implements OnInit, OnChanges {
         this.notes = notes;
       });
 
-
     this.createNoteForm = new FormGroup({
-      title: new FormControl(null, { validators: [Validators.required] }),
-      description: new FormControl(null, { validators: [Validators.required] }),
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(4)],
+      }),
+      description: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(4)],
+      }),
       startDate: new FormControl(null, { validators: [Validators.required] }),
       endDate: new FormControl(null, { validators: [Validators.required] }),
     });
 
-    this.filteredNotes=this.noteSearch.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      )
-
+    this.filteredNotes = this.noteSearch.valueChanges.pipe(
+      startWith(''),
+      map((value) => this._filter(value))
+    );
   }
 
-  notePicker(note:Note){
-    this.noteSelected={
-      id:note.id,
-      title:note.title,
-      description:note.description,
-      startDate:note.startDate,
+  get title() {
+    return this.createNoteForm.get('title');
+  }
+
+  notePicker(note: Note) {
+    this.noteSearchRangeSelected=false;
+
+    this.noteSelected = {
+      id: note.id,
+      title: note.title,
+      description: note.description,
+      startDate: note.startDate,
       endDate: note.endDate,
       createdDate: note.createdDate,
-
-    }
-    this.noteSearchSelected=true;
-    console.log(note)
-
+    };
+    this.noteSearchSelected = true;
   }
 
-  private _filter(value:string): Note[] {
-    const filterValue=value.toLowerCase();
-    console.log(filterValue)
-    console.log(this.notes.filter(option => option.title.toLowerCase().includes(filterValue)))
-    return this.notes.filter(option => option.title.toLowerCase().includes(filterValue))
+  private _filter(value: string): Note[] {
+    const filterValue = value.toLowerCase();
+    return this.notes.filter((option) =>
+      option.title.toLowerCase().includes(filterValue)
+    );
   }
-
-
 
   getUserNotes(): void {
-    this.notesService.getNotes().subscribe(result => console.log(result));
+    this.notesService.getNotes().subscribe((result) => console.log(result));
   }
 
-  ngOnChanges(): void{
+  ngOnChanges(): void {
     this.notesService.getNotesUpdateListener();
   }
 
-  // On searchForm submit
+  searchByDate() {
+    const startDate = this.searchStartDate.value;
+    const endDate = this.searchEndDate.value;
+    this.noteSearchSelected=false;
+    this.noteSearchRangeSelected=true;
+    this.inDateRangeArray = this.notes.filter(
+      (note) => note.endDate >= startDate && note.startDate <= endDate
+    );
 
+  }
 
   submitNewNote(): void {
+    if (this.createNoteForm.invalid) {
+      console.log('invalid');
+      return;
+    }
+
     const newNote: Note = {
       id: 'temp',
       title: this.createNoteForm.value.title,
@@ -111,29 +130,23 @@ export class NotesComponent implements OnInit, OnChanges {
       startDate: this.createNoteForm.value.startDate,
       endDate: this.createNoteForm.value.endDate,
       createdDate: new Date(Date.now()),
-
     };
-
     this.notesService.addNote(newNote);
     // this.createNoteForm.reset()
     // this.router.navigate(['/notes'])
-
   }
 
-  changeTabs($e: MatTabChangeEvent): void{
-    if ($e.index === 0){
+  changeTabs($e: MatTabChangeEvent): void {
+    if ($e.index === 0) {
       console.log($e);
     }
   }
 }
 
-
-
-
-  // date(e: any): void {
-  //   const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
-  //   this.form.get('dob')?.setValue(convertDate, {
-  //     onlyself: true,
-  //   });
-  //   console.log(convertDate);
-  // }
+// date(e: any): void {
+//   const convertDate = new Date(e.target.value).toISOString().substring(0, 10);
+//   this.form.get('dob')?.setValue(convertDate, {
+//     onlyself: true,
+//   });
+//   console.log(convertDate);
+// }
