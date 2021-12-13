@@ -125,10 +125,12 @@
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
       <button
+        class="searchButton"
         type="button"
         (click)="searchByDate()"
         mat-raised-button
         color="primary"
+        [style.margin.rem]="2"
       >
         Search by Date
       </button>

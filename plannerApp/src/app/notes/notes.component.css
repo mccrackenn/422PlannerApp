@@ -4,3 +4,7 @@
 .help-block{
   color: red;
 }
+.searchButton:hover {
+  background-color: rgb(55, 207, 187);
+
+}

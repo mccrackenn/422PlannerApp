@@ -29,6 +29,8 @@ export class NotesComponent implements OnInit, OnChanges {
   searchStartDate = new FormControl();
   searchEndDate = new FormControl();
   inDateRangeArray: Note[] = [];
+  color="accent"
+
 
   constructor(
     private notesService: NotesServices,
