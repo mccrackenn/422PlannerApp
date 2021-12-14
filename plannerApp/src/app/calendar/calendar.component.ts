@@ -296,7 +296,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           color: this.preference.todoNotCompletedColor,
           borderColor: 'blue',
         },
-        {
+        /*{
           events: [
             {
               title: '422 Meeting',
@@ -317,7 +317,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
           textColor: 'black',
           borderColor: 'green',
           editable: true,
-        }
+        } */
       ],
       select: this.handleDateSelect.bind(this),
       dateClick: this.handleDateClick.bind(this),
