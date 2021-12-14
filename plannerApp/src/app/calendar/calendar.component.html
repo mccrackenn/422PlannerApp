@@ -7,12 +7,12 @@
     </div>
 
     <div class='cal-page-sidebar'>
-        <div class='cal-page-sidebar-section'>
+         <div class='cal-page-sidebar-section'>
             <h2>Instructions</h2>
-            <ul>
+            <!--<ul>
               <li></li>
-            </ul>
-        </div>
+            </ul>-->
+        </div> 
 
         <div class='cal-page-sidebar-section'>
             <button  mat-flat-button
@@ -29,14 +29,16 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
-          <label>Note Priority :</label>
+          <label>Note :</label>
             <div>
-              <button class="color-button" [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor}"> </button>
-              <label class="color-label">Low</label>
+              <button class="color-button" [ngStyle]="{'background-color': this.preference.highPriorityNoteColor }"> </button>
+
+              <!--<button class="color-button" [ngStyle]="{'background-color': this.preference.lowPriorityNoteColor}"> </button>
+               <label class="color-label">Low</label>
               <button class="color-button" [ngStyle]="{'background-color': this.preference.mediumPriorityNoteColor }"> </button>
               <label class="color-label">Medium</label>
               <button class="color-button" [ngStyle]="{'background-color': this.preference.highPriorityNoteColor }"> </button>
-              <label>High</label>
+              <label>High</label> -->
             </div>
 
             <label>ToDo :</label>
@@ -59,7 +61,7 @@
         </div>
 
         <div class='cal-page-sidebar-section'>
-            <h2>All Events of Today ({{selectedDayEvents.length}})</h2>
+            <h2>Today's Events ({{selectedDayEvents.length}})</h2>
             <ul>
               <li *ngFor='let event of selectedDayEvents'>
                 <b>{{event.start | date}}</b>

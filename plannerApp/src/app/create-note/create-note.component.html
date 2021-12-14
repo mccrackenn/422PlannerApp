@@ -10,9 +10,8 @@
           [placeholder]="mode === 'create' ? 'Enter Note Title' : ''"
           placeholder="Enter Note Title"
         />
-        <mat-error *ngIf="form.get('title')?.invalid"
-          >Please Enter a Note Title</mat-error
-        >
+        <mat-error [ngSwitch]="form.get('title')?.invalid">
+          Please enter a valid note title</mat-error>
       </mat-form-field>
     </div>
 
